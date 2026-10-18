@@ -192,9 +192,9 @@ ${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script
 }
 
 // Reveal on scroll (竜也, 2026-10-18, after hiraoku.dev/blog): each item fades up once, over 0.8s, when it comes
-// into view. The only script besides the analytics beacon. It hides nothing until it runs, and does nothing where
+// into view. What is already on screen when the page opens is left alone, so nothing blinks out at load. The only script besides the analytics beacon. It hides nothing until it runs, and does nothing where
 // motion is reduced or IntersectionObserver is missing, so without it every item is simply there.
-const REVEAL = `(()=>{if(!matchMedia('(prefers-reduced-motion: no-preference)').matches||!('IntersectionObserver'in window))return;const d=document.documentElement;d.classList.add('reveal');addEventListener('DOMContentLoaded',()=>{const io=new IntersectionObserver(es=>{let i=0;for(const e of es){if(!e.isIntersecting)continue;e.target.style.transitionDelay=Math.min(i++,5)*90+'ms';e.target.classList.add('in');io.unobserve(e.target)}},{rootMargin:'0px 0px -8% 0px'});document.querySelectorAll('.work,.section-intro,.gloss>.section-title,.entrance-group,.piece,.fact,.year-label,.about-next').forEach(el=>io.observe(el))})})()`;
+const REVEAL = `(()=>{if(!matchMedia('(prefers-reduced-motion: no-preference)').matches||!('IntersectionObserver'in window))return;const d=document.documentElement;d.classList.add('reveal');addEventListener('DOMContentLoaded',()=>{const io=new IntersectionObserver(es=>{let i=0;for(const e of es){if(!e.isIntersecting)continue;e.target.style.transitionDelay=Math.min(i++,5)*90+'ms';e.target.classList.add('in');io.unobserve(e.target)}},{rootMargin:'0px 0px -8% 0px'});const h=innerHeight;document.querySelectorAll('.work,.section-intro,.gloss>.section-title,.entrance-group,.piece,.fact,.year-label,.about-next').forEach(el=>{if(el.getBoundingClientRect().top<h)return;el.classList.add('pending');io.observe(el)})})})()`;
 
 function nav(c, page) {
   const p = paths[c.lang];

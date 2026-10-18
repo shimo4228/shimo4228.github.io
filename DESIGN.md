@@ -93,7 +93,7 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 - `margin note`: from 80rem the page shifts left by half a note (11rem) and each work's links, or a piece's platform,
   step into the right margin. Space alone separates note from column.
 - `reveal`: works, intros, quoted titles, entrance groups, pieces, year labels and facts each fade up 1.5rem over
-  0.8s, once, as they come into view; items arriving together follow each other 90ms apart (竜也, 2026-10-18: like
+  0.8s, once, as they come into view (only those below the first screen; nothing on screen at load is hidden); items arriving together follow each other 90ms apart (竜也, 2026-10-18: like
   hiraoku.dev/blog, "スクロールしたら現れてくる"). A few lines of inline script (IntersectionObserver) add the classes; it
   is the one script besides the beacon. Without it, or with reduced motion, nothing is hidden.
 - `opening`: the name and then each line of the sentence rise 0.5em into place once on load, 0.12s apart, under a second

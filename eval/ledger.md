@@ -218,3 +218,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Reveal replaces scroll-in (竜也: hiraoku.dev/blog のように「スクロールしたら現れてくる」): a scroll-scrubbed fade
   moves with the scroll and never reads as an arrival, so items now play a 0.8s fade-up once when they enter view
   (inline IntersectionObserver, 90ms stagger). Eval and shoot drop the `reveal` class before measuring.
+- 2026-10-18 Reveal no longer hides what is on screen at load (竜也: 「読み込みの瞬間一瞬現れがかくつく」): the first
+  paint showed every item, then the script hid and re-faded those already in view. Only items below the first screen
+  are marked `.pending`; checked at 1280 and 390 on home, writing and about (0 items blink).

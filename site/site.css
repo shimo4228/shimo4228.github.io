@@ -938,11 +938,11 @@ a {
 }
 
 /* ---------- Forced colours and print ---------- */
-/* Reveal: each work, intro, quoted title and piece fades up once as it comes into view (the script in the page head
-   adds .reveal, then .in per item; 竜也, 2026-10-18, after hiraoku.dev/blog). Without the script, or with reduced
-   motion, nothing is hidden. */
+/* Reveal: each work, intro, quoted title and piece below the first screen fades up once as it comes into view (the
+   script in the page head marks those as .pending, then .in; 竜也, 2026-10-18, after hiraoku.dev/blog). What is on
+   screen at load is never hidden. Without the script, or with reduced motion, nothing is hidden. */
 @media screen {
-  .reveal :is(.work, .section-intro, .gloss > .section-title, .entrance-group, .piece, .fact, .year-label, .about-next) {
+  .reveal .pending {
     opacity: 0;
     translate: 0 1.5rem;
     transition:
@@ -950,7 +950,7 @@ a {
       translate 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
   }
 
-  .reveal :is(.work, .section-intro, .gloss > .section-title, .entrance-group, .piece, .fact, .year-label, .about-next).in {
+  .reveal .pending.in {
     opacity: 1;
     translate: 0 0;
   }
