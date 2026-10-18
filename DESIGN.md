@@ -33,6 +33,10 @@ typography:
     weight: 400
   body:
     stack: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    # Japanese text reads in Mincho (竜也, 2026-10-18); only project names stay in Gothic (the `ui` stack).
+    stackJa: '"Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", "Noto Serif CJK JP", serif'
+  ui:
+    stack: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     stackJa: 'system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif'
 spacing: { baseMin: 17, baseMax: 19 }
 rounded: { s: 0.25rem }
@@ -77,10 +81,18 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 
 ## Components
 
-- `nav`: language switch and About only; the name above the sentence is the way home.
+- `nav`: language switch, Writing and About; the name above the sentence is the way home.
 - `sentence`: the root text, one `.line` per sentence in both languages. English 30px at 375 to 52px from 880px, leading 1.16, measure 19em. Japanese: step-3 capped at 7.1vw with a rem floor
   (zoom still works), leading 1.5, one `.line` per sentence. Phrases link to `#tools`, `#mind`, the lines.
-- `entrances`: the platforms, grouped by language, in a definition list (2 × 2 above 30rem).
+- `entrances`: the writing platforms, grouped by language, in a definition list (2 columns above 30rem), at the head
+  of the writing page. Code, records and X are in the footer of every page, marked rel="me" (竜也, 2026-10-18: the home
+  page carries too much at once).
+- `writing`: every published article and essay from zenn-content's `docs/publications.json`, by year in the rail, one
+  row per piece (date, title, platform), newest first; only pieces whose `published_at` has passed. No count, no "latest".
+- `margin note`: from 80rem the page shifts left by half a note (11rem) and each work's links, or a piece's platform,
+  step into the right margin. Space alone separates note from column.
+- `scroll-in`: works, intros, entrance groups, pieces and facts fade up 0.6rem as they enter the screen (a CSS view
+  timeline; 竜也 chose "控えめに", 2026-10-18). No effect with reduced motion or without view-timeline support.
 - `section`: three, one per phrase of the bio: tools, mind, lines. Quote rail (15rem, sticky) and gloss column above
   48rem; baseline-aligned.
 - `work`: name (link to its main destination), one line, small links. Reached from the sentence, a moss bar shows in

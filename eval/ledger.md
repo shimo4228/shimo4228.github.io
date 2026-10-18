@@ -148,3 +148,16 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Google Search Console (竜也): URL-prefix property `https://shimo4228.github.io/` (covers the hub under
   `/shimo4228/` too). Verified by the HTML file `googleb056734478b4d8a5.html` at the root, written by build.mjs; byte-identical
   to the file Google issued. Do not remove it.
+- 2026-10-18 Writing page and wide screens (竜也: 「他のプラットフォームへのリンクは別のページに逃がした方が良くない？」
+  「PC画面の時真ん中の方しか使ってない」; research report best-practices-2026-10).
+  - `/writing/` and `/ja/writing/` list zenn-content's publications (date, title, platform), by year. The platform
+    entrances moved there; code, records and X moved to the footer. The home page is the sentence and the works.
+  - Full width was not used for text: the column keeps its measure. From 80rem the links of each work hang in the
+    right margin and the page shifts left by half the note.
+  - Scroll-in fade, CSS only, off with reduced motion and in Firefox.
+  - Body face stays the system stack (Hiragino on Apple) after a side-by-side with Noto Sans JP (竜也: 「まあふぉんとはこれでいいか」).
+  - Deploy: `.github/workflows/deploy.yml` (push / repository_dispatch / daily 09:17 JST / manual) replaces copying
+    dist to `main` once Pages' source is GitHub Actions and `source` is the default branch.
+- 2026-10-18 Japanese text in Mincho (竜也: 「プロジェクト名だけゴシックで他は明朝でいいんじゃないの？」). JA body stack is
+  Hiragino Mincho / Yu Mincho / Noto Serif JP (system fonts, nothing downloaded); work names keep the Gothic `ui` stack;
+  JA leading 1.85 → 1.9. Writing rows above 48rem put the platform under the title so titles get the full width.

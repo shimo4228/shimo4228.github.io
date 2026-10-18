@@ -469,6 +469,7 @@ a {
 }
 
 .work-name {
+  font-family: var(--font-ui);
   font-weight: 600;
   font-size: var(--step-0);
   line-height: 1.3;
@@ -679,7 +680,7 @@ a {
   display: grid;
 }
 
-/* One piece: the date and platform above the title on phones; date | title | platform on one row above 48rem.
+/* One piece: the date and platform above the title on phones; above 48rem the date beside the title, the platform under it.
    Hairlines between pieces, as a list of leaving links. */
 .piece {
   display: grid;
@@ -697,14 +698,14 @@ a {
 
 @media (min-width: 48rem) {
   .piece {
-    grid-template-columns: 4.5em minmax(0, 1fr) auto;
-    grid-template-areas: "date title where";
+    grid-template-columns: 4.5em minmax(0, 1fr);
+    grid-template-areas: "date title" ". where";
     column-gap: var(--space-s);
     align-items: baseline;
   }
 
   .piece:lang(ja) {
-    grid-template-columns: 5.5em minmax(0, 1fr) auto;
+    grid-template-columns: 5.5em minmax(0, 1fr);
   }
 }
 
