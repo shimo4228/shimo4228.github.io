@@ -212,3 +212,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   Checked in Chromium that the transition fires on navigation (`pagereveal` has a viewTransition).
 - 2026-10-18 Scroll-in made visible (竜也, after hiraoku.dev): rise 0.6rem → 1.5rem over the whole entry instead of its
   first 60%, eased; quoted titles (via the section's named view timeline), year labels and About links join.
+- 2026-10-18 Scroll-in still read as "全然効いてない" (竜也): measured in Chromium, each work finished its fade within its own
+  height of the bottom edge. Range now `cover 0% cover 40%`, linear, so the rise plays across the lower half of the
+  screen. The stylesheet URL now carries a content hash (`/site.css?v=…`), so a publish is not hidden by the cache.

@@ -486,12 +486,16 @@ const jaFace = `/* ${jaChars.length} characters from the display roles, subset f
 }
 `;
 
-out('site.css', tokens.css + jaFace + '\n' + readFileSync(join(here, 'site.css'), 'utf8'));
+const css = tokens.css + jaFace + '\n' + readFileSync(join(here, 'site.css'), 'utf8');
+out('site.css', css);
+// The stylesheet URL carries a hash of its content, so a publish reaches visitors at once instead of after the
+// browser's cached copy (GitHub Pages: 10 minutes) runs out.
+const cssHash = createHash('sha256').update(css).digest('hex').slice(0, 10);
 mkdirSync(join(dist, 'fonts'), { recursive: true });
 copyFileSync(join(root, 'node_modules/@fontsource/newsreader/files', design.typography.display.file), join(dist, 'fonts', design.typography.display.file));
 writeFileSync(join(dist, 'fonts', jaFile), jaFont);
 copyFileSync(join(root, 'site/fonts/ShipporiMincho-OFL.txt'), join(dist, 'fonts', 'OFL.txt'));
-for (const [p, html] of pages) out(p, html);
+for (const [p, html] of pages) out(p, html.replace('href="/site.css"', `href="/site.css?v=${cssHash}"`));
 out('favicon.svg', favicon());
 out(
   'robots.txt',

@@ -93,7 +93,7 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 - `margin note`: from 80rem the page shifts left by half a note (11rem) and each work's links, or a piece's platform,
   step into the right margin. Space alone separates note from column.
 - `scroll-in`: works, intros, quoted titles, entrance groups, pieces, year labels and facts fade up 1.5rem as they
-  enter the screen, finishing as each is fully in view (CSS view timelines; 竜也 chose "控えめに", then asked for it to
+  enter the screen, across the lower half of it (CSS view timelines; 竜也 chose "控えめに", then asked for it to
   show as on hiraoku.dev, 2026-10-18). The sticky quoted title follows its section's timeline. No effect with reduced
   motion or without view-timeline support.
 - `opening`: the name and then each line of the sentence rise 0.5em into place once on load, 0.12s apart, under a second
