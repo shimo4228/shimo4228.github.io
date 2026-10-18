@@ -24,4 +24,16 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://shimo4228.github.io/ja/about/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://shimo4228.github.io/about/"/>
   </url>
+  <url>
+    <loc>https://shimo4228.github.io/writing/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shimo4228.github.io/writing/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://shimo4228.github.io/ja/writing/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shimo4228.github.io/writing/"/>
+  </url>
+  <url>
+    <loc>https://shimo4228.github.io/ja/writing/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://shimo4228.github.io/writing/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://shimo4228.github.io/ja/writing/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://shimo4228.github.io/writing/"/>
+  </url>
 </urlset>

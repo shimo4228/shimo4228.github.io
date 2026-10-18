@@ -24,29 +24,30 @@
   --space-2xl: clamp(4.25rem, 4.0543rem + 0.8696vw, 4.75rem);
   --space-3xl: clamp(6.375rem, 6.0815rem + 1.3043vw, 7.125rem);
   --font-display: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
   --measure: 34em;
   --column: 46rem;
   --rail: 15rem;
+  --note: 11rem;
   --radius-s: 0.25rem;
   --line-thin: 1px;
   --leading-tight: 1.15;
-  --leading-body: 1.6;
+  --leading-body: 1.55;
   color-scheme: light dark;
   --color-background: #f5f5f5;
   --color-surface-2: #eceeed;
   --color-line: #cacecc;
   --color-line-strong: #a1a9a5;
-  --color-muted: #58655e;
+  --color-muted: #4f5b55;
   --color-text: #222624;
   --color-accent-wash: #e4e9e5;
   --color-accent-line: #7c9484;
-  --color-accent: #40634b;
+  --color-accent: #33523d;
 }
 :lang(ja) {
   --font-display: "Newsreader", "Hiragino Mincho ProN", "Shippori Mincho Display", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
-  --font-body: system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif;
-  --leading-body: 1.85;
+  --font-body: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", "Noto Serif CJK JP", serif;
+  --leading-body: 1.9;
 }
 /* Screen only: print always uses the light palette. */
 @media screen and (prefers-color-scheme: dark) {
@@ -55,21 +56,21 @@
     --color-surface-2: #202422;
     --color-line: #333b37;
     --color-line-strong: #4b5650;
-    --color-muted: #8e9792;
+    --color-muted: #9aa39e;
     --color-text: #e9eaea;
     --color-accent-wash: #162b1d;
     --color-accent-line: #3b734e;
-    --color-accent: #6caa81;
+    --color-accent: #8dbe9d;
   }
 }
-/* 83 characters from the display roles, subset from site/fonts/ShipporiMincho-Regular.ttf (SIL OFL 1.1, fonts/OFL.txt). */
+/* 89 characters from the display roles, subset from site/fonts/ShipporiMincho-Regular.ttf (SIL OFL 1.1, fonts/OFL.txt). */
 @font-face {
   font-family: "Shippori Mincho Display";
-  src: url("/fonts/shippori-mincho-display.c192183479.woff2") format("woff2");
+  src: url("/fonts/shippori-mincho-display.a9b7aa73c4.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  unicode-range: U+3001, U+3002, U+3042, U+3044, U+3048, U+304C, U+304D, U+3051, U+3053, U+3055, U+3059, U+305A, U+305B, U+305D, U+3061, U+3063, U+3064, U+3066, U+3067, U+3068, U+306B, U+306E, U+306F, U+3072, U+307E, U+3082, U+308A, U+308B, U+3092, U+3093, U+30A7, U+30A8, U+30AB, U+30B8, U+30B9, U+30C4, U+30C8, U+30CD, U+30CF, U+30DA, U+30DC, U+30E9, U+30EB, U+30ED, U+30F3, U+30FC, U+4E00, U+4E0A, U+4EBA, U+4EE3, U+4EFB, U+4F5C, U+5224, U+5247, U+52D5, U+5411, U+5C5E, U+5F0F, U+5F8B, U+5FC3, U+6027, U+60F3, U+610F, U+63A2, U+65AD, U+660E, U+6642, U+6CE8, U+6E21, U+7791, U+7D44, U+7E54, U+8003, U+8005, U+81EA, U+8457, U+898B, U+898F, U+8AAC, U+8CAC, U+95A2, U+FF08, U+FF09;
+  unicode-range: U+3001, U+3002, U+300C, U+300D, U+300E, U+300F, U+3042, U+3044, U+3048, U+304C, U+304D, U+3051, U+3053, U+3055, U+3059, U+305A, U+305B, U+305D, U+305F, U+3061, U+3063, U+3064, U+3066, U+3067, U+3068, U+306B, U+306E, U+306F, U+3072, U+307E, U+3082, U+308A, U+308B, U+3092, U+3093, U+30A7, U+30A8, U+30AB, U+30B8, U+30B9, U+30C4, U+30C8, U+30CD, U+30CF, U+30DA, U+30DC, U+30E9, U+30EB, U+30ED, U+30F3, U+30FC, U+4E00, U+4E0A, U+4EBA, U+4EE3, U+4EFB, U+4F5C, U+5224, U+5247, U+52D5, U+5411, U+5C5E, U+5F0F, U+5F8B, U+5FC3, U+6027, U+60F3, U+610F, U+63A2, U+65AD, U+660E, U+6642, U+66F8, U+6CE8, U+6E21, U+7791, U+7D44, U+7E54, U+8003, U+8005, U+81EA, U+8457, U+898B, U+898F, U+8AAC, U+8CAC, U+95A2, U+FF08, U+FF09;
 }
 
 /* The sentence, glossed. Rules and values: DESIGN.md. Tokens come first in the built file. */
@@ -175,11 +176,25 @@ a {
   text-spacing-trim: trim-start;
 }
 
+/* Small Japanese text (dates, link labels, footer) a touch larger: Mincho W3 at 14px reads faint. */
+:lang(ja) {
+  --step-n1: clamp(0.9375rem, 0.92rem + 0.05vw, 0.97rem);
+}
+
+/* An eighth-em gap where Latin meets Japanese with no space (verbatim titles such as 「Evalとレビュー」). */
+:lang(ja) {
+  text-autospace: normal;
+}
+
 /* Short lines (headings, the sentence, names, labels) keep BudouX phrases whole. Running paragraphs break
    anywhere kinsoku allows, as Japanese body text does, so lines fill the measure instead of going ragged. */
 :lang(ja) :is(h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd) {
   word-break: keep-all;
   overflow-wrap: anywhere;
+}
+
+.tie {
+  white-space: nowrap;
 }
 
 /* ---------- Layout ---------- */
@@ -211,12 +226,28 @@ a {
 }
 
 .site-nav ul {
-  --cluster-space: 0 var(--space-m);
+  --cluster-space: 0 var(--space-s);
+  /* Four items on one line down to 320px (tighter gaps below 24rem); if text zoom wraps them, they stay flush right. */
+  justify-content: flex-end;
+}
+
+@media (max-width: 23.99rem) {
+  .site-nav ul {
+    --cluster-space: 0 0.625rem;
+  }
+}
+
+@media (min-width: 30rem) {
+  .site-nav ul {
+    --cluster-space: 0 var(--space-m);
+  }
 }
 
 .site-nav a,
 .site-foot a {
   display: inline-block;
+  /* Short labels (X) still get a 24px target. */
+  min-inline-size: 1.5rem;
   padding-block: var(--space-2xs);
   color: var(--color-muted);
   text-decoration: none;
@@ -285,7 +316,8 @@ a {
 }
 
 .sentence {
-  margin-block: var(--space-xs) var(--space-xl);
+  /* On phones the page gap alone separates the sentence from the first section. */
+  margin-block: var(--space-xs) 0;
   font-family: var(--font-display);
   font-weight: 400;
   /* Below step-4 at both ends (30px on a 375px phone, 52px from about 880px), so the English sits at about 1.15
@@ -297,12 +329,25 @@ a {
   overflow-wrap: break-word;
 }
 
+@media (min-width: 48rem) {
+  .sentence {
+    margin-block-end: var(--space-xl);
+  }
+}
+
+/* Japanese display lines: proportional kana and punctuation (palt), opened slightly, and a narrower gap
+   between Latin and Japanese than a full word space. Body text stays full-width. */
+:is(.sentence, .section-title, .work-name, .lost-title):lang(ja) {
+  font-feature-settings: "palt";
+  letter-spacing: 0.04em;
+}
+
 .sentence:lang(ja) {
+  word-spacing: -0.05em;
   /* About 12 characters across a 375px phone, so the first two sentences stay on one line each.
      The rem floor keeps it growing under page and text zoom (WCAG 1.4.4). */
   font-size: max(min(var(--step-3), 7.1vw), 1.375rem);
   line-height: 1.5;
-  letter-spacing: 0.02em;
   max-inline-size: 23em;
 }
 
@@ -364,6 +409,13 @@ a {
   }
 }
 
+/* On the writing page the two languages sit on the page's own axes: rail and gloss column. */
+@media (min-width: 48rem) {
+  .entrance-groups {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+  }
+}
+
 .entrance-group {
   display: grid;
   align-content: start;
@@ -407,23 +459,6 @@ a {
   font-size: var(--step-n1);
 }
 
-.entrance-index {
-  margin-block-start: var(--space-m);
-  font-size: var(--step-n1);
-}
-
-.entrance-index a {
-  display: inline-block;
-  padding-block: var(--space-3xs);
-  color: var(--color-muted);
-  text-decoration-thickness: var(--line-thin);
-  text-underline-offset: 0.22em;
-}
-
-.entrance-index a:hover {
-  color: var(--color-text);
-}
-
 /* ---------- Sections: the quoted phrase in the rail, the gloss beside it ---------- */
 .gloss {
   display: grid;
@@ -445,6 +480,11 @@ a {
 
   .gloss > .section-title {
     grid-row: 1 / span 2;
+  }
+
+  /* A section with no intro has no second row to span. */
+  .gloss:not(:has(> .section-intro)) > .section-title {
+    grid-row: auto;
   }
 }
 
@@ -481,7 +521,8 @@ a {
 }
 
 .section-title:lang(ja):has(> q:first-child) {
-  text-indent: -1em;
+  /* With palt the 「 is half an em wide, so half an em hangs it and the words sit on the column edge. */
+  text-indent: -0.5em;
 }
 
 @media (min-width: 48rem) {
@@ -502,7 +543,6 @@ a {
 
 .section-intro {
   max-inline-size: var(--measure);
-  color: var(--color-muted);
 }
 
 .works {
@@ -543,7 +583,7 @@ a {
 }
 
 .gloss:target > .section-title:lang(ja)::before {
-  inset-inline-start: calc(var(--space-s) * -1 - 1em);
+  inset-inline-start: calc(var(--space-s) * -1 - 0.5em);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -560,9 +600,21 @@ a {
 }
 
 .work-name {
-  font-weight: 600;
+  /* Charter has a true bold; Hiragino Mincho's heaviest face (W6) answers to 600 too. */
+  font-weight: 700;
   font-size: var(--step-0);
   line-height: 1.3;
+}
+
+/* In an all-Mincho page the name stands out by size, not by a second typeface: a size between body and the quote. */
+.work-name:lang(ja) {
+  /* Android's serif has no bold face; let the browser embolden it there rather than lose the weight. */
+  font-synthesis-weight: auto;
+  /* Capped below the quoted phrase (1.3rem) so the gloss never reads louder than what it comments on. */
+  font-size: min(calc((var(--step-0) + var(--step-1)) / 2), 1.2rem);
+  margin-block-end: 0.2em;
+  /* Most names are Latin ("Contemplative Agent"); tracking would space out the bold lowercase. palt is enough. */
+  letter-spacing: 0;
 }
 
 .work-name a {
@@ -580,6 +632,8 @@ a {
    so the words carry their own and the 、 between clauses goes without. */
 .work-name .clause {
   display: inline-block;
+  /* A clause that itself wraps would sit on its last line's baseline and rise into the row above; align its top. */
+  vertical-align: top;
 }
 
 .work-name .u {
@@ -606,7 +660,7 @@ a {
 }
 
 /* 「Zenodo（DOI）」: half-width brackets, so the underline does not run on under the bracket's empty half. */
-:lang(ja) .work-links a {
+:lang(ja) :is(.work-links a, .site-foot a, .piece-where, .entrance-what) {
   font-feature-settings: "halt";
 }
 
@@ -626,6 +680,44 @@ a {
   text-decoration-color: currentColor;
 }
 
+/* Wide screens: each work's links step out of the column into a margin note on its right, so the column keeps
+   its measure and the width beside it carries something. The page shifts left by half the note so the two
+   together sit centred. Only space separates the note from the column; no rule, no tint. */
+@media (min-width: 80rem) {
+  /* Every page shifts, header and footer included, so the nav stays put between pages. */
+  .center {
+    padding-inline-end: calc(var(--note) + var(--space-xl));
+  }
+
+  /* The note is a grid column that runs into the margin, so it takes space and never runs into the next work. */
+  .work {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--note);
+    column-gap: var(--space-xl);
+    row-gap: var(--space-3xs);
+    margin-inline-end: calc(-1 * (var(--note) + var(--space-xl)));
+    align-items: baseline;
+  }
+
+  .work > :not(.work-links) {
+    grid-column: 1;
+  }
+
+  .work-links {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    /* The first link shares the name's baseline, as the rail shares the section's. */
+    align-self: baseline;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .work-links a {
+    padding-block: 0.15em;
+  }
+}
+
 /* ---------- About ---------- */
 .lead {
   font-family: var(--font-display);
@@ -642,8 +734,18 @@ a {
 
 /* About: the name in the rail, as the sections quote their phrase. */
 .about > .section-title {
-  font-size: var(--step-2);
-  color: var(--color-text);
+  /* On phones the name is a byline above the page title, smaller and muted; from 48rem it holds the rail. */
+  font-size: var(--step-0);
+  color: var(--color-muted);
+}
+
+@media (min-width: 48rem) {
+  .about > .section-title {
+    font-size: var(--step-1);
+    color: var(--color-text);
+    /* Only where the rail is wide enough; on a phone with text zoom the name must be free to wrap. */
+    white-space: nowrap;
+  }
 }
 
 .about-body {
@@ -652,6 +754,7 @@ a {
 }
 
 .about-next {
+  --cluster-space: 0 var(--space-m);
   margin-block-start: var(--space-xs);
 }
 
@@ -708,7 +811,165 @@ a {
   text-decoration-color: currentColor;
 }
 
+/* ---------- Writing: the name in the rail as on About; then one year per rail row ---------- */
+.writing-title {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  font-weight: 400;
+  line-height: 1.3;
+}
+
+.years {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.year {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+/* Above 48rem the year heads its list and each piece's date sits in the rail, under the year, so the rail carries
+   something all the way down and the title has the whole gloss column. */
+@media (min-width: 48rem) {
+  .pieces {
+    --piece-cols: var(--rail) minmax(0, 1fr);
+  }
+}
+
+.year-label {
+  color: var(--color-muted);
+  font-size: var(--step-n1);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.pieces {
+  display: grid;
+}
+
+/* One piece: the date and platform above the title on phones; above 48rem the date beside the title, the platform under it.
+   Hairlines between pieces, as a list of leaving links. */
+.piece {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "date where" "title title";
+  column-gap: var(--space-xs);
+  row-gap: var(--space-3xs);
+  padding-block: var(--space-xs);
+  border-block-end: var(--line-thin) solid var(--color-line);
+}
+
+.piece:first-child {
+  border-block-start: var(--line-thin) solid var(--color-line);
+}
+
+@media (min-width: 48rem) {
+  .piece,
+  .piece:lang(ja) {
+    grid-template-columns: var(--piece-cols);
+    grid-template-areas: "date title" ". where";
+    column-gap: var(--space-l);
+    align-items: baseline;
+  }
+}
+
+.piece-date,
+.piece-where {
+  color: var(--color-muted);
+  font-size: var(--step-n1);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.piece-date {
+  grid-area: date;
+}
+
+.piece-where {
+  grid-area: where;
+}
+
+.piece-title {
+  grid-area: title;
+  text-decoration-thickness: var(--line-thin);
+  text-decoration-color: var(--color-line-strong);
+  text-underline-offset: 0.2em;
+}
+
+.piece-title:hover {
+  text-decoration-color: currentColor;
+}
+
+:lang(ja) .piece-title {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* A Japanese title's clauses (clauses() in build.mjs) carry their own underline, as in .work-name. */
+.piece-title .clause {
+  display: inline-block;
+  /* A clause that itself wraps would sit on its last line's baseline and rise into the row above; align its top. */
+  vertical-align: top;
+}
+
+.piece-title .u {
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--line-thin);
+  text-decoration-color: var(--color-line-strong);
+}
+
+.piece-title:has(.u) {
+  text-decoration-line: none;
+}
+
+.piece-title:hover .u {
+  text-decoration-color: currentColor;
+}
+
+.writing-more {
+  font-size: var(--step-n1);
+}
+
+.writing-more a {
+  display: inline-block;
+  padding-block: var(--space-3xs);
+  color: var(--color-muted);
+  text-decoration-thickness: var(--line-thin);
+  text-underline-offset: 0.22em;
+}
+
+.writing-more a:hover {
+  color: var(--color-text);
+}
+
 /* ---------- 404 ---------- */
+/* Wide screens: the platform steps into the margin note, as a work's links do on the home page. */
+@media (min-width: 80rem) {
+  /* The platform is a third grid column running into the margin, so it shares the row's baseline. The hairlines
+     stay under the date and title only. */
+  .piece,
+  .piece:lang(ja) {
+    grid-template-columns: var(--rail) minmax(0, 1fr) var(--note);
+    grid-template-areas: "date title where";
+    margin-inline-end: calc(-1 * (var(--note) + var(--space-xl)));
+    border: 0;
+    background:
+      linear-gradient(var(--color-line), var(--color-line)) left bottom / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat;
+  }
+
+  .piece:first-child {
+    background:
+      linear-gradient(var(--color-line), var(--color-line)) left top / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat,
+      linear-gradient(var(--color-line), var(--color-line)) left bottom / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat;
+  }
+
+  .piece-where {
+    margin-inline-start: calc(var(--space-xl) - var(--space-l));
+    white-space: normal;
+  }
+}
+
 .lost {
   display: grid;
   gap: var(--space-s);
@@ -726,9 +987,30 @@ a {
 }
 
 /* ---------- Forced colours and print ---------- */
+/* Scrolling in: each work, intro and piece fades up a little as it enters the screen. CSS only (a view
+   timeline), so where the browser lacks it (Firefox) or motion is reduced, everything is simply there. Anything
+   already on screen when the page opens is past its entry, so it shows at once. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :is(.work, .section-intro, .entrance-group, .piece, .fact) {
+      animation: scroll-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes scroll-in {
+  from {
+    opacity: 0;
+    translate: 0 0.6rem;
+  }
+}
+
 @media (forced-colors: active) {
-  .sentence a {
-    text-decoration-color: LinkText;
+  .work:target::before,
+  .gloss:target > .section-title::before {
+    background: Highlight;
   }
 }
 
@@ -766,7 +1048,6 @@ a {
 
   .work-links a[href^="http"]::after,
   .entrance[href^="http"]::after,
-  .entrance-index a::after,
   .fact a::after {
     content: " (" attr(href) ")";
     font-size: 0.8em;
