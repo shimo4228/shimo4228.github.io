@@ -1020,9 +1020,10 @@ a {
 @media screen and (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     :is(.work, .section-intro, .entrance-group, .piece, .fact, .year-label, .about-next) {
-      animation: scroll-in cubic-bezier(0.2, 0.6, 0.2, 1) both;
+      animation: scroll-in linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 100%;
+      /* Over the lower half of the screen, so the rise is seen rather than finished at the bottom edge. */
+      animation-range: cover 0% cover 40%;
     }
 
     /* The quoted title is sticky, so it follows its section's timeline rather than its own. */
