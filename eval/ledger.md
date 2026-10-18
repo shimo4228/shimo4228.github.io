@@ -128,3 +128,4 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
     roles' characters (83 chars, 17.7 KB, unicode-range so EN pages never fetch it). Fixes Android, where there is no
     system Mincho and the sentence fell back to a Gothic face; Apple devices keep Hiragino and download nothing.
   - eval 0 failing / 7 raw-px warnings; no overflow at 320–1280.
+  - Share images now render the sentence from the built page markup (same lines and groups). JA OG no longer leaves 「探る。」 alone on the last line; EN OG 60→50px, 6 lines by phrase.

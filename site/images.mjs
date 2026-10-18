@@ -5,8 +5,6 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { serve } from '../eval/serve.mjs';
-import { loadDefaultJapaneseParser } from 'budoux';
-const budoux = loadDefaultJapaneseParser();
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -19,17 +17,20 @@ const card = (lang, name, text) => `<!DOCTYPE html><html lang="${lang}"><head><m
   html, body { margin: 0; inline-size: 1200px; block-size: 630px; overflow: hidden; }
   body { display: grid; grid-template-rows: auto 1fr auto; padding: 72px 88px 64px; box-sizing: border-box; }
   .name { font-size: 34px; }
-  .sentence { font-size: ${lang === 'ja' ? 48 : 60}px !important; line-height: ${lang === 'ja' ? 1.55 : 1.14} !important; max-inline-size: ${lang === 'ja' ? '21em' : '17em'} !important; margin: 28px 0 0; align-self: start; }
-  .sentence span { text-decoration: underline dotted var(--color-accent-line); text-decoration-thickness: 0.07em; text-underline-offset: 0.27em; text-decoration-skip-ink: none; }
+  .sentence { font-size: ${lang === 'ja' ? 48 : 50}px !important; line-height: ${lang === 'ja' ? 1.55 : 1.14} !important; max-inline-size: ${lang === 'ja' ? '21em' : '17em'} !important; margin: 28px 0 0; align-self: start; }
+  .sentence .u { text-decoration: underline dotted var(--color-accent-line); text-decoration-thickness: 0.07em; text-underline-offset: 0.27em; text-decoration-skip-ink: none; }
   .url { font-size: 24px; color: var(--color-muted); }
 </style></head><body>
 <p class="name">${name}</p>
-<p class="sentence">${lang === 'ja' ? text.replace(/。(?!$)/g, '。<br>') : text}</p>
+<p class="sentence">${text}</p>
 <p class="url">shimo4228.github.io</p>
 </body></html>`;
 
-const phrase = (t, lang) => (lang === 'ja' ? budoux.parse(t).join('<wbr>') : t.replace('the age of AI.', 'the&nbsp;age of&nbsp;AI.'));
-const wrapLinks = (c) => c.sentence.map((p) => (p.link ? `<span style="white-space:nowrap">${p.text}</span>` : phrase(p.text, c.lang))).join('');
+// The sentence exactly as the built page sets it (lines, phrase groups, ties), with its links as plain spans.
+const builtSentence = (lang) => {
+  const html = readFileSync(join(dist, lang === 'ja' ? 'ja' : '', 'index.html'), 'utf8');
+  return html.match(/<p class="sentence">([\s\S]*?)<\/p>/)[1].replace(/<a href="[^"]*">([\s\S]*?)<\/a>/g, '<span class="u">$1</span>');
+};
 
 const icon = readFileSync(join(dist, 'favicon.svg'), 'utf8');
 const ground = icon.match(/rect\{fill:(#[0-9a-f]+)\}/)[1];
@@ -40,7 +41,7 @@ for (const [lang, c] of [['en', en], ['ja', ja]]) {
   const ctx = await b.newContext({ viewport: { width: 1200, height: 630 }, colorScheme: 'light' });
   const page = await ctx.newPage();
   await page.goto(`http://localhost:${port}/`);
-  await page.setContent(card(lang, c.name, wrapLinks(c)), { waitUntil: 'networkidle' });
+  await page.setContent(card(lang, c.name, builtSentence(lang)), { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: join(dist, 'og', `${lang}.png`) });
   await ctx.close();
