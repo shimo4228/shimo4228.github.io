@@ -161,3 +161,4 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Japanese text in Mincho (竜也: 「プロジェクト名だけゴシックで他は明朝でいいんじゃないの？」). JA body stack is
   Hiragino Mincho / Yu Mincho / Noto Serif JP (system fonts, nothing downloaded); work names keep the Gothic `ui` stack;
   JA leading 1.85 → 1.9. Writing rows above 48rem put the platform under the title so titles get the full width.
+  Writing rows above 48rem: the date sits in the rail under the year, the title takes the gloss column (竜也: 「左側妙に空いているのバランス悪くない？」).

@@ -661,11 +661,11 @@ a {
   gap: var(--space-xs);
 }
 
+/* Above 48rem the year heads its list and each piece's date sits in the rail, under the year, so the rail carries
+   something all the way down and the title has the whole gloss column. */
 @media (min-width: 48rem) {
-  .year {
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-    gap: var(--space-l);
-    align-items: baseline;
+  .pieces {
+    --piece-cols: var(--rail) minmax(0, 1fr);
   }
 }
 
@@ -697,15 +697,12 @@ a {
 }
 
 @media (min-width: 48rem) {
-  .piece {
-    grid-template-columns: 4.5em minmax(0, 1fr);
-    grid-template-areas: "date title" ". where";
-    column-gap: var(--space-s);
-    align-items: baseline;
-  }
-
+  .piece,
   .piece:lang(ja) {
-    grid-template-columns: 5.5em minmax(0, 1fr);
+    grid-template-columns: var(--piece-cols);
+    grid-template-areas: "date title" ". where";
+    column-gap: var(--space-l);
+    align-items: baseline;
   }
 }
 
@@ -782,12 +779,7 @@ a {
   .piece,
   .piece:lang(ja) {
     position: relative;
-    grid-template-columns: 4.5em minmax(0, 1fr);
     grid-template-areas: "date title";
-  }
-
-  .piece:lang(ja) {
-    grid-template-columns: 5.5em minmax(0, 1fr);
   }
 
   .piece-where {
