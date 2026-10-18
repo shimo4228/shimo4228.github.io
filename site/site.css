@@ -101,7 +101,9 @@ a {
   text-spacing-trim: trim-start;
 }
 
-:lang(ja) :is(p, li, dd, dt, h1, h2, h3) {
+/* Short lines (headings, the sentence, names, labels) keep BudouX phrases whole. Running paragraphs break
+   anywhere kinsoku allows, as Japanese body text does, so lines fill the measure instead of going ragged. */
+:lang(ja) :is(h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd) {
   word-break: keep-all;
   overflow-wrap: anywhere;
 }

@@ -30,7 +30,12 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 // In Japanese every space is tied: lines break only at BudouX phrase boundaries (<wbr>), so neither "AI" nor
 // "Claude Code" is split or left alone at a line end.
 // A break point never starts a line with the space: <wbr> moves to after it.
-const tieMixed = (h) => h.replace(/ /g, '&nbsp;').replace(/<wbr>&nbsp;/g, '&nbsp;<wbr>');
+// Only a space between Latin and Japanese is tied ("AI エージェント"); a space between two Latin words
+// ("Tatsuya Shimomoto") stays an ordinary break point.
+const CJK = '\\u3000-\\u30ff\\u3400-\\u9fff\\uff00-\\uffef';
+const tieMixed = (h) => h
+  .replace(new RegExp(` (?=(?:<wbr>)?[${CJK}])|(?<=[${CJK}](?:<wbr>)?) `, 'gu'), '&nbsp;')
+  .replace(/<wbr>&nbsp;/g, '&nbsp;<wbr>');
 
 function txt(s, lang) {
   // Brackets stay with their words: no line ends on （ or starts with ）, and none starts with （ either, since the
