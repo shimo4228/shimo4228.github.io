@@ -95,6 +95,8 @@ async function measure(page) {
     for (const el of blocks) {
       const s = getComputedStyle(el);
       if (s.textAlign === 'center') continue;
+      // The nav is set flush right, so where its items start depends on their widths, not on an axis.
+      if (el.closest('.site-nav')) continue;
       const range = document.createRange();
       const tn = [...el.childNodes].find((n) => n.nodeType === 3 && n.textContent.trim()) || el.querySelector('a, span')?.firstChild;
       if (!tn || tn.nodeType !== 3) continue;
@@ -178,7 +180,8 @@ for (const p of paths) {
         }
       }
     }
-    // axe at narrow and wide
+    // axe at narrow and wide, with every element at its end state (the scroll-in fade would read as low contrast)
+    await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; }' });
     for (const w of [375, 1280]) {
       await page.setViewportSize({ width: w, height: 900 });
       const ax = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'best-practice']).analyze();

@@ -358,11 +358,18 @@
         "draft": true
       }
     ],
-    "next": {
-      "text": "プロジェクトと、書いている場所",
-      "href": "/ja/",
-      "draft": true
-    }
+    "next": [
+      {
+        "text": "プロジェクト",
+        "href": "/ja/",
+        "draft": true
+      },
+      {
+        "text": "書いたもの",
+        "href": "/ja/writing/",
+        "draft": true
+      }
+    ]
   },
   "nav": {
     "home": "ホーム",

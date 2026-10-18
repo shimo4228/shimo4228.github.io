@@ -355,11 +355,18 @@
         "draft": true
       }
     ],
-    "next": {
-      "text": "The projects, and where I write",
-      "href": "/",
-      "draft": true
-    }
+    "next": [
+      {
+        "text": "The projects",
+        "href": "/",
+        "draft": true
+      },
+      {
+        "text": "Writing",
+        "href": "/writing/",
+        "draft": true
+      }
+    ]
   },
   "nav": {
     "home": "Home",

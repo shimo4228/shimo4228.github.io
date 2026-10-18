@@ -164,3 +164,18 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   Writing rows above 48rem: the date sits in the rail under the year, the title takes the gloss column (竜也: 「左側妙に空いているのバランス悪くない？」).
   Project names too in Mincho bold (竜也: 「プロジェクト名も明朝の太字にしたら？」); the Gothic ui stack is gone.
   JA work names one half-step larger (between step-0 and step-1) so they stand out by size in an all-Mincho page (竜也: 「メリハリがないのかな？」).
+- 2026-10-18 Review round 1 (designer persona) and the author's catches:
+  - Overlap (竜也: 「なんか線が被ってるよ」): a JA title clause that itself wraps sat on its last line's baseline and rose
+    into the row above. Clauses now `vertical-align: top`.
+  - JA display lines (sentence, quoted titles, work names, 404) get `palt` + 0.04em; the sentence's Latin–Japanese gap
+    is a quarter em; `text-autospace: normal` on JA. Quote hang −1em → −0.5em (palt halves the 「).
+  - JA work names capped at 1.2rem (below the 1.3rem quote) with 0.2em under them.
+  - Rail name on About / Writing at step-1 on one line; the Writing title in the display face at step-1.
+  - Writing page platform groups on the rail / gloss axes from 48rem.
+  - About ends in two links (projects, writing) since the platforms moved.
+  - Nav: tighter gaps below 24rem so four items fit at 320px.
+  - Sentence bottom margin only from 48rem (phones had a doubled gap).
+  - Section intros in text colour; muted stays for metadata.
+  - `halt` on JA footer links, platform names and entrance notes.
+  - Footer links get a 24px minimum target (X was 10px wide). Eval: axe runs with animations off; nav items are
+    exempt from the left-edge check (flush right).

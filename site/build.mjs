@@ -334,7 +334,7 @@ function about(c) {
     <p class="section-title"><a href="${paths[c.lang].home}">${esc(c.name)}</a></p>
     <div class="about-body">
       ${a.paragraphs.map((p) => `<p class="lead">${prose(p, c.lang)}</p>`).join('\n      ')}
-      <p class="about-next"><a href="${a.next.href}">${txt(a.next.text, c.lang)}</a></p>
+      <ul role="list" class="about-next cluster">${a.next.map((n) => `<li><a href="${n.href}">${txt(n.text, c.lang)}</a></li>`).join('')}</ul>
     </div>
   </section>
   <dl class="facts">
