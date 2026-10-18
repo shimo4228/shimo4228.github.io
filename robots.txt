@@ -1,0 +1,6 @@
+# The user site's robots.txt also covers the hub at /shimo4228/. Nothing is blocked.
+User-agent: *
+Allow: /
+
+Sitemap: https://shimo4228.github.io/sitemap.xml
+Sitemap: https://shimo4228.github.io/shimo4228/sitemap.xml
