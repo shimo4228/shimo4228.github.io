@@ -1,0 +1,381 @@
+{
+  "_sources": {
+    "bio": "GitHub profile bio, verbatim (canonical since 2026-10-17). Change the GitHub bio first; the build checks the page against this string.",
+    "work.line": "hub README.md (English), verbatim, unless lineSource says otherwise.",
+    "draft": "Strings in a block with \"draft\": true were written by Claude and wait for the author's read-through."
+  },
+  "lang": "en",
+  "name": "Tatsuya Shimomoto",
+  "handle": "shimo4228",
+  "bio": "Building AI agents, and watching the mind through meditation. Exploring judgment, accountability, authorship, and human attention in the age of AI.",
+  "sentence": [
+    {
+      "link": "#tools",
+      "text": "Building AI agents"
+    },
+    {
+      "text": ", and "
+    },
+    {
+      "link": "#mind",
+      "text": "watching the mind through meditation"
+    },
+    {
+      "text": ". Exploring "
+    },
+    {
+      "link": "#akc",
+      "text": "judgment"
+    },
+    {
+      "text": ", "
+    },
+    {
+      "link": "#aap",
+      "text": "accountability"
+    },
+    {
+      "text": ", "
+    },
+    {
+      "link": "#authorship-strategy",
+      "text": "authorship"
+    },
+    {
+      "text": ", and "
+    },
+    {
+      "link": "#attention-not-self",
+      "text": "human attention"
+    },
+    {
+      "text": " in the age of AI."
+    }
+  ],
+  "company": "Unaffiliated by design",
+  "entrances": {
+    "draft": true,
+    "label": "Read and follow",
+    "groups": [
+      {
+        "label": "In English",
+        "items": [
+          {
+            "name": "Dev.to",
+            "what": "build notes",
+            "href": "https://dev.to/shimo4228"
+          },
+          {
+            "name": "Substack",
+            "what": "essays",
+            "href": "https://shimo4228.substack.com"
+          }
+        ]
+      },
+      {
+        "label": "In Japanese",
+        "items": [
+          {
+            "name": "Zenn",
+            "what": "build notes",
+            "href": "https://zenn.dev/shimo4228",
+            "hreflang": "ja"
+          },
+          {
+            "name": "note",
+            "what": "essays",
+            "href": "https://note.com/shimo4228",
+            "hreflang": "ja"
+          },
+          {
+            "name": "note",
+            "what": "essays, as Sakamaki",
+            "href": "https://note.com/sakamaki4228",
+            "hreflang": "ja"
+          }
+        ]
+      },
+      {
+        "label": "Code and records",
+        "items": [
+          {
+            "name": "GitHub",
+            "what": "every repository",
+            "href": "https://github.com/shimo4228"
+          },
+          {
+            "name": "ORCID",
+            "what": "papers",
+            "href": "https://orcid.org/0009-0002-6168-4162"
+          },
+          {
+            "name": "Hugging Face",
+            "what": "datasets",
+            "href": "https://huggingface.co/Shimo4228"
+          }
+        ]
+      },
+      {
+        "label": "Notes as they happen",
+        "items": [
+          {
+            "name": "X",
+            "what": "",
+            "href": "https://x.com/shimo4228"
+          },
+          {
+            "name": "X",
+            "what": "as Sakamaki",
+            "href": "https://x.com/sakamakiuzutaro",
+            "hreflang": "ja"
+          }
+        ]
+      }
+    ],
+    "index": {
+      "name": "Every article and essay, in one list",
+      "href": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+    }
+  },
+  "sections": [
+    {
+      "id": "tools",
+      "quote": "Building AI agents",
+      "intro": "An agent of my own, then tools for Claude Code from the harness my agents work in.",
+      "introDraft": true,
+      "works": [
+        {
+          "id": "contemplative-agent",
+          "name": "Contemplative Agent",
+          "line": "A local agent whose value layer is an explicit Constitution, amended from experience under human review.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/contemplative-agent"
+            },
+            {
+              "label": "Zenodo (DOI)",
+              "href": "https://doi.org/10.5281/zenodo.19212118"
+            },
+            {
+              "label": "Write-up on Dev.to",
+              "href": "https://dev.to/shimo4228/not-reasoning-not-tools-what-if-the-essence-of-ai-agents-is-memory-4k4n"
+            }
+          ]
+        },
+        {
+          "id": "claude-harness",
+          "name": "claude-harness",
+          "line": "The public copy of the harness my agents work inside every day.",
+          "lineSource": "hub README Through-line, verbatim clause",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/claude-harness"
+            }
+          ]
+        },
+        {
+          "id": "harness-scope",
+          "name": "harness-scope",
+          "line": "One global harness, and each repo picks what Claude sees.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/harness-scope"
+            },
+            {
+              "label": "Write-up on Dev.to",
+              "href": "https://dev.to/shimo4228/turning-claude-code-into-a-writing-harness-with-claude-mods-and-an-output-style-1a73"
+            }
+          ]
+        },
+        {
+          "id": "akc-cycle",
+          "name": "akc-cycle",
+          "line": "The Agent Knowledge Cycle as a single rules file and a plugin.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/akc-cycle"
+            }
+          ]
+        },
+        {
+          "id": "jev-skill-router",
+          "name": "jev-skill-router",
+          "line": "A Claude Code hook that asks Jev which installed skill fits the prompt.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/jev-skill-router"
+            },
+            {
+              "label": "Write-up on Dev.to",
+              "href": "https://dev.to/shimo4228/i-added-jevs-skill-router-to-claude-code-and-turned-back-just-before-rewriting-the-skill-listing-34in"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mind",
+      "quote": [
+        "watching the mind through meditation",
+        "human attention"
+      ],
+      "works": [
+        {
+          "id": "attention-not-self",
+          "name": "Attention, Not Self",
+          "line": "Essays and a knowledge graph from meditation, in the Abhidharma map of the mind beside computational phenomenology.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/attention-not-self"
+            },
+            {
+              "label": "Zenodo (DOI)",
+              "href": "https://doi.org/10.5281/zenodo.20262112"
+            }
+          ]
+        },
+        {
+          "id": "floating",
+          "name": "Why Does AI Writing Feel Like It’s Floating?",
+          "line": "Every sentence reads fine, yet the whole thing hangs in midair.",
+          "lineSource": "Substack subtitle of the essay, verbatim",
+          "links": [
+            {
+              "label": "Essay on Substack",
+              "href": "https://shimo4228.substack.com/p/why-does-ai-writing-feel-like-its"
+            }
+          ]
+        },
+        {
+          "id": "desire",
+          "name": "After I Ran Out of Things to Ask AI, One Desire Remained",
+          "line": "Every morning I open my task list, and there is less to ask AI to do.",
+          "lineSource": "first sentence of the Substack essay, verbatim",
+          "links": [
+            {
+              "label": "Essay on Substack",
+              "href": "https://shimo4228.substack.com/p/after-i-ran-out-of-things-to-ask"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lines",
+      "quote": "judgment, accountability, authorship",
+      "intro": "The first two share one claim: an agent harness can hold value norms in the same layer as its coding conventions, revised through the same human review.",
+      "introSource": "adapted from the hub README Through-line (subject changed to “the first two”)",
+      "introDraft": true,
+      "works": [
+        {
+          "id": "akc",
+          "name": "Agent Knowledge Cycle (AKC)",
+          "line": "A six-phase loop that keeps an agent and its operator aligned while both change.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/agent-knowledge-cycle"
+            },
+            {
+              "label": "Zenodo (DOI)",
+              "href": "https://doi.org/10.5281/zenodo.19200726"
+            }
+          ]
+        },
+        {
+          "id": "aap",
+          "name": "Agent Attribution Practice (AAP)",
+          "line": "Harness-neutral design records: what to prohibit, where controls live, who answers when an agent fails.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/agent-attribution-practice"
+            },
+            {
+              "label": "Zenodo (DOI)",
+              "href": "https://doi.org/10.5281/zenodo.19652013"
+            }
+          ]
+        },
+        {
+          "id": "authorship-strategy",
+          "name": "Authorship Strategy",
+          "line": "How an author stays findable when readers meet ideas through LLMs: open the work so the spread carries the origin.",
+          "links": [
+            {
+              "label": "Repository",
+              "href": "https://github.com/shimo4228/authorship-strategy"
+            },
+            {
+              "label": "Zenodo (DOI)",
+              "href": "https://doi.org/10.5281/zenodo.20263316"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "about": {
+    "title": "About",
+    "paragraphs": [
+      "I’m Tatsuya Shimomoto (shimo4228). I build AI agents solo, with no lab and no affiliation; one of them runs on a local LLM on an M1 Mac.",
+      "If you build agent harnesses, think about accountability for autonomous agents, or care about authorship in the AI age, something here is for you."
+    ],
+    "paragraphsSource": "hub README.md introduction, verbatim; the clause about the five lines is cut",
+    "facts": [
+      {
+        "label": "Affiliation",
+        "value": "Unaffiliated by design"
+      },
+      {
+        "label": "ORCID",
+        "value": "0009-0002-6168-4162",
+        "href": "https://orcid.org/0009-0002-6168-4162"
+      },
+      {
+        "label": "Citing",
+        "before": "Each project has a concept DOI; the ",
+        "linkText": "research hub",
+        "after": " lists them.",
+        "href": "https://shimo4228.github.io/shimo4228/",
+        "draft": true
+      },
+      {
+        "label": "For machines",
+        "before": "graph.jsonld and llms.txt live on the ",
+        "linkText": "research hub",
+        "after": ".",
+        "href": "https://shimo4228.github.io/shimo4228/",
+        "draft": true
+      }
+    ],
+    "next": {
+      "text": "The projects, and where I write",
+      "href": "/",
+      "draft": true
+    }
+  },
+  "nav": {
+    "about": "About",
+    "lang": "日本語",
+    "langLabel": "Japanese"
+  },
+  "footer": {
+    "source": "Source of this site",
+    "sourceHref": "https://github.com/shimo4228/shimo4228.github.io/tree/source",
+    "hub": "Research hub",
+    "hubHref": "https://shimo4228.github.io/shimo4228/"
+  },
+  "notFound": {
+    "title": "Nothing here",
+    "body": "This page doesn’t exist. The home page lists everything.",
+    "home": "Go to the home page"
+  },
+  "skip": "Skip to content"
+}

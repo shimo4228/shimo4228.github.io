@@ -1,0 +1,28 @@
+{
+  "name": "personal-site",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "node site/build.mjs && node site/images.mjs",
+    "eval": "EVAL_CSS=site/site.css node eval/run.mjs dist ./,about/,ja/,ja/about/,404.html eval/report-site",
+    "shots": "node eval/shoot.mjs dist 375,1280 light,dark ,about,ja,ja/about eval/shots/site",
+    "proto": "node proto/build.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@adobe/leonardo-contrast-colors": "^1.1.0",
+    "@axe-core/playwright": "^4.14.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/newsreader": "^5.3.0",
+    "@fontsource/schibsted-grotesk": "^5.3.0",
+    "budoux": "^0.9.3",
+    "html-validate": "^11.16.2",
+    "lighthouse": "^12.8.2",
+    "linkinator": "^8.1.0",
+    "playwright": "1.56",
+    "yaml": "^2.9.1"
+  },
+  "type": "module"
+}

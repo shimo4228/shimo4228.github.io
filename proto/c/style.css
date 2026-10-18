@@ -1,0 +1,182 @@
+/* Direction C: the question map. A small diagram shows which practice asks which question;
+   each question links to the project that asks it. The questions are the strongest thing in the map.
+   Monospace lives only in the map. */
+
+.dir-c {
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --center-max: 60rem;
+  --gutter: var(--space-m);
+}
+
+.site-head { display: flex; justify-content: flex-end; padding-block: var(--space-m); }
+
+.site-nav a,
+.site-foot a {
+  display: inline-block;
+  padding-block: var(--space-2xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: var(--step-n1);
+}
+
+.site-nav a:hover,
+.site-foot a:hover { color: var(--color-text); }
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  padding-block: var(--space-l) var(--space-3xl);
+}
+
+.intro { display: flex; flex-direction: column; }
+
+.name {
+  font-weight: 600;
+  font-size: var(--step-3);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+
+.bio {
+  margin-block: var(--space-s) var(--space-xl);
+  font-size: var(--step-1);
+  line-height: 1.5;
+  max-inline-size: 33em;
+}
+
+.entrance { font-weight: 600; }
+
+@media (min-width: 52rem) {
+  .entrance-groups { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* The map */
+.map-figure { margin: 0; display: grid; gap: var(--space-s); }
+
+.map { display: block; inline-size: 100%; block-size: auto; font-family: var(--mono); overflow: visible; }
+
+.map--narrow { max-inline-size: 24rem; margin-inline: auto; }
+.map--wide { display: none; }
+
+@media (min-width: 36rem) and (max-width: 55.99rem) {
+  .map--narrow { max-inline-size: 21rem; }
+}
+
+@media (min-width: 56rem) {
+  .map--wide { display: block; }
+  .map--narrow { display: none; }
+}
+
+.map-caption {
+  font-size: var(--step-n1);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+@media (min-width: 56rem) {
+  .map-caption { text-align: start; }
+}
+
+.edge,
+.node rect {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 1.5;
+}
+
+.edge { fill: none; stroke: var(--color-accent-line); }
+
+.node text { fill: var(--color-text); font-size: 17px; }
+.map--narrow .node text { font-size: 16px; }
+
+.node--practice .hit { fill: transparent; stroke: none; }
+.node--practice text { fill: var(--color-muted); }
+.node--practice:hover text { fill: var(--color-text); }
+
+.node--question rect { fill: var(--color-accent-wash); stroke: var(--color-accent); }
+.node--question:hover rect { fill: var(--color-surface-2); }
+.node-project { fill: var(--color-accent); }
+.map .node .node-project { font-size: 13px; }
+
+.node:focus-visible {
+  outline: 0.125rem solid var(--color-text);
+  outline-offset: 0.125rem;
+}
+
+/* The index under the map */
+.index { display: grid; gap: var(--space-2xl) var(--space-xl); }
+
+@media (min-width: 44rem) {
+  .index {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  /* Titles share a subgrid row and sit on its bottom, so the first works start level. */
+  .index > .practice {
+    display: grid;
+    grid-row: 1 / span 2;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+
+  .index > .practice .section-title { align-self: end; }
+
+  .meeting { grid-column: 1 / -1; }
+
+  .meeting .works {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--space-xl);
+  }
+}
+
+.practice,
+.meeting,
+.work { scroll-margin-block-start: var(--space-l); }
+
+.section-title {
+  font-weight: 600;
+  font-size: var(--step-2);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-block-end: var(--space-m);
+}
+
+.meeting-intro { max-inline-size: var(--measure); color: var(--color-muted); margin-block-end: var(--space-m); }
+
+.works { --stack-space: var(--space-m); }
+.work { --stack-space: var(--space-3xs); }
+.work-name { font-weight: 600; font-size: var(--step-0); }
+.work-line { max-inline-size: var(--measure); }
+
+/* The question a project asks, in words: the same relation the map draws. */
+.work-asks { color: var(--color-accent); font-size: var(--step-n1); }
+.work-asks-label { font-weight: 600; }
+
+.work-links { --cluster-space: 0 var(--space-s); font-size: var(--step-n1); }
+
+.work-links a {
+  display: inline-block;
+  min-inline-size: var(--space-l);
+  padding-block: var(--space-3xs);
+  color: var(--color-muted);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--line-thin);
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--color-line-strong);
+}
+
+.work-links a:hover { color: var(--color-accent); text-decoration-color: currentColor; }
+
+.site-foot { padding-block: var(--space-l) var(--space-xl); }
+.site-foot ul { --cluster-space: var(--space-3xs) var(--space-m); }
+
+/* High Contrast: system colours for the map. */
+@media (forced-colors: active) {
+  .edge { stroke: CanvasText; }
+  .node rect { fill: Canvas; stroke: CanvasText; }
+  .node--practice .hit { fill: Canvas; stroke: none; }
+  .node text { fill: LinkText; }
+  .node:focus-visible { outline-color: Highlight; }
+}

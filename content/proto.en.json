@@ -1,0 +1,143 @@
+{
+  "_sources": {
+    "bio": "GitHub profile bio, verbatim (canonical since 2026-10-17). Do not edit here; change the GitHub bio first.",
+    "company": "GitHub profile company field, verbatim. Shown on /about/, not the top page (eval round 1).",
+    "work.line": "hub README.md (English) sentences, verbatim, unless marked draft.",
+    "questions": "questionText / questionLines (direction c map and \"Asks\" lines) are drafts written by Claude.",
+    "draft": "Strings with \"draft\": true were written by Claude and wait for the author's read-through."
+  },
+  "name": "Tatsuya Shimomoto",
+  "handle": "shimo4228",
+  "bio": "Building AI agents, and watching the mind through meditation. Exploring judgment, authorship, and human attention in the age of AI.",
+  "bioParts": {
+    "agents": "Building AI agents",
+    "mind": "watching the mind through meditation",
+    "questions": "judgment, authorship, and human attention"
+  },
+  "company": "Unaffiliated by design",
+  "entrances": {
+    "draft": true,
+    "label": "Read and follow",
+    "groups": [
+      {"label": "In English", "items": [
+        {"name": "Dev.to", "what": "build notes", "href": "https://dev.to/shimo4228"},
+        {"name": "Substack", "what": "essays", "href": "https://shimo4228.substack.com"}
+      ]},
+      {"label": "In Japanese", "lang": "ja", "labelJa": "日本語で", "items": [
+        {"name": "Zenn", "what": "build notes", "href": "https://zenn.dev/shimo4228"},
+        {"name": "note", "what": "essays", "href": "https://note.com/shimo4228"}
+      ]},
+      {"label": "Code and records", "items": [
+        {"name": "GitHub", "what": "every repository", "href": "https://github.com/shimo4228"},
+        {"name": "ORCID", "what": "papers", "href": "https://orcid.org/0009-0002-6168-4162"},
+        {"name": "Hugging Face", "what": "datasets", "href": "https://huggingface.co/Shimo4228"}
+      ]},
+      {"label": "Notes as they happen", "items": [
+        {"name": "X", "what": "", "href": "https://x.com/shimo4228"}
+      ]}
+    ],
+    "index": {"name": "Every article and essay, in one list", "href": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"}
+  },
+  "practices": [
+    {
+      "id": "agents",
+      "title": "Building AI agents",
+      "works": [
+        {
+          "id": "harness-scope",
+          "name": "harness-scope",
+          "line": "One global harness, and each repo picks what Claude sees.",
+          "links": [
+            {"label": "Repository", "href": "https://github.com/shimo4228/harness-scope"},
+            {"label": "Write-up on Dev.to", "href": "https://dev.to/shimo4228/turning-claude-code-into-a-writing-harness-with-claude-mods-and-an-output-style-1a73"}
+          ]
+        },
+        {
+          "id": "jev-skill-router",
+          "name": "jev-skill-router",
+          "line": "A Claude Code hook that asks Jev which installed skill fits the prompt.",
+          "links": [
+            {"label": "Repository", "href": "https://github.com/shimo4228/jev-skill-router"},
+            {"label": "Write-up on Dev.to", "href": "https://dev.to/shimo4228/i-added-jevs-skill-router-to-claude-code-and-turned-back-just-before-rewriting-the-skill-listing-34in"}
+          ]
+        },
+        {
+          "id": "aap",
+          "name": "Agent Attribution Practice",
+          "question": "judgment",
+          "questionText": "Who answers when an agent fails?",
+          "questionLines": ["Who answers when", "an agent fails?"],
+          "line": "Harness-neutral design records: what to prohibit, where controls live, who answers when an agent fails.",
+          "links": [
+            {"label": "Repository", "href": "https://github.com/shimo4228/agent-attribution-practice"},
+            {"label": "Zenodo (DOI)", "href": "https://doi.org/10.5281/zenodo.19652013"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mind",
+      "title": "Watching the mind through meditation",
+      "works": [
+        {
+          "id": "attention-not-self",
+          "name": "Attention, Not Self",
+          "question": "human attention",
+          "questionText": "What is attending, if not a self?",
+          "questionLines": ["What is attending,", "if not a self?"],
+          "line": "Essays and a knowledge graph from meditation, in the Abhidharma map of the mind beside computational phenomenology.",
+          "links": [
+            {"label": "Repository", "href": "https://github.com/shimo4228/attention-not-self"},
+            {"label": "Zenodo (DOI)", "href": "https://doi.org/10.5281/zenodo.20262112"}
+          ]
+        },
+        {
+          "id": "floating",
+          "name": "Why Does AI Writing Feel Like It’s Floating?",
+          "line": "Every sentence reads fine, yet the whole thing hangs in midair.",
+          "lineSource": "Substack subtitle of the essay, verbatim",
+          "links": [
+            {"label": "Essay on Substack", "href": "https://shimo4228.substack.com/p/why-does-ai-writing-feel-like-its"}
+          ]
+        }
+      ]
+    }
+  ],
+  "meeting": {
+    "id": "meet",
+    "title": "Where the two meet",
+    "draft": true,
+    "intro": "Contemplative Agent comes from my own meditation practice. Authorship Strategy covers how everything here keeps its source as it spreads.",
+    "introSource": "first sentence adapted from the hub README Through-line; second sentence written by Claude (draft)",
+    "works": [
+      {
+        "id": "contemplative-agent",
+        "name": "Contemplative Agent",
+        "line": "A local agent whose value layer is an explicit Constitution, amended from experience under human review.",
+        "links": [
+          {"label": "Repository", "href": "https://github.com/shimo4228/contemplative-agent"},
+          {"label": "Zenodo (DOI)", "href": "https://doi.org/10.5281/zenodo.19212118"},
+          {"label": "Write-up on Dev.to", "href": "https://dev.to/shimo4228/not-reasoning-not-tools-what-if-the-essence-of-ai-agents-is-memory-4k4n"}
+        ]
+      },
+      {
+        "id": "authorship-strategy",
+        "name": "Authorship Strategy",
+        "question": "authorship",
+        "questionText": "Does the origin travel with the idea?",
+        "questionLines": ["Does the origin", "travel with the idea?"],
+        "line": "How an author stays findable when readers meet ideas through LLMs: open the work so the spread carries the origin.",
+        "links": [
+          {"label": "Repository", "href": "https://github.com/shimo4228/authorship-strategy"},
+          {"label": "Zenodo (DOI)", "href": "https://doi.org/10.5281/zenodo.20263316"}
+        ]
+      }
+    ]
+  },
+  "footer": [
+    {"label": "About", "href": "/about/"},
+    {"label": "Machine-readable profile", "href": "https://shimo4228.github.io/shimo4228/"},
+    {"label": "Source of this site", "href": "https://github.com/shimo4228/shimo4228.github.io"}
+  ],
+  "nav": {"about": "About", "lang": "日本語", "langHref": "/ja/"}
+}

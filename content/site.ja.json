@@ -1,0 +1,380 @@
+{
+  "_sources": {
+    "sentence": "下書き（Claude）。英語の bio を正本とし、日本語の文は著者の確定待ち。facts.md の one-liner「AI エージェントを作り、瞑想で心を見る人。」に語をそろえた",
+    "work.line": "hub README.ja.md の文をそのまま。違うものは lineSource に書く",
+    "draft": "\"draft\": true のブロックは Claude の下書きで、著者の通読待ち"
+  },
+  "lang": "ja",
+  "name": "Tatsuya Shimomoto",
+  "handle": "shimo4228",
+  "bioDraft": true,
+  "sentence": [
+    {
+      "link": "#tools",
+      "text": "AI エージェントを作る"
+    },
+    {
+      "text": "。"
+    },
+    {
+      "link": "#mind",
+      "text": "瞑想で心を見る"
+    },
+    {
+      "text": "。AI の時代の"
+    },
+    {
+      "link": "#akc",
+      "text": "判断"
+    },
+    {
+      "text": "、"
+    },
+    {
+      "link": "#aap",
+      "text": "責任"
+    },
+    {
+      "text": "、"
+    },
+    {
+      "link": "#authorship-strategy",
+      "text": "著者性"
+    },
+    {
+      "text": "、"
+    },
+    {
+      "link": "#attention-not-self",
+      "text": "人の注意"
+    },
+    {
+      "text": "を探る。"
+    }
+  ],
+  "entrances": {
+    "draft": true,
+    "label": "読む・たどる",
+    "groups": [
+      {
+        "label": "日本語で",
+        "items": [
+          {
+            "name": "Zenn",
+            "what": "技術記事",
+            "href": "https://zenn.dev/shimo4228"
+          },
+          {
+            "name": "note",
+            "what": "エッセイ",
+            "href": "https://note.com/shimo4228"
+          },
+          {
+            "name": "note",
+            "what": "Sakamaki 名義のエッセイ",
+            "href": "https://note.com/sakamaki4228"
+          }
+        ]
+      },
+      {
+        "label": "英語で",
+        "items": [
+          {
+            "name": "Dev.to",
+            "what": "技術記事",
+            "href": "https://dev.to/shimo4228",
+            "hreflang": "en"
+          },
+          {
+            "name": "Substack",
+            "what": "エッセイ",
+            "href": "https://shimo4228.substack.com",
+            "hreflang": "en"
+          }
+        ]
+      },
+      {
+        "label": "コードと記録",
+        "items": [
+          {
+            "name": "GitHub",
+            "what": "すべてのリポジトリ",
+            "href": "https://github.com/shimo4228"
+          },
+          {
+            "name": "ORCID",
+            "what": "論文",
+            "href": "https://orcid.org/0009-0002-6168-4162"
+          },
+          {
+            "name": "Hugging Face",
+            "what": "データセット",
+            "href": "https://huggingface.co/Shimo4228"
+          }
+        ]
+      },
+      {
+        "label": "その時々のメモ",
+        "items": [
+          {
+            "name": "X",
+            "what": "",
+            "href": "https://x.com/shimo4228"
+          },
+          {
+            "name": "X",
+            "what": "Sakamaki 名義",
+            "href": "https://x.com/sakamakiuzutaro"
+          }
+        ]
+      }
+    ],
+    "index": {
+      "name": "記事とエッセイの一覧",
+      "href": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+    }
+  },
+  "sections": [
+    {
+      "id": "tools",
+      "quote": "AI エージェントを作る",
+      "intro": "自作のエージェントと、エージェントたちが働くハーネスから切り出した Claude Code 向けの道具です。",
+      "introDraft": true,
+      "works": [
+        {
+          "id": "contemplative-agent",
+          "name": "Contemplative Agent",
+          "line": "価値観の層を Constitution（憲法）という明示的なファイルとして持ち、経験からの改訂を人間のレビューで通すローカルエージェント。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/contemplative-agent"
+            },
+            {
+              "label": "Zenodo（DOI）",
+              "href": "https://doi.org/10.5281/zenodo.19212118"
+            },
+            {
+              "label": "Zenn の記事",
+              "href": "https://zenn.dev/shimo4228/articles/agent-essence-is-memory"
+            }
+          ]
+        },
+        {
+          "id": "claude-harness",
+          "name": "claude-harness",
+          "line": "私のエージェントたちが日々その中で働いているハーネスの公開版です。",
+          "lineSource": "hub README.ja.md Through-line の一節",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/claude-harness"
+            }
+          ]
+        },
+        {
+          "id": "harness-scope",
+          "name": "harness-scope",
+          "line": "グローバルなハーネスは 1 つのまま、リポジトリごとに Claude に見せるものを選びます。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/harness-scope"
+            },
+            {
+              "label": "Zenn の記事",
+              "href": "https://zenn.dev/shimo4228/articles/harness-scope-writing-harness"
+            }
+          ]
+        },
+        {
+          "id": "akc-cycle",
+          "name": "akc-cycle",
+          "line": "Agent Knowledge Cycle を 1 つのルールファイルと plugin にしたものです。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/akc-cycle"
+            }
+          ]
+        },
+        {
+          "id": "jev-skill-router",
+          "name": "jev-skill-router",
+          "line": "プロンプトごとに Jev へ「どの skill が合うか」を聞く Claude Code の hook です。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/jev-skill-router"
+            },
+            {
+              "label": "Zenn の記事",
+              "href": "https://zenn.dev/shimo4228/articles/jev-retrofit-limits"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mind",
+      "quote": [
+        "瞑想で心を見る",
+        "人の注意"
+      ],
+      "works": [
+        {
+          "id": "attention-not-self",
+          "name": "Attention, Not Self",
+          "line": "瞑想で気づいたことを、古典仏教の心の地図（アビダルマ）で言い表し、計算論的現象学と並べたエッセイ集と知識グラフ。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/attention-not-self"
+            },
+            {
+              "label": "Zenodo（DOI）",
+              "href": "https://doi.org/10.5281/zenodo.20262112"
+            }
+          ]
+        },
+        {
+          "id": "floating",
+          "name": "AI の文章は、なぜ宙に浮いて感じるのか",
+          "line": "一文ずつは正しくて読みやすいのに、全体が空疎で、宙に浮いている。",
+          "lineSource": "エッセイ冒頭段落の一文をそのまま",
+          "links": [
+            {
+              "label": "note のエッセイ",
+              "href": "https://note.com/shimo4228/n/n97d77b49b1c8"
+            }
+          ]
+        },
+        {
+          "id": "desire",
+          "name": "AI に頼みたいことが尽きたあと、ひとつだけ残った欲望",
+          "line": "朝、作業リストを開くたびに、AI に頼むことが減っています。",
+          "lineSource": "エッセイ冒頭の一文をそのまま",
+          "links": [
+            {
+              "label": "note のエッセイ",
+              "href": "https://note.com/sakamaki4228/n/n2375bfc4d521"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lines",
+      "quote": "判断、責任、著者性",
+      "intro": "最初の 2 本は 1 つの主張を共有しています。ハーネスにはコーディング規約と同じ場所に価値の規範も書き込め、それも同じ人間レビューで改訂され続ける、という主張です。",
+      "introSource": "hub README.ja.md Through-line を主語だけ変えて",
+      "introDraft": true,
+      "works": [
+        {
+          "id": "akc",
+          "name": "Agent Knowledge Cycle (AKC)",
+          "line": "エージェントと操作者の両方が変わり続ける中で、意図のずれを直し続ける 6 フェーズのループ。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/agent-knowledge-cycle"
+            },
+            {
+              "label": "Zenodo（DOI）",
+              "href": "https://doi.org/10.5281/zenodo.19200726"
+            }
+          ]
+        },
+        {
+          "id": "aap",
+          "name": "Agent Attribution Practice (AAP)",
+          "line": "何を禁止するか、制御をどこに置くか、壊れたとき誰が責任を持つかを、特定ツールに依存しない形で記録した設計判断集。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/agent-attribution-practice"
+            },
+            {
+              "label": "Zenodo（DOI）",
+              "href": "https://doi.org/10.5281/zenodo.19652013"
+            }
+          ]
+        },
+        {
+          "id": "authorship-strategy",
+          "name": "Authorship Strategy",
+          "line": "読者が LLM 越しに考えに出会う時代に著者が見つかり続ける方法。囲い込むのではなく開くことで、広まること自体に出どころを運ばせる。",
+          "links": [
+            {
+              "label": "リポジトリ",
+              "href": "https://github.com/shimo4228/authorship-strategy"
+            },
+            {
+              "label": "Zenodo（DOI）",
+              "href": "https://doi.org/10.5281/zenodo.20263316"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "about": {
+    "title": "この人について",
+    "titleDraft": true,
+    "paragraphs": [
+      "こんにちは、Tatsuya Shimomoto（shimo4228）です。ラボにも組織にも属さず、AI エージェントを一人で作っています。そのひとつは M1 Mac 上のローカル LLM で動きます。",
+      "エージェントのハーネス（エージェントに渡す規則とツール一式）を作っている人、自律エージェントの説明責任を考えている人、AI 時代の著者性に関心がある人に向けています。"
+    ],
+    "paragraphsSource": "hub README.ja.md の導入をそのまま。5 本の線に触れる節だけ削った",
+    "facts": [
+      {
+        "label": "所属",
+        "value": "Unaffiliated by design",
+        "lang": "en"
+      },
+      {
+        "label": "ORCID",
+        "value": "0009-0002-6168-4162",
+        "href": "https://orcid.org/0009-0002-6168-4162"
+      },
+      {
+        "label": "引用",
+        "before": "各プロジェクトには concept DOI があり、",
+        "linkText": "研究の hub",
+        "after": " に一覧があります。",
+        "href": "https://shimo4228.github.io/shimo4228/",
+        "draft": true
+      },
+      {
+        "label": "機械向け",
+        "before": "graph.jsonld と llms.txt は ",
+        "linkText": "研究の hub",
+        "after": " にあります。",
+        "href": "https://shimo4228.github.io/shimo4228/",
+        "draft": true
+      }
+    ],
+    "next": {
+      "text": "プロジェクトと、書いている場所",
+      "href": "/ja/",
+      "draft": true
+    }
+  },
+  "nav": {
+    "about": "この人について",
+    "lang": "English",
+    "langLabel": "英語"
+  },
+  "footer": {
+    "source": "このサイトのソース",
+    "sourceHref": "https://github.com/shimo4228/shimo4228.github.io/tree/source",
+    "hub": "研究の hub",
+    "hubHref": "https://shimo4228.github.io/shimo4228/"
+  },
+  "notFound": {
+    "title": "ページがありません",
+    "body": "このページは存在しません。ホームにすべて載っています。",
+    "home": "ホームへ"
+  },
+  "skip": "本文へ移動"
+}

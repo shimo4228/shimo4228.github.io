@@ -1,0 +1,210 @@
+/* Direction B: two paths. Each practice is a coloured line, keyed by its clause in the bio.
+   On wide screens the right line turns, runs left and turns down again beside the left line;
+   from there the two run together through the place where they meet.
+   On phones both lines run as parallel rails, each at full strength in its own section.
+   Colour lives only in the lines and the bio's key. */
+
+.dir-b {
+  --display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --center-max: 64rem;
+  --gutter: var(--space-m);
+  --paths-gap: var(--space-2xl);
+  --turn: var(--space-l);
+  --rail-inset: calc(var(--space-m) + var(--line-path) * 2);
+  --rail-agents: linear-gradient(var(--color-agents-line), var(--color-agents-line)) 0 0 / var(--line-path) 100% no-repeat;
+  --rail-mind: linear-gradient(var(--color-mind-line), var(--color-mind-line)) var(--line-path) 0 / var(--line-path) 100% no-repeat;
+  --rail-agents-faint: linear-gradient(var(--color-line), var(--color-line)) 0 0 / var(--line-path) 100% no-repeat;
+  --rail-mind-faint: linear-gradient(var(--color-line), var(--color-line)) var(--line-path) 0 / var(--line-path) 100% no-repeat;
+}
+
+.site-head { display: flex; justify-content: flex-end; padding-block: var(--space-m); }
+
+.site-nav a,
+.site-foot a {
+  display: inline-block;
+  padding-block: var(--space-2xs);
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: var(--step-n1);
+}
+
+.site-nav a:hover,
+.site-foot a:hover { color: var(--color-text); }
+
+.page { padding-block: var(--space-l) var(--space-3xl); }
+
+.intro { display: flex; flex-direction: column; padding-block-end: var(--space-2xl); }
+
+.name {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: var(--step-4);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.bio {
+  margin-block: var(--space-s) var(--space-xl);
+  font-size: var(--step-1);
+  line-height: 1.45;
+  max-inline-size: 33em;
+}
+
+/* The key: each practice clause is underlined in its line's colour. */
+.key {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--line-path);
+  text-underline-offset: 0.28em;
+  text-decoration-skip-ink: none;
+}
+
+.key--agents { text-decoration-color: var(--color-agents-line); }
+.key--mind { text-decoration-color: var(--color-mind-line); }
+
+@media (min-width: 52rem) {
+  .entrance-groups { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* The two paths. Phone: both rails on every section, faint outside their own. */
+.paths { display: grid; }
+
+.practice,
+.meeting {
+  padding-inline-start: var(--rail-inset);
+  scroll-margin-block-start: var(--space-l);
+}
+
+.practice { padding-block: var(--space-2xs) var(--space-2xl); }
+.practice--agents { background: var(--rail-agents), var(--rail-mind-faint); }
+.practice--mind { background: var(--rail-agents-faint), var(--rail-mind); }
+
+@media (min-width: 52rem) {
+  /* Wide: two columns. Titles share a subgrid row and sit on its bottom, so first works start level. */
+  .paths {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    column-gap: var(--paths-gap);
+  }
+
+  .practice {
+    display: grid;
+    grid-row: 1 / span 2;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    padding-block-end: var(--space-m);
+  }
+
+  .practice .section-title { align-self: end; }
+  .practice--agents { background: var(--rail-agents); }
+  .practice--mind { background: linear-gradient(var(--color-mind-line), var(--color-mind-line)) 0 0 / var(--line-path) 100% no-repeat; }
+}
+
+.section-title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: var(--step-2);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-block-end: var(--space-m);
+}
+
+.works { --stack-space: var(--space-m); }
+
+.work {
+  --stack-space: var(--space-3xs);
+  scroll-margin-block-start: var(--space-l);
+}
+
+.work-name { font-weight: 600; font-size: var(--step-0); line-height: 1.3; }
+
+.work-line { max-inline-size: var(--measure); }
+
+.work-links { --cluster-space: 0 var(--space-s); font-size: var(--step-n1); }
+
+.work-links a {
+  display: inline-block;
+  min-inline-size: var(--space-l);
+  padding-block: var(--space-3xs);
+  color: var(--color-muted);
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--line-thin);
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--color-line-strong);
+}
+
+.work-links a:hover { color: var(--color-text); text-decoration-color: currentColor; }
+
+/* The join (wide only). The left line runs on. The right line turns left at the bottom of its column,
+   runs across, and turns down again into the second lane beside the left line. */
+.merge { display: none; }
+
+@media (min-width: 52rem) {
+  .merge {
+    display: block;
+    grid-row: 3;
+    grid-column: 1 / -1;
+    position: relative;
+    block-size: calc(var(--space-xl) + var(--turn));
+  }
+
+  .merge-left {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-inline-start: var(--line-path) solid var(--color-agents-line);
+  }
+
+  .merge-right {
+    position: absolute;
+    inset-block: 0 var(--turn);
+    inset-inline-start: calc(var(--line-path) + var(--turn));
+    inset-inline-end: calc(50% - var(--paths-gap) / 2 - var(--line-path));
+    border-inline-end: var(--line-path) solid var(--color-mind-line);
+    border-block-end: var(--line-path) solid var(--color-mind-line);
+    border-end-end-radius: var(--turn);
+  }
+
+  .merge-join {
+    position: absolute;
+    inset-block: calc(100% - var(--turn) - var(--line-path)) 0;
+    inset-inline-start: var(--line-path);
+    inline-size: calc(var(--turn) + var(--line-path));
+    border-inline-start: var(--line-path) solid var(--color-mind-line);
+    border-block-start: var(--line-path) solid var(--color-mind-line);
+    border-start-start-radius: var(--turn);
+  }
+}
+
+/* Where they meet: both lines at full strength, side by side. */
+.meeting {
+  padding-block: var(--space-m);
+  background: var(--rail-agents), var(--rail-mind);
+}
+
+@media (min-width: 52rem) {
+  .meeting .works {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Keeps the second column on the right path's text edge. */
+    column-gap: calc(var(--paths-gap) + var(--rail-inset));
+  }
+}
+
+.meeting-intro { max-inline-size: var(--measure); color: var(--color-muted); margin-block-end: var(--space-m); }
+
+.site-foot { padding-block: var(--space-l) var(--space-xl); }
+.site-foot ul { --cluster-space: var(--space-3xs) var(--space-m); }
+
+/* High Contrast drops backgrounds: draw the lines as borders instead. */
+@media (forced-colors: active) {
+  .practice,
+  .meeting {
+    background: none;
+    border-inline-start: var(--line-path) solid CanvasText;
+    padding-inline-start: calc(var(--rail-inset) - var(--line-path));
+  }
+
+  .meeting { border-inline-start-style: double; border-inline-start-width: calc(var(--line-path) * 2); padding-inline-start: calc(var(--rail-inset) - var(--line-path) * 2); }
+  .merge span { border-color: CanvasText; }
+}
