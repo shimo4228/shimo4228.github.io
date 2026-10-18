@@ -24,6 +24,11 @@ const content = {
   en: JSON.parse(readFileSync(join(root, 'content/site.en.json'), 'utf8')),
   ja: JSON.parse(readFileSync(join(root, 'content/site.ja.json'), 'utf8')),
 };
+// Articles and essays, from zenn-content's docs/publications.json (copied in by `npm run sync`).
+// Scheduled items (published_at in the future, JST) stay hidden until their time.
+const publications = JSON.parse(readFileSync(join(root, 'content/publications.json'), 'utf8'));
+const NOW_JST = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 16).replace('T', ' ');
+const published = publications.items.filter((i) => i.published_at <= NOW_JST);
 const budoux = loadDefaultJapaneseParser();
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -68,8 +73,8 @@ function prose(s, lang) {
 }
 
 const paths = {
-  en: { home: '/', about: '/about/' },
-  ja: { home: '/ja/', about: '/ja/about/' },
+  en: { home: '/', about: '/about/', writing: '/writing/' },
+  ja: { home: '/ja/', about: '/ja/about/', writing: '/ja/writing/' },
 };
 const other = (lang) => (lang === 'en' ? 'ja' : 'en');
 const ogLocale = { en: 'en_US', ja: 'ja_JP' };
@@ -327,6 +332,51 @@ function about(c) {
 ${footer(c)}`;
 }
 
+// The writing list: one year per row of the rail, each piece a link that leaves (date, title, platform).
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const shortDate = (d, lang) => (lang === 'ja' ? `${+d.slice(5, 7)}月${+d.slice(8, 10)}日` : `${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}`);
+const where = (e, lang) => (e.platform === 'note' && e.url.includes('/sakamaki4228/') ? (lang === 'ja' ? 'note（Sakamaki 名義）' : 'note (as Sakamaki)') : e.platform);
+
+function writing(c) {
+  const w = c.writing;
+  const lang = c.lang;
+  const items = published.filter((i) => i[lang]);
+  const years = [...new Set(items.map((i) => i.date.slice(0, 4)))];
+  const row = (i) => {
+    const e = i[lang];
+    return `<li class="piece"><a class="piece-title" href="${esc(e.url)}">${lang === 'ja' ? clauses(txt(e.title, lang), lang) : esc(e.title)}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
+  };
+  const groups = years
+    .map(
+      (y) => `<section class="year" aria-labelledby="y${y}">
+    <h2 id="y${y}" class="year-label">${y}</h2>
+    <ul role="list" class="pieces">
+      ${items.filter((i) => i.date.startsWith(y)).map(row).join('\n      ')}
+    </ul>
+  </section>`,
+    )
+    .join('\n  ');
+  const o = other(lang);
+  return `${head(c, 'writing', { title: `${w.title} · ${c.name}`, description: w.intro, path: paths[lang].writing })}${nav(c, 'writing')}
+<main id="main" class="center page">
+  <section class="gloss about writing-head" aria-labelledby="writing-h">
+    <p class="section-title"><a href="${paths[lang].home}">${esc(c.name)}</a></p>
+    <div class="about-body">
+      <h1 id="writing-h" class="writing-title">${txt(w.title, lang)}</h1>
+      <p class="section-intro">${prose(w.intro, lang)}</p>
+    </div>
+  </section>
+  <div class="years">
+  ${groups}
+  </div>
+  <ul role="list" class="writing-more cluster">
+    <li><a href="${paths[o].writing}" hreflang="${o}">${txt(w.other, lang)}</a></li>
+    <li><a href="${esc(w.fullHref)}">${txt(w.full, lang)}</a></li>
+  </ul>
+</main>
+${footer(c)}`;
+}
+
 function notFound() {
   const en = content.en;
   const ja = content.ja;
@@ -371,6 +421,7 @@ const pages = new Map();
 for (const lang of ['en', 'ja']) {
   pages.set(`${paths[lang].home.slice(1)}index.html`, home(content[lang]));
   pages.set(`${paths[lang].about.slice(1)}index.html`, about(content[lang]));
+  pages.set(`${paths[lang].writing.slice(1)}index.html`, writing(content[lang]));
 }
 pages.set('404.html', notFound());
 
@@ -441,6 +492,7 @@ out(
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urlEntry('home')}
 ${urlEntry('about')}
+${urlEntry('writing')}
 </urlset>
 `,
 );

@@ -135,7 +135,7 @@
     ],
     "index": {
       "name": "記事とエッセイの一覧",
-      "href": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+      "href": "/ja/writing/"
     }
   },
   "sections": [
@@ -380,5 +380,13 @@
     "body": "このページは存在しません。ホームにすべて載っています。",
     "home": "ホームへ"
   },
-  "skip": "本文へ移動"
+  "skip": "本文へ移動",
+  "writing": {
+    "draft": true,
+    "title": "書いたもの",
+    "intro": "Zenn の技術記事と note のエッセイを、新しい順に並べています。",
+    "other": "英語版の一覧",
+    "full": "論文も含めた一覧（GitHub）",
+    "fullHref": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+  }
 }

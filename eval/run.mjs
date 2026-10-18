@@ -209,7 +209,10 @@ close();
 
 // Volatile content: numbers in visible text (counts, versions, dates) are not allowed on the page.
 for (const p of paths) {
-  const html = readFileSync(fileOf(p), 'utf8');
+  // The writing list is a record (publication dates, titles as written), not state: it is left out.
+  const html = readFileSync(fileOf(p), 'utf8')
+    .replace(/<ul role="list" class="pieces">[\s\S]*?<\/ul>/g, '')
+    .replace(/<h2 [^>]*class="year-label">\d{4}<\/h2>/g, '');
   // ORCID iDs are identifiers, not counts.
   const text = html.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<svg[\s\S]*?<\/svg>/g, '').replace(/<[^>]+>/g, ' ').replace(/\b\d{4}-\d{4}-\d{4}-\d{3}[\dX]\b/g, '');
   for (const m of text.matchAll(/\b(v?\d+(\.\d+)+|\d{2,})\b/g)) add(1, 'volatile-number', p, `"${m[0]}" in visible text`, 'warn');

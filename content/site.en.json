@@ -134,7 +134,7 @@
     ],
     "index": {
       "name": "Every article and essay, in one list",
-      "href": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+      "href": "/writing/"
     }
   },
   "sections": [
@@ -378,5 +378,13 @@
     "home": "Go to the home page"
   },
   "skip": "Skip to content",
-  "phrasing": "Building AI agents,|and watching the mind|through meditation.|Exploring judgment,|[accountability,|authorship,]|and human attention|in the age of AI."
+  "phrasing": "Building AI agents,|and watching the mind|through meditation.|Exploring judgment,|[accountability,|authorship,]|and human attention|in the age of AI.",
+  "writing": {
+    "draft": true,
+    "title": "Writing",
+    "intro": "Articles on Dev.to and essays on Substack, newest first. The Japanese originals, on Zenn and note, are on the Japanese page.",
+    "other": "The Japanese originals",
+    "full": "The full index, with papers, on GitHub",
+    "fullHref": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+  }
 }

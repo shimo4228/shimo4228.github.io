@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "node site/build.mjs && node site/images.mjs",
-    "eval": "EVAL_CSS=site/site.css node eval/run.mjs dist ./,about/,ja/,ja/about/,404.html eval/report-site",
+    "eval": "EVAL_CSS=site/site.css node eval/run.mjs dist ./,about/,ja/,ja/about/,writing/,ja/writing/,404.html eval/report-site",
     "shots": "node eval/shoot.mjs dist 375,1280 light,dark ,about,ja,ja/about eval/shots/site",
     "proto": "node proto/build.mjs",
     "preview": "node eval/mac-preview.mjs"
