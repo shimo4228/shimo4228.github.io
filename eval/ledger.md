@@ -210,3 +210,5 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Between pages (竜也: 「全部入れて」): cross-document view transition with header and footer held in place;
   0.2s colour / underline transition on links. Smooth in-page scrolling and the moss selection colour were already there.
   Checked in Chromium that the transition fires on navigation (`pagereveal` has a viewTransition).
+- 2026-10-18 Scroll-in made visible (竜也, after hiraoku.dev): rise 0.6rem → 1.5rem over the whole entry instead of its
+  first 60%, eased; quoted titles (via the section's named view timeline), year labels and About links join.
