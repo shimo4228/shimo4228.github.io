@@ -96,6 +96,32 @@ html {
   html {
     scroll-behavior: smooth;
   }
+
+  /* Moving between pages of the site, the header and footer stay where they are and only the page between them
+     cross-fades (竜也, 2026-10-18). Browsers without cross-document view transitions simply load the page. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  .site-head {
+    view-transition-name: site-head;
+  }
+
+  .site-foot {
+    view-transition-name: site-foot;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.32s;
+    animation-timing-function: cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  /* Links settle into their hover colour and underline instead of switching at once. */
+  a,
+  a .u {
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
 }
 
 body {
