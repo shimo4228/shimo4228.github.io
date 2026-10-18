@@ -104,6 +104,8 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 - `opening`: the name and then each line of the sentence rise 0.5em into place once on load, 0.12s apart, under a second
   in all. Scrolling past, the opening drifts down 14vh and dims to 0.2 over the first 85vh, so the sections slide over
   it (scroll timeline; 竜也, 2026-10-18: 「クオリティ感を少しだけ」). Both off with reduced motion.
+- `underline`: on hover a link's line draws in from the left over its resting hairline (0.45s); article titles also
+  turn moss (竜也, 2026-10-18, after hiraoku.dev/blog).
 - `between pages`: a cross-document view transition; header and footer stay, the page between them cross-fades
   (0.32s). Links ease into their hover colour and underline (0.2s). The sentence's in-page links scroll smoothly, and
   selected text takes the moss wash. All motion is off with reduced motion (竜也, 2026-10-18: 「全部入れて」).

@@ -228,3 +228,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Latin names stay whole in Japanese running text (竜也: 名前が途中で改行されている): prose() ties spaces inside
   Latin runs ("Tatsuya Shimomoto", "M1 Mac"); a bracket after a Latin run may start the next line, so the lead fits
   320px. Titles and work names are left to clauses() (tying "(AAP)" there made a widow).
+- 2026-10-18 Underlines draw in (竜也, after hiraoku.dev/blog): link lines are backgrounds that grow from the left on hover
+  (0.45s) over the resting hairline; wrapping names and titles carry them on inline `.u` spans (EN now too). Forced
+  colours and print fall back to text-decoration. Article titles turn moss on hover.

@@ -55,6 +55,10 @@ function txt(s, lang) {
 // (「…尽きたあと、／ひとつだけ…」, not 「…尽きた／あと、…」): after 、 and 。, and before a dash, which starts the
 // next clause. Each clause is an inline-block; one longer than the line still breaks inside at its BudouX phrases.
 // Latin words in a title stay together ("LLM judge", "memory RAG").
+// A name or title that may wrap carries its underline on inline spans (.u), so the line drawn in on hover follows
+// every line of it.
+const underlined = (h) => (h.includes('class="u"') ? h : `<span class="u">${h}</span>`);
+
 function clauses(h, lang) {
   if (lang !== 'ja') return h;
   const tied = h
@@ -273,7 +277,7 @@ function work(w, c) {
     .map((l) => `<li><a href="${esc(l.href)}">${txt(l.label, c.lang)}<span class="visually-hidden">${forName(w.name)}</span></a></li>`)
     .join('');
   return `<li class="work stack" id="${w.id}">
-  <h3 class="work-name"><a href="${esc(w.links[0].href)}">${clauses(txt(w.name, c.lang), c.lang)}</a></h3>
+  <h3 class="work-name"><a href="${esc(w.links[0].href)}">${underlined(clauses(txt(w.name, c.lang), c.lang))}</a></h3>
   <p class="work-line">${prose(w.line, c.lang)}</p>
   <ul role="list" class="work-links cluster">${links}</ul>
 </li>`;
@@ -379,7 +383,7 @@ function writing(c) {
   const years = [...new Set(items.map((i) => i.date.slice(0, 4)))];
   const row = (i) => {
     const e = i[lang];
-    return `<li class="piece"><a class="piece-title" href="${esc(e.url)}">${lang === 'ja' ? clauses(txt(e.title, lang), lang) : esc(e.title)}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
+    return `<li class="piece"><a class="piece-title" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(e.title, lang), lang) : esc(e.title))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
   };
   const groups = years
     .map(
