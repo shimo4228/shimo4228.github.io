@@ -46,6 +46,17 @@ function txt(s, lang) {
   return esc(s);
 }
 
+// A Japanese title turns over after its 、 when it does not fit, not at the last phrase that fits
+// (「…尽きたあと、／ひとつだけ…」, not 「…尽きた／あと、…」). Each clause is an inline-block; one longer than
+// the line still breaks inside at its BudouX phrases.
+function clauses(h, lang) {
+  if (lang !== 'ja') return h;
+  const parts = h.split(/(?<=、)<wbr>/);
+  if (parts.length < 2) return h;
+  // The 、 stays outside the underline, as in the root sentence, so a line ending on it has no underlined blank half.
+  return parts.map((x) => (x.endsWith('、') ? `<span class="clause"><span class="u">${x.slice(0, -1)}</span>、</span>` : `<span class="clause"><span class="u">${x}</span></span>`)).join('<wbr>');
+}
+
 // Running text in English: no paragraph ends on a short last line.
 function prose(s, lang) {
   if (lang === 'ja') return txt(s, lang);
@@ -221,7 +232,7 @@ function work(w, c) {
     .map((l) => `<li><a href="${esc(l.href)}">${txt(l.label, c.lang)}<span class="visually-hidden">${forName(w.name)}</span></a></li>`)
     .join('');
   return `<li class="work stack" id="${w.id}">
-  <h3 class="work-name"><a href="${esc(w.links[0].href)}">${txt(w.name, c.lang)}</a></h3>
+  <h3 class="work-name"><a href="${esc(w.links[0].href)}">${clauses(txt(w.name, c.lang), c.lang)}</a></h3>
   <p class="work-line">${prose(w.line, c.lang)}</p>
   <ul role="list" class="work-links cluster">${links}</ul>
 </li>`;

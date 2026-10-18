@@ -129,3 +129,19 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
     system Mincho and the sentence fell back to a Gothic face; Apple devices keep Hiragino and download nothing.
   - eval 0 failing / 7 raw-px warnings; no overflow at 320–1280.
   - Share images now render the sentence from the built page markup (same lines and groups). JA OG no longer leaves 「探る。」 alone on the last line; EN OG 60→50px, 6 lines by phrase.
+
+- 2026-10-18 Hiragino check from Claude's side (竜也: スクリーンショットは Claude で確認できるように).
+  `npm run preview -- <dir>` writes a file:// copy of dist/ (light/, dark/ with the dark scheme forced) and
+  `view.html?p=ja/&t=light&w=375,1000&y=0&h=720&z=1`, which lays the widths side by side in one window. The copy goes
+  to the author's Mac (`MyAI_Lab/personal-site-preview/`), Chrome opens it, and Claude reads a screenshot of the window
+  (read-only access, no clicks). Japanese is then judged in Hiragino, as the author sees it.
+- 2026-10-18 detail pass in Hiragino (Chrome, macOS), 320/375/1000, light and dark, all pages.
+  - JA titles with a 、 turned over at the last phrase that fit: 「AI に頼みたいことが尽きた／あと、ひとつだけ残った欲望」
+    at 375 and 1000. Each 、 clause is now an inline-block, so the line turns after 、: 「…尽きたあと、／ひとつだけ残った欲望」;
+    at 320 「AI の文章は、／なぜ宙に浮いて感じるのか」. The 、 sits outside the underline, as in the root sentence, so a
+    line ending on it shows no underlined blank half.
+  - 「Zenodo（DOI）」 link labels: the underline ran on under the closing bracket's empty half. `halt` on JA work links
+    sets the brackets half-width; the underline now ends at the bracket.
+  - Seen and left as decided: JA running paragraphs break inside words (live check 2); "Tatsuya Shimomoto" may split
+    in JA running text (the tie rule ties only Latin–Japanese spaces).
+  - eval 0 failing / 7 raw-px warnings.
