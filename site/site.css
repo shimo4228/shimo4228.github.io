@@ -235,6 +235,16 @@ a {
   display: block;
 }
 
+/* Japanese: a "keep" group moves to the next line whole rather than splitting (phones);
+   a "tail" group always starts its own line, so the break falls where the sections divide. */
+.sentence .keep {
+  display: inline-block;
+}
+
+.sentence .tail {
+  display: block;
+}
+
 .sentence--small {
   font-size: var(--step-2);
   max-inline-size: 24em;

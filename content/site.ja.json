@@ -25,7 +25,8 @@
     },
     {
       "link": "#akc",
-      "text": "判断"
+      "text": "判断",
+      "open": "keep"
     },
     {
       "text": "、"
@@ -42,14 +43,17 @@
       "text": "著者性"
     },
     {
-      "text": "、"
+      "text": "、",
+      "close": true
     },
     {
       "link": "#attention-not-self",
-      "text": "人の注意"
+      "text": "人の注意",
+      "open": "tail"
     },
     {
-      "text": "を探る。"
+      "text": "を探る。",
+      "close": true
     }
   ],
   "entrances": {

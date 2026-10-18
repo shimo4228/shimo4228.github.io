@@ -70,7 +70,11 @@ function sentence(c, base = '') {
     if (c.lang === 'en') t = t.replace('the age of AI.', 'the&nbsp;age&nbsp;of&nbsp;AI.');
     // Japanese: a phrase may break after 、 even when the next phrase is a link (BudouX sees each part alone).
     if (c.lang === 'ja' && !p.link) t = t.replace(/、$/, '、<wbr>');
-    return p.link ? `<a href="${base}${p.link}">${t}</a>` : t;
+    t = p.link ? `<a href="${base}${p.link}">${t}</a>` : t;
+    // Optional groups (Japanese): "keep" moves to the next line whole; "tail" always takes its own line.
+    if (p.open) t = `\uE000${p.open}\uE002${t}`;
+    if (p.close) t = t.endsWith('<wbr>') ? `${t.slice(0, -5)}\uE001<wbr>` : `${t}\uE001`;
+    return t;
   });
   // Each sentence starts its own line, in both languages.
   let html = parts.join('');
@@ -78,7 +82,8 @@ function sentence(c, base = '') {
     const ss = html.split(/\. (?=[A-Z])/);
     html = ss.map((x, i) => `<span class="line">${x}${i < ss.length - 1 ? '.' : ''}</span>`).join(' ');
   }
-  if (c.lang === 'ja') html = html.split('。').filter((x) => x.replace(/<wbr>/g, '')).map((x) => `<span class="line">${x.replace(/^<wbr>/, '')}。</span>`).join('');
+  if (c.lang === 'ja') html = html.split(/(?<=。)(?!\uE001)|(?<=。\uE001)/).filter((x) => x.replace(/<wbr>/g, '')).map((x) => `<span class="line">${x.replace(/^<wbr>/, '')}</span>`).join('');
+  html = html.replace(/\uE000(\w+)\uE002/g, '<span class="$1">').replace(/\uE001/g, '</span>');
   const plain = c.sentence.map((p) => p.text).join('');
   if (c.lang === 'en' && plain !== c.bio) throw new Error(`bio drift:\n${plain}\n${c.bio}`);
   return { html, plain };

@@ -112,3 +112,5 @@ Entrances (竜也, 2026-10-18): Sakamaki note and X added (also to sameAs, match
 Analytics (竜也, 2026-10-18): Cloudflare Web Analytics token added as the build default (public value); the preview artifact is built without it.
 Live check (竜也, 2026-10-18): JA brackets no longer break from their word (no line ends on （ or starts with it; a word joiner holds it), and the JA sentence may break after 、 before a linked word, so "AI の" no longer stands alone at ~1000px.
 Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku allows (keep-all only on headings, the sentence, names, labels), and only Latin–Japanese spaces are tied, so About lines fill the measure instead of going ragged.
+
+- 2026-10-18 JA third sentence: break after 「著者性、」 so lines follow the section split (判断・責任・著者性 | 人の注意). Sentence parts take optional `open: keep|tail` / `close` groups: `keep` is inline-block (moves whole to the next line on phones), `tail` is a block. Measured: 320/375 → 「AI の時代の／判断、責任、著者性、／人の注意を探る。」; 768/1000/1280 → 「AI の時代の判断、責任、著者性、／人の注意を探る。」. No overflow; eval 0 failing.
