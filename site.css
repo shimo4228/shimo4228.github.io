@@ -1110,7 +1110,10 @@ a {
   background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--rest, var(--color-line-strong)), var(--rest, var(--color-line-strong)));
   background-repeat: no-repeat;
   background-origin: content-box;
-  background-position: 0 var(--u-y, 100%), 0 var(--u-y, 100%);
+  /* Inline spans hold the line just under their glyph box, inside a little padding (which moves nothing): drawn on
+     the box's very edge, a 1px line fell between device pixels and vanished on some lines. */
+  background-clip: border-box;
+  background-position: 0 var(--u-y, calc(100% + 1px)), 0 var(--u-y, calc(100% + 1px));
   background-size: 0% var(--line-thin), 100% var(--line-thin);
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
@@ -1119,6 +1122,12 @@ a {
 :is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a):is(:hover, :focus-visible),
 :is(.work-name a, .piece-title):is(:hover, :focus-visible) .u {
   background-size: 100% var(--line-thin), 100% var(--line-thin);
+}
+
+.work-name .u,
+.piece-title .u,
+.sentence a {
+  padding-block-end: 0.15em;
 }
 
 @media (prefers-reduced-motion: no-preference) {
