@@ -33,11 +33,8 @@ typography:
     weight: 400
   body:
     stack: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-    # Japanese text reads in Mincho (竜也, 2026-10-18); only project names stay in Gothic (the `ui` stack).
+    # Japanese pages read in Mincho throughout, project names in its bold (竜也, 2026-10-18).
     stackJa: '"Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", "Noto Serif CJK JP", serif'
-  ui:
-    stack: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-    stackJa: 'system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif'
 spacing: { baseMin: 17, baseMax: 19 }
 rounded: { s: 0.25rem }
 layout:

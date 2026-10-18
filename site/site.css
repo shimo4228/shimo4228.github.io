@@ -469,7 +469,6 @@ a {
 }
 
 .work-name {
-  font-family: var(--font-ui);
   font-weight: 600;
   font-size: var(--step-0);
   line-height: 1.3;

@@ -75,7 +75,6 @@ ${decl(typeScale(t.scale, vw))}
 ${decl(spaceScale(d.spacing, vw))}
   --font-display: ${t.display.stack};
   --font-body: ${t.body.stack};
-  --font-ui: ${t.ui.stack};
   --measure: ${d.layout.measure};
   --column: ${d.layout.column};
   --rail: ${d.layout.rail};
@@ -90,7 +89,6 @@ ${color(light)}
 :lang(ja) {
   --font-display: ${t.display.stackJa};
   --font-body: ${t.body.stackJa};
-  --font-ui: ${t.ui.stackJa};
   --leading-body: 1.9;
 }
 /* Screen only: print always uses the light palette. */
