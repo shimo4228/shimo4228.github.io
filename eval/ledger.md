@@ -163,3 +163,4 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   JA leading 1.85 → 1.9. Writing rows above 48rem put the platform under the title so titles get the full width.
   Writing rows above 48rem: the date sits in the rail under the year, the title takes the gloss column (竜也: 「左側妙に空いているのバランス悪くない？」).
   Project names too in Mincho bold (竜也: 「プロジェクト名も明朝の太字にしたら？」); the Gothic ui stack is gone.
+  JA work names one half-step larger (between step-0 and step-1) so they stand out by size in an all-Mincho page (竜也: 「メリハリがないのかな？」).
