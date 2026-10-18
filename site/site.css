@@ -113,6 +113,10 @@ a {
   overflow-wrap: anywhere;
 }
 
+.tie {
+  white-space: nowrap;
+}
+
 /* ---------- Layout ---------- */
 .center {
   box-sizing: content-box;
@@ -397,6 +401,11 @@ a {
   .gloss > .section-title {
     grid-row: 1 / span 2;
   }
+
+  /* A section with no intro has no second row to span. */
+  .gloss:not(:has(> .section-intro)) > .section-title {
+    grid-row: auto;
+  }
 }
 
 .section-title {
@@ -494,7 +503,7 @@ a {
 }
 
 .gloss:target > .section-title:lang(ja)::before {
-  inset-inline-start: calc(var(--space-s) * -1 - 1em);
+  inset-inline-start: calc(var(--space-s) * -1 - 0.5em);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -511,13 +520,16 @@ a {
 }
 
 .work-name {
-  font-weight: 600;
+  /* Charter has a true bold; Hiragino Mincho's heaviest face (W6) answers to 600 too. */
+  font-weight: 700;
   font-size: var(--step-0);
   line-height: 1.3;
 }
 
 /* In an all-Mincho page the name stands out by size, not by a second typeface: a size between body and the quote. */
 .work-name:lang(ja) {
+  /* Android's serif has no bold face; let the browser embolden it there rather than lose the weight. */
+  font-synthesis-weight: auto;
   /* Capped below the quoted phrase (1.3rem) so the gloss never reads louder than what it comments on. */
   font-size: min(calc((var(--step-0) + var(--step-1)) / 2), 1.2rem);
   margin-block-end: 0.2em;
@@ -590,19 +602,28 @@ a {
    its measure and the width beside it carries something. The page shifts left by half the note so the two
    together sit centred. Only space separates the note from the column; no rule, no tint. */
 @media (min-width: 80rem) {
-  .center {
+  body:has(.work-links, .piece-where) .center {
     padding-inline-end: calc(var(--note) + var(--space-xl));
   }
 
+  /* The note is a grid column that runs into the margin, so it takes space and never runs into the next work. */
   .work {
-    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--note);
+    column-gap: var(--space-xl);
+    row-gap: var(--space-3xs);
+    margin-inline-end: calc(-1 * (var(--note) + var(--space-xl)));
+    align-items: baseline;
+  }
+
+  .work > :not(.work-links) {
+    grid-column: 1;
   }
 
   .work-links {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: calc(100% + var(--space-xl));
-    inline-size: var(--note);
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
@@ -883,8 +904,9 @@ a {
 }
 
 @media (forced-colors: active) {
-  .sentence a {
-    text-decoration-color: LinkText;
+  .work:target::before,
+  .gloss:target > .section-title::before {
+    background: Highlight;
   }
 }
 

@@ -32,7 +32,9 @@ typography:
     source: site/fonts/ShipporiMincho-Regular.ttf
     weight: 400
   body:
-    stack: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+    # English body in a system serif, matching the all-Mincho Japanese pages (竜也, 2026-10-18). Charter ships on
+    # Apple devices; Windows falls back to Sitka / Cambria, Android to its serif. Nothing is downloaded.
+    stack: 'Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif'
     # Japanese pages read in Mincho throughout, project names in its bold (竜也, 2026-10-18).
     stackJa: '"Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", "Noto Serif CJK JP", serif'
 spacing: { baseMin: 17, baseMax: 19 }

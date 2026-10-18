@@ -69,7 +69,8 @@ function prose(s, lang) {
   const w = esc(s).split(' ');
   let n = 1;
   while (n < Math.min(4, w.length) && w.slice(-n).join('').length < 8) n++;
-  return n > 1 ? [...w.slice(0, -n), w.slice(-n).join('&nbsp;')].join(' ') : w.join(' ');
+  // A nowrap span, not &nbsp;: Charter has no no-break space glyph, so &nbsp; falls back to a wider one.
+  return n > 1 ? [...w.slice(0, -n), `<span class="tie">${w.slice(-n).join(' ')}</span>`].join(' ') : w.join(' ');
 }
 
 const paths = {
@@ -195,7 +196,7 @@ function nav(c, page) {
 function footer(c) {
   const f = c.footer;
   const scriptTag = BEACON
-    ? `\n<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='${JSON.stringify({ token: BEACON })}'></script>`
+    ? `\n<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='${JSON.stringify({ token: BEACON })}'></script>`
     : '';
   // Code, records and X: the profiles that are the same person, on every page and marked rel="me".
   const me = c.entrances.groups
@@ -457,7 +458,8 @@ function displayText(html) {
   return text;
 }
 const ja = design.typography.displayJa;
-const jaChars = [...new Set([...[...pages.values()].map(displayText).join('')].filter((ch) => ch.codePointAt(0) >= 0x2e80))].sort();
+// 「」『』 come from <q> generated content, which the page text never shows, so they are added by hand.
+const jaChars = [...new Set([...[...pages.values()].map(displayText).join('') + '「」『』'].filter((ch) => ch.codePointAt(0) >= 0x2e80))].sort();
 const jaFont = await subsetFont(readFileSync(join(root, ja.source)), jaChars.join(''), { targetFormat: 'woff2' });
 const jaFile = `shippori-mincho-display.${createHash('sha256').update(jaFont).digest('hex').slice(0, 10)}.woff2`;
 const jaRange = jaChars.map((ch) => `U+${ch.codePointAt(0).toString(16).toUpperCase()}`).join(', ');

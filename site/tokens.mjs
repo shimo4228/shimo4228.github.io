@@ -82,7 +82,7 @@ ${decl(spaceScale(d.spacing, vw))}
   --radius-s: ${d.rounded.s};
   --line-thin: 1px;
   --leading-tight: 1.15;
-  --leading-body: 1.6;
+  --leading-body: 1.55;
   color-scheme: light dark;
 ${color(light)}
 }

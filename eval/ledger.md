@@ -179,3 +179,15 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   - `halt` on JA footer links, platform names and entrance notes.
   - Footer links get a 24px minimum target (X was 10px wide). Eval: axe runs with animations off; nav items are
     exempt from the left-edge check (flush right).
+- 2026-10-18 Review round 1 (engineer persona):
+  - Margin notes are a grid column running into the margin (no absolute positioning), so they take space; the page
+    shifts left only on pages that have notes (`:has`).
+  - sync.mjs: 15 s timeout, schema check, refuses a list that shrinks by over 20%; in CI a failed fetch fails the
+    run so the last good deploy stays. The dispatch carries the zenn-content sha (FEED_REF) past the raw CDN cache.
+  - Workflow: Pages permissions on the deploy job only, 10-minute timeouts, Playwright browser cache.
+  - Cloudflare beacon as a classic `defer` script (its own snippet), not a module.
+  - Shippori subset includes 「」『』 (they come from `<q>`, not page text).
+  - JA bold names may be synthesised where the serif has no bold (Android); forced-colors target bar uses Highlight;
+    a section with no intro no longer spans an empty row; shoot.mjs disables animations.
+- 2026-10-18 English body in Charter (竜也: 「じゃあそろえて」), leading 1.55, names at 700. Last-word ties are a nowrap
+  span: Charter has no no-break space, so `&nbsp;` showed as a double space.

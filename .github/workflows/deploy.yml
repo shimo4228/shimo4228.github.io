@@ -5,7 +5,8 @@
 #   - every morning at 09:17 JST, after the 07:00 / 09:00 scheduled posts go live (the build lists only pieces
 #     whose published_at has passed, so a scheduled post appears on its day without anyone pushing)
 #   - by hand from the Actions tab
-# repository_dispatch and schedule run only from the default branch, so `source` must be the default branch.
+# repository_dispatch and schedule run only from the default branch, so `source` must be the default branch, and
+# Settings → Environments → github-pages must allow deployments from `source`.
 # A public repository's schedule turns itself off after 60 days without activity; re-enable it in the Actions tab.
 name: Deploy site
 
@@ -20,8 +21,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -30,6 +29,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -37,8 +37,14 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps chromium
       - run: npm run sync
+        env:
+          FEED_REF: ${{ github.event.client_payload.sha || 'main' }}
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -47,6 +53,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
