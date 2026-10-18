@@ -207,3 +207,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   - JA work names: no tracking (most are Latin).
 - 2026-10-18 Opening motion (竜也: パララックスとフェードインで「クオリティ感を少しだけ」): name and sentence lines rise in
   on load, staggered; a scroll-timeline parallax drifts and dims the opening as the page scrolls. Reduced motion: none.
+- 2026-10-18 Between pages (竜也: 「全部入れて」): cross-document view transition with header and footer held in place;
+  0.2s colour / underline transition on links. Smooth in-page scrolling and the moss selection colour were already there.
+  Checked in Chromium that the transition fires on navigation (`pagereveal` has a viewTransition).
