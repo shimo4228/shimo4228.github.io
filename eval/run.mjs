@@ -182,6 +182,7 @@ for (const p of paths) {
     }
     // axe at narrow and wide, with every element at its end state (the scroll-in fade would read as low contrast)
     await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; }' });
+    await page.evaluate(() => document.documentElement.classList.remove('reveal'));
     for (const w of [375, 1280]) {
       await page.setViewportSize({ width: w, height: 900 });
       const ax = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa', 'best-practice']).analyze();

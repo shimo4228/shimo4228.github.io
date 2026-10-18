@@ -215,3 +215,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Scroll-in still read as "全然効いてない" (竜也): measured in Chromium, each work finished its fade within its own
   height of the bottom edge. Range now `cover 0% cover 40%`, linear, so the rise plays across the lower half of the
   screen. The stylesheet URL now carries a content hash (`/site.css?v=…`), so a publish is not hidden by the cache.
+- 2026-10-18 Reveal replaces scroll-in (竜也: hiraoku.dev/blog のように「スクロールしたら現れてくる」): a scroll-scrubbed fade
+  moves with the scroll and never reads as an arrival, so items now play a 0.8s fade-up once when they enter view
+  (inline IntersectionObserver, 90ms stagger). Eval and shoot drop the `reveal` class before measuring.

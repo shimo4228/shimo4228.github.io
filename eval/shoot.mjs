@@ -13,6 +13,7 @@ for (const pg of p.split(',')) for (const scheme of s.split(',')) for (const wid
   await page.evaluate(() => document.fonts.ready);
   // Full-page shots show everything at its end state, not mid scroll-in fade.
   await page.addStyleTag({ content: '*, *::before, *::after { animation: none !important; }' });
+    await page.evaluate(() => document.documentElement.classList.remove('reveal'));
   const f = `${outDir}/${pg.replace(/\//g, '_') || 'root'}-${width}-${scheme}.png`;
   await page.screenshot({ path: f, fullPage: true });
   console.log(f);

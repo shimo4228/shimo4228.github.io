@@ -92,10 +92,10 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
   row per piece (date, title, platform), newest first; only pieces whose `published_at` has passed. No count, no "latest".
 - `margin note`: from 80rem the page shifts left by half a note (11rem) and each work's links, or a piece's platform,
   step into the right margin. Space alone separates note from column.
-- `scroll-in`: works, intros, quoted titles, entrance groups, pieces, year labels and facts fade up 1.5rem as they
-  enter the screen, across the lower half of it (CSS view timelines; 竜也 chose "控えめに", then asked for it to
-  show as on hiraoku.dev, 2026-10-18). The sticky quoted title follows its section's timeline. No effect with reduced
-  motion or without view-timeline support.
+- `reveal`: works, intros, quoted titles, entrance groups, pieces, year labels and facts each fade up 1.5rem over
+  0.8s, once, as they come into view; items arriving together follow each other 90ms apart (竜也, 2026-10-18: like
+  hiraoku.dev/blog, "スクロールしたら現れてくる"). A few lines of inline script (IntersectionObserver) add the classes; it
+  is the one script besides the beacon. Without it, or with reduced motion, nothing is hidden.
 - `opening`: the name and then each line of the sentence rise 0.5em into place once on load, 0.12s apart, under a second
   in all. Scrolling past, the opening drifts down 14vh and dims to 0.2 over the first 85vh, so the sections slide over
   it (scroll timeline; 竜也, 2026-10-18: 「クオリティ感を少しだけ」). Both off with reduced motion.

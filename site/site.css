@@ -938,36 +938,21 @@ a {
 }
 
 /* ---------- Forced colours and print ---------- */
-/* Scrolling in: each work, intro, quoted title and piece fades up as it enters the screen, one after another as
-   the page moves (竜也, 2026-10-18, after hiraoku.dev). CSS only (view timelines), so where the browser lacks them
-   (Firefox) or motion is reduced, everything is simply there. Anything already on screen when the page opens is
-   past its entry, so it shows at once. */
-@media screen and (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    :is(.work, .section-intro, .entrance-group, .piece, .fact, .year-label, .about-next) {
-      animation: scroll-in linear both;
-      animation-timeline: view();
-      /* Over the lower half of the screen, so the rise is seen rather than finished at the bottom edge. */
-      animation-range: cover 0% cover 40%;
-    }
-
-    /* The quoted title is sticky, so it follows its section's timeline rather than its own. */
-    .gloss {
-      view-timeline-name: --gloss;
-    }
-
-    .gloss > .section-title {
-      animation: scroll-in cubic-bezier(0.2, 0.6, 0.2, 1) both;
-      animation-timeline: --gloss;
-      animation-range: entry 0% entry 30%;
-    }
-  }
-}
-
-@keyframes scroll-in {
-  from {
+/* Reveal: each work, intro, quoted title and piece fades up once as it comes into view (the script in the page head
+   adds .reveal, then .in per item; 竜也, 2026-10-18, after hiraoku.dev/blog). Without the script, or with reduced
+   motion, nothing is hidden. */
+@media screen {
+  .reveal :is(.work, .section-intro, .gloss > .section-title, .entrance-group, .piece, .fact, .year-label, .about-next) {
     opacity: 0;
     translate: 0 1.5rem;
+    transition:
+      opacity 0.8s cubic-bezier(0.2, 0.6, 0.2, 1),
+      translate 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
+  }
+
+  .reveal :is(.work, .section-intro, .gloss > .section-title, .entrance-group, .piece, .fact, .year-label, .about-next).in {
+    opacity: 1;
+    translate: 0 0;
   }
 }
 
