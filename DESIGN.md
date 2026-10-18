@@ -14,8 +14,10 @@ colors:
     line-strong: 2.2
     accent-wash: 1.12
     accent-line: 3
-    muted: 5.6
-    accent: 6.2
+    # Raised from 5.6 / 6.2 in review (2026-10-18): small Mincho W3 read faint, and the moss quote read lighter than
+    # the Charter / Mincho text beside it.
+    muted: 6.5
+    accent: 8
     text: 14
 typography:
   scale: { baseMin: 17, baseMax: 19, ratioMin: 1.2, ratioMax: 1.333 }

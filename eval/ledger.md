@@ -191,3 +191,17 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
     a section with no intro no longer spans an empty row; shoot.mjs disables animations.
 - 2026-10-18 English body in Charter (竜也: 「じゃあそろえて」), leading 1.55, names at 700. Last-word ties are a nowrap
   span: Charter has no no-break space, so `&nbsp;` showed as a double space.
+- 2026-10-18 Review round 2 (designer):
+  - JA sentence word-spacing −0.15em → −0.05em (the Latin–kana gap read pinched).
+  - Title clauses also split at 。 and before dashes; spaces inside Latin runs are tied.
+  - Ratios: accent 6.2 → 8, muted 5.6 → 6.5; JA step-n1 raised (Mincho W3 at 14px read faint).
+  - About name is a muted byline on phones, the rail from 48rem (nowrap only there: text zoom at 320px).
+  - Margin-note links sit on the work name's baseline.
+  - Not done: one Latin–kana gap width everywhere (`&nbsp;` from source spaces vs autospace's 1/8em). Left as is.
+- 2026-10-18 Review round 2 (engineer):
+  - Blocker fixed: sync.mjs rejected the real feed (pieces in one language only). Each side present needs url and
+    title; FEED_REF must be a sha or `main`.
+  - Every `.center` shifts at 80rem again, so the nav no longer jumps between pages (the round-1 `:has` caused it).
+  - `writing-title` added to DISPLAY_ROLES, so 書 and た are in the Shippori subset.
+  - Writing page at 80rem: the platform is a third grid column on the title's baseline; hairlines stay under the column.
+  - JA work names: no tracking (most are Latin).

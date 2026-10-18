@@ -51,15 +51,27 @@ function txt(s, lang) {
   return esc(s);
 }
 
-// A Japanese title turns over after its 、 when it does not fit, not at the last phrase that fits
-// (「…尽きたあと、／ひとつだけ…」, not 「…尽きた／あと、…」). Each clause is an inline-block; one longer than
-// the line still breaks inside at its BudouX phrases.
+// A Japanese title turns over at its own joints when it does not fit, not at the last phrase that fits
+// (「…尽きたあと、／ひとつだけ…」, not 「…尽きた／あと、…」): after 、 and 。, and before a dash, which starts the
+// next clause. Each clause is an inline-block; one longer than the line still breaks inside at its BudouX phrases.
+// Latin words in a title stay together ("LLM judge", "memory RAG").
 function clauses(h, lang) {
   if (lang !== 'ja') return h;
-  const parts = h.split(/(?<=、)<wbr>/);
+  const tied = h
+    .replace(/(?<=[A-Za-z0-9.+#-]) (?=[A-Za-z0-9])/g, '&nbsp;')
+    .replace(/—(?:&nbsp;| )/g, '—&nbsp;');
+  const parts = tied
+    .split(/(?<=[、。])(?:<wbr>)?|(?<=&nbsp;| )(?:<wbr>)?(?<!—)(?=—)|(?<![\s;—])(?:<wbr>)?(?=—)/)
+    .filter(Boolean);
   if (parts.length < 2) return h;
-  // The 、 stays outside the underline, as in the root sentence, so a line ending on it has no underlined blank half.
-  return parts.map((x) => (x.endsWith('、') ? `<span class="clause"><span class="u">${x.slice(0, -1)}</span>、</span>` : `<span class="clause"><span class="u">${x}</span></span>`)).join('<wbr>');
+  // The 、 and 。 stay outside the underline, as in the root sentence, so a line ending on one has no underlined blank half.
+  return parts
+    .map((x) => {
+      // A space before a dash ends the clause outside the underline, so it falls away at a line end.
+      const m = x.match(/^(.*?)([、。]?)((?:&nbsp;| )?)$/s);
+      return `<span class="clause"><span class="u">${m[1]}</span>${m[2]}</span>${m[3] ? ' ' : ''}`;
+    })
+    .join('<wbr>');
 }
 
 // Running text in English: no paragraph ends on a short last line.
@@ -440,7 +452,7 @@ for (const lang of ['en', 'ja']) {
 pages.set('404.html', notFound());
 
 // The Japanese display face, cut down to the kanji, kana and punctuation the display roles use.
-const DISPLAY_ROLES = ['name', 'sentence', 'section-title', 'lead', 'lost-title'];
+const DISPLAY_ROLES = ['name', 'sentence', 'section-title', 'lead', 'lost-title', 'writing-title'];
 function displayText(html) {
   let text = '';
   const open = /<([a-z0-9]+)\b[^>]*\bclass="([^"]*)"[^>]*>/g;

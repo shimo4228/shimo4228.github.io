@@ -2,12 +2,14 @@
 // zenn-content regenerates docs/publications.json with its index (`npm run generate:index`), so the feed on its
 // main branch is the published list. FEED_REF (a commit sha sent with the dispatch) skips the raw CDN's cache.
 // Locally a failed fetch keeps the committed copy; in CI it fails the run, so the last good deploy stays live
-// instead of a stale or broken list replacing it.
+// instead of a stale or broken list replacing it. The shrink guard compares with the committed copy, so unpublishing
+// more than a fifth of the list at once needs content/publications.json recommitted by hand first.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ref = process.env.FEED_REF || 'main';
+if (!/^([0-9a-f]{40}|main)$/.test(ref)) throw new Error(`FEED_REF is not a commit sha: ${ref}`);
 const FEED = `https://raw.githubusercontent.com/shimo4228/zenn-content/${ref}/docs/publications.json`;
 const file = join(dirname(fileURLToPath(import.meta.url)), '..', 'content/publications.json');
 const STAMP = /^\d{4}-\d\d-\d\d \d\d:\d\d$/;
@@ -17,7 +19,9 @@ try {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const feed = await res.json();
   if (!Array.isArray(feed.items)) throw new Error('no items array');
-  const bad = feed.items.find((i) => !STAMP.test(i.published_at ?? '') || !i.ja?.url);
+  // A piece may exist in one language only, but each side it has needs a URL and a title.
+  const side = (x) => !x || (x.url && x.title);
+  const bad = feed.items.find((i) => !STAMP.test(i.published_at ?? '') || !(i.ja?.url || i.en?.url) || !side(i.ja) || !side(i.en));
   if (bad) throw new Error(`malformed item ${bad.slug ?? '?'}`);
   const old = JSON.parse(readFileSync(file, 'utf8'));
   if (feed.items.length < old.items.length * 0.8) throw new Error(`items fell from ${old.items.length} to ${feed.items.length}`);

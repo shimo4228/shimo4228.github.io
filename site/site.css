@@ -101,7 +101,12 @@ a {
   text-spacing-trim: trim-start;
 }
 
-/* A quarter-em gap where Latin meets Japanese with no space (verbatim titles such as 「Evalとレビュー」). */
+/* Small Japanese text (dates, link labels, footer) a touch larger: Mincho W3 at 14px reads faint. */
+:lang(ja) {
+  --step-n1: clamp(0.9375rem, 0.92rem + 0.05vw, 0.97rem);
+}
+
+/* An eighth-em gap where Latin meets Japanese with no space (verbatim titles such as 「Evalとレビュー」). */
 :lang(ja) {
   text-autospace: normal;
 }
@@ -255,15 +260,15 @@ a {
   }
 }
 
-/* Japanese display lines: proportional kana and punctuation (palt), opened slightly, and a quarter-em gap
-   between Latin and Japanese instead of a full word space. Body text stays full-width. */
+/* Japanese display lines: proportional kana and punctuation (palt), opened slightly, and a narrower gap
+   between Latin and Japanese than a full word space. Body text stays full-width. */
 :is(.sentence, .section-title, .work-name, .lost-title):lang(ja) {
   font-feature-settings: "palt";
   letter-spacing: 0.04em;
 }
 
 .sentence:lang(ja) {
-  word-spacing: -0.15em;
+  word-spacing: -0.05em;
   /* About 12 characters across a 375px phone, so the first two sentences stay on one line each.
      The rem floor keeps it growing under page and text zoom (WCAG 1.4.4). */
   font-size: max(min(var(--step-3), 7.1vw), 1.375rem);
@@ -533,6 +538,8 @@ a {
   /* Capped below the quoted phrase (1.3rem) so the gloss never reads louder than what it comments on. */
   font-size: min(calc((var(--step-0) + var(--step-1)) / 2), 1.2rem);
   margin-block-end: 0.2em;
+  /* Most names are Latin ("Contemplative Agent"); tracking would space out the bold lowercase. palt is enough. */
+  letter-spacing: 0;
 }
 
 .work-name a {
@@ -602,7 +609,8 @@ a {
    its measure and the width beside it carries something. The page shifts left by half the note so the two
    together sit centred. Only space separates the note from the column; no rule, no tint. */
 @media (min-width: 80rem) {
-  body:has(.work-links, .piece-where) .center {
+  /* Every page shifts, header and footer included, so the nav stays put between pages. */
+  .center {
     padding-inline-end: calc(var(--note) + var(--space-xl));
   }
 
@@ -623,7 +631,8 @@ a {
   .work-links {
     grid-column: 2;
     grid-row: 1 / span 2;
-    align-self: start;
+    /* The first link shares the name's baseline, as the rail shares the section's. */
+    align-self: baseline;
     flex-direction: column;
     align-items: flex-start;
     gap: 0;
@@ -650,9 +659,18 @@ a {
 
 /* About: the name in the rail, as the sections quote their phrase. */
 .about > .section-title {
-  font-size: var(--step-1);
-  white-space: nowrap;
-  color: var(--color-text);
+  /* On phones the name is a byline above the page title, smaller and muted; from 48rem it holds the rail. */
+  font-size: var(--step-0);
+  color: var(--color-muted);
+}
+
+@media (min-width: 48rem) {
+  .about > .section-title {
+    font-size: var(--step-1);
+    color: var(--color-text);
+    /* Only where the rail is wide enough; on a phone with text zoom the name must be free to wrap. */
+    white-space: nowrap;
+  }
 }
 
 .about-body {
@@ -853,16 +871,27 @@ a {
 /* ---------- 404 ---------- */
 /* Wide screens: the platform steps into the margin note, as a work's links do on the home page. */
 @media (min-width: 80rem) {
+  /* The platform is a third grid column running into the margin, so it shares the row's baseline. The hairlines
+     stay under the date and title only. */
   .piece,
   .piece:lang(ja) {
-    position: relative;
-    grid-template-areas: "date title";
+    grid-template-columns: var(--rail) minmax(0, 1fr) var(--note);
+    grid-template-areas: "date title where";
+    margin-inline-end: calc(-1 * (var(--note) + var(--space-xl)));
+    border: 0;
+    background:
+      linear-gradient(var(--color-line), var(--color-line)) left bottom / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat;
+  }
+
+  .piece:first-child {
+    background:
+      linear-gradient(var(--color-line), var(--color-line)) left top / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat,
+      linear-gradient(var(--color-line), var(--color-line)) left bottom / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat;
   }
 
   .piece-where {
-    position: absolute;
-    inset-block-start: var(--space-xs);
-    inset-inline-start: calc(100% + var(--space-xl));
+    margin-inline-start: calc(var(--space-xl) - var(--space-l));
+    white-space: normal;
   }
 }
 
