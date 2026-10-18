@@ -44,7 +44,7 @@
   --color-accent: #40634b;
 }
 :lang(ja) {
-  --font-display: "Newsreader", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
+  --font-display: "Newsreader", "Hiragino Mincho ProN", "Shippori Mincho Display", "Yu Mincho", "YuMincho", "Noto Serif JP", serif;
   --font-body: system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif;
   --leading-body: 1.85;
 }
@@ -61,6 +61,15 @@
     --color-accent-line: #3b734e;
     --color-accent: #6caa81;
   }
+}
+/* 83 characters from the display roles, subset from site/fonts/ShipporiMincho-Regular.ttf (SIL OFL 1.1, fonts/OFL.txt). */
+@font-face {
+  font-family: "Shippori Mincho Display";
+  src: url("/fonts/shippori-mincho-display.c192183479.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+3001, U+3002, U+3042, U+3044, U+3048, U+304C, U+304D, U+3051, U+3053, U+3055, U+3059, U+305A, U+305B, U+305D, U+3061, U+3063, U+3064, U+3066, U+3067, U+3068, U+306B, U+306E, U+306F, U+3072, U+307E, U+3082, U+308A, U+308B, U+3092, U+3093, U+30A7, U+30A8, U+30AB, U+30B8, U+30B9, U+30C4, U+30C8, U+30CD, U+30CF, U+30DA, U+30DC, U+30E9, U+30EB, U+30ED, U+30F3, U+30FC, U+4E00, U+4E0A, U+4EBA, U+4EE3, U+4EFB, U+4F5C, U+5224, U+5247, U+52D5, U+5411, U+5C5E, U+5F0F, U+5F8B, U+5FC3, U+6027, U+60F3, U+610F, U+63A2, U+65AD, U+660E, U+6642, U+6CE8, U+6E21, U+7791, U+7D44, U+7E54, U+8003, U+8005, U+81EA, U+8457, U+898B, U+898F, U+8AAC, U+8CAC, U+95A2, U+FF08, U+FF09;
 }
 
 /* The sentence, glossed. Rules and values: DESIGN.md. Tokens come first in the built file. */
@@ -279,7 +288,9 @@ a {
   margin-block: var(--space-xs) var(--space-xl);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--step-4);
+  /* Below step-4 at both ends (30px on a 375px phone, 52px from about 880px), so the English sits at about 1.15
+     times the Japanese line beside it, the usual optical pair for Latin over kanji and kana. */
+  font-size: clamp(1.625rem, 0.75rem + 4.8vw, 3.25rem);
   line-height: 1.16;
   letter-spacing: -0.012em;
   max-inline-size: 19em;
@@ -287,9 +298,9 @@ a {
 }
 
 .sentence:lang(ja) {
-  /* About 12.5 characters across a 375px phone, so the first two sentences stay on one line each.
+  /* About 12 characters across a 375px phone, so the first two sentences stay on one line each.
      The rem floor keeps it growing under page and text zoom (WCAG 1.4.4). */
-  font-size: max(min(var(--step-3), 6.9vw), 1.375rem);
+  font-size: max(min(var(--step-3), 7.1vw), 1.375rem);
   line-height: 1.5;
   letter-spacing: 0.02em;
   max-inline-size: 23em;
@@ -300,7 +311,7 @@ a {
   display: block;
 }
 
-/* Japanese: a "keep" group moves to the next line whole rather than splitting (phones);
+/* A "keep" group moves to the next line whole rather than splitting (phones);
    a "tail" group always starts its own line, so the break falls where the sections divide. */
 .sentence .keep {
   display: inline-block;
