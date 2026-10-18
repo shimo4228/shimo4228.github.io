@@ -576,6 +576,22 @@ a {
   text-underline-offset: 0.2em;
 }
 
+/* Clauses of a Japanese title (see clauses() in build.mjs). An inline-block takes no underline from its link,
+   so the words carry their own and the 、 between clauses goes without. */
+.work-name .clause {
+  display: inline-block;
+}
+
+.work-name .u {
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--line-thin);
+  text-decoration-color: var(--color-line-strong);
+}
+
+.work-name a:hover .u {
+  text-decoration-color: currentColor;
+}
+
 .work-name a:hover {
   text-decoration-color: currentColor;
 }
@@ -587,6 +603,11 @@ a {
 .work-links {
   --cluster-space: 0 var(--space-s);
   font-size: var(--step-n1);
+}
+
+/* 「Zenodo（DOI）」: half-width brackets, so the underline does not run on under the bracket's empty half. */
+:lang(ja) .work-links a {
+  font-feature-settings: "halt";
 }
 
 .work-links a {
