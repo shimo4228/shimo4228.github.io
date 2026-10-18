@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
+    "sync": "node site/sync.mjs",
     "build": "node site/build.mjs && node site/images.mjs",
     "eval": "EVAL_CSS=site/site.css node eval/run.mjs dist ./,about/,ja/,ja/about/,writing/,ja/writing/,404.html eval/report-site",
     "shots": "node eval/shoot.mjs dist 375,1280 light,dark ,about,ja,ja/about eval/shots/site",

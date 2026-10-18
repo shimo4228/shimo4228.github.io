@@ -333,23 +333,6 @@ a {
   font-size: var(--step-n1);
 }
 
-.entrance-index {
-  margin-block-start: var(--space-m);
-  font-size: var(--step-n1);
-}
-
-.entrance-index a {
-  display: inline-block;
-  padding-block: var(--space-3xs);
-  color: var(--color-muted);
-  text-decoration-thickness: var(--line-thin);
-  text-underline-offset: 0.22em;
-}
-
-.entrance-index a:hover {
-  color: var(--color-text);
-}
-
 /* ---------- Sections: the quoted phrase in the rail, the gloss beside it ---------- */
 .gloss {
   display: grid;
@@ -550,6 +533,33 @@ a {
 .work-links a:hover {
   color: var(--color-accent);
   text-decoration-color: currentColor;
+}
+
+/* Wide screens: each work's links step out of the column into a margin note on its right, so the column keeps
+   its measure and the width beside it carries something. The page shifts left by half the note so the two
+   together sit centred. Only space separates the note from the column; no rule, no tint. */
+@media (min-width: 80rem) {
+  .center {
+    padding-inline-end: calc(var(--note) + var(--space-xl));
+  }
+
+  .work {
+    position: relative;
+  }
+
+  .work-links {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: calc(100% + var(--space-xl));
+    inline-size: var(--note);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .work-links a {
+    padding-block: 0.15em;
+  }
 }
 
 /* ---------- About ---------- */
@@ -766,6 +776,26 @@ a {
 }
 
 /* ---------- 404 ---------- */
+/* Wide screens: the platform steps into the margin note, as a work's links do on the home page. */
+@media (min-width: 80rem) {
+  .piece,
+  .piece:lang(ja) {
+    position: relative;
+    grid-template-columns: 4.5em minmax(0, 1fr);
+    grid-template-areas: "date title";
+  }
+
+  .piece:lang(ja) {
+    grid-template-columns: 5.5em minmax(0, 1fr);
+  }
+
+  .piece-where {
+    position: absolute;
+    inset-block-start: var(--space-xs);
+    inset-inline-start: calc(100% + var(--space-xl));
+  }
+}
+
 .lost {
   display: grid;
   gap: var(--space-s);
@@ -783,6 +813,26 @@ a {
 }
 
 /* ---------- Forced colours and print ---------- */
+/* Scrolling in: each work, intro and piece fades up a little as it enters the screen. CSS only (a view
+   timeline), so where the browser lacks it (Firefox) or motion is reduced, everything is simply there. Anything
+   already on screen when the page opens is past its entry, so it shows at once. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :is(.work, .section-intro, .entrance-group, .piece, .fact) {
+      animation: scroll-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+@keyframes scroll-in {
+  from {
+    opacity: 0;
+    translate: 0 0.6rem;
+  }
+}
+
 @media (forced-colors: active) {
   .sentence a {
     text-decoration-color: LinkText;
@@ -823,7 +873,6 @@ a {
 
   .work-links a[href^="http"]::after,
   .entrance[href^="http"]::after,
-  .entrance-index a::after,
   .fact a::after {
     content: " (" attr(href) ")";
     font-size: 0.8em;

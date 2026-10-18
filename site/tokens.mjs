@@ -78,6 +78,7 @@ ${decl(spaceScale(d.spacing, vw))}
   --measure: ${d.layout.measure};
   --column: ${d.layout.column};
   --rail: ${d.layout.rail};
+  --note: ${d.layout.note};
   --radius-s: ${d.rounded.s};
   --line-thin: 1px;
   --leading-tight: 1.15;

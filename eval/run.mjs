@@ -57,7 +57,8 @@ for (const f of cssFiles) {
 // Generated-page tells (frontend-design's list), checked by text and computed style later.
 // Impeccable's detector ships as a prebuilt binary, so it stays out until the author decides.
 for (const p of paths) {
-  const html = readFileSync(fileOf(p), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '');
+  // Piece titles on the writing page are the author's published titles, quoted as data, not site chrome.
+  const html = readFileSync(fileOf(p), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<a class="piece-title"[^>]*>[\s\S]*?<\/a>/g, '');
   const text = html.replace(/<[^>]+>/g, ' ');
   if (/\S\s+·\s+\S/.test(text)) add(2, 'tell:middle-dot-meta', p, 'meta string joined with " · "');
   if (/→|&rarr;/.test(html)) add(2, 'tell:arrow-link', p, 'an arrow appended to link text');

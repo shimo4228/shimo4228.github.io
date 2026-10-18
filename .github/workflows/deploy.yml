@@ -1,0 +1,55 @@
+# Builds the site from this branch and deploys it to GitHub Pages (Settings → Pages → Source: GitHub Actions).
+# The writing list comes from zenn-content's docs/publications.json, fetched at build time, so the site rebuilds when:
+#   - this branch is pushed
+#   - zenn-content sends a `publications` repository_dispatch after its index changes (needs a token there)
+#   - every morning at 09:17 JST, after the 07:00 / 09:00 scheduled posts go live (the build lists only pieces
+#     whose published_at has passed, so a scheduled post appears on its day without anyone pushing)
+#   - by hand from the Actions tab
+# repository_dispatch and schedule run only from the default branch, so `source` must be the default branch.
+# A public repository's schedule turns itself off after 60 days without activity; re-enable it in the Actions tab.
+name: Deploy site
+
+on:
+  push:
+    branches: [source]
+  repository_dispatch:
+    types: [publications]
+  schedule:
+    - cron: '17 0 * * *' # 09:17 JST, off the top of the hour
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run sync
+      - run: npm run build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -40,7 +40,9 @@ layout:
   measure: 34em
   column: 46rem
   rail: 15rem
+  note: 11rem
   breakpoint: 48rem
+  wide: 80rem
 ---
 
 # DESIGN.md

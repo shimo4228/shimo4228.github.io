@@ -78,7 +78,8 @@
             "what": "Sakamaki 名義のエッセイ",
             "href": "https://note.com/sakamaki4228"
           }
-        ]
+        ],
+        "place": "writing"
       },
       {
         "label": "英語で",
@@ -95,7 +96,8 @@
             "href": "https://shimo4228.substack.com",
             "hreflang": "en"
           }
-        ]
+        ],
+        "place": "writing"
       },
       {
         "label": "コードと記録",
@@ -115,7 +117,8 @@
             "what": "データセット",
             "href": "https://huggingface.co/Shimo4228"
           }
-        ]
+        ],
+        "place": "footer"
       },
       {
         "label": "その時々のメモ",
@@ -130,13 +133,10 @@
             "what": "Sakamaki 名義",
             "href": "https://x.com/sakamakiuzutaro"
           }
-        ]
+        ],
+        "place": "footer"
       }
-    ],
-    "index": {
-      "name": "記事とエッセイの一覧",
-      "href": "/ja/writing/"
-    }
+    ]
   },
   "sections": [
     {
@@ -367,7 +367,8 @@
   "nav": {
     "about": "この人について",
     "lang": "English",
-    "langLabel": "英語"
+    "langLabel": "英語",
+    "writing": "書いたもの"
   },
   "footer": {
     "source": "このサイトのソース",

@@ -182,6 +182,7 @@ function nav(c, page) {
   const o = other(c.lang);
   const items = [];
   items.push(`<li><a href="${paths[o][page] || paths[o].home}" hreflang="${o}" lang="${o}">${esc(c.nav.lang)}</a></li>`);
+  items.push(`<li><a href="${p.writing}"${page === 'writing' ? ' aria-current="page"' : ''}>${txt(c.nav.writing, c.lang)}</a></li>`);
   items.push(`<li><a href="${p.about}"${page === 'about' ? ' aria-current="page"' : ''}>${txt(c.nav.about, c.lang)}</a></li>`);
   const label = c.lang === 'ja' ? 'サイト' : 'Site';
   return `<header class="site-head center"><nav class="site-nav" aria-label="${label}">
@@ -194,8 +195,18 @@ function footer(c) {
   const scriptTag = BEACON
     ? `\n<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='${JSON.stringify({ token: BEACON })}'></script>`
     : '';
+  // Code, records and X: the profiles that are the same person, on every page and marked rel="me".
+  const me = c.entrances.groups
+    .filter((g) => g.place === 'footer')
+    .flatMap((g) => g.items)
+    .map((i) => {
+      const what = i.what && /Sakamaki/.test(i.what) ? (c.lang === 'ja' ? '（Sakamaki）' : ' (Sakamaki)') : '';
+      return `<li><a href="${esc(i.href)}" rel="me"${hreflangAttr(i.hreflang)}>${esc(i.name)}${txt(what, c.lang)}</a></li>`;
+    })
+    .join('');
   return `<footer class="site-foot center">
   <ul role="list" class="cluster">
+    ${me}
     <li><a href="${f.hubHref}">${txt(f.hub, c.lang)}</a></li>
     <li><a href="${f.sourceHref}">${txt(f.source, c.lang)}</a></li>
   </ul>
@@ -214,6 +225,7 @@ function entrances(c) {
   <h2 id="entrances-h" class="visually-hidden">${label}</h2>
   <dl class="entrance-groups">
     ${e.groups
+      .filter((g) => g.place === 'writing')
       .map(
         (g) => `<div class="entrance-group">
       <dt>${txt(g.label, c.lang)}</dt>
@@ -227,7 +239,6 @@ function entrances(c) {
       )
       .join('\n    ')}
   </dl>
-  <p class="entrance-index"><a href="${esc(e.index.href)}">${txt(e.index.name, c.lang)}</a></p>
 </nav>`;
 }
 
@@ -295,7 +306,6 @@ function home(c) {
   <section class="intro" aria-labelledby="name">
     <h1 id="name" class="name">${esc(c.name)}</h1>
     <p class="sentence">${s.html}</p>
-    ${entrances(c)}
   </section>
   ${c.sections.map((x) => section(x, c)).join('\n  ')}
 </main>
@@ -357,7 +367,7 @@ function writing(c) {
     )
     .join('\n  ');
   const o = other(lang);
-  return `${head(c, 'writing', { title: `${w.title} · ${c.name}`, description: w.intro, path: paths[lang].writing })}${nav(c, 'writing')}
+  return `${head(c, 'writing', { title: lang === 'ja' ? `${c.name} が書いたもの` : `Writing by ${c.name}`, description: w.intro, path: paths[lang].writing })}${nav(c, 'writing')}
 <main id="main" class="center page">
   <section class="gloss about writing-head" aria-labelledby="writing-h">
     <p class="section-title"><a href="${paths[lang].home}">${esc(c.name)}</a></p>
@@ -366,6 +376,7 @@ function writing(c) {
       <p class="section-intro">${prose(w.intro, lang)}</p>
     </div>
   </section>
+  ${entrances(c)}
   <div class="years">
   ${groups}
   </div>

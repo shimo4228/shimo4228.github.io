@@ -70,7 +70,8 @@
             "what": "essays",
             "href": "https://shimo4228.substack.com"
           }
-        ]
+        ],
+        "place": "writing"
       },
       {
         "label": "In Japanese",
@@ -93,7 +94,8 @@
             "href": "https://note.com/sakamaki4228",
             "hreflang": "ja"
           }
-        ]
+        ],
+        "place": "writing"
       },
       {
         "label": "Code and records",
@@ -113,7 +115,8 @@
             "what": "datasets",
             "href": "https://huggingface.co/Shimo4228"
           }
-        ]
+        ],
+        "place": "footer"
       },
       {
         "label": "Notes as they happen",
@@ -129,13 +132,10 @@
             "href": "https://x.com/sakamakiuzutaro",
             "hreflang": "ja"
           }
-        ]
+        ],
+        "place": "footer"
       }
-    ],
-    "index": {
-      "name": "Every article and essay, in one list",
-      "href": "/writing/"
-    }
+    ]
   },
   "sections": [
     {
@@ -364,7 +364,8 @@
   "nav": {
     "about": "About",
     "lang": "日本語",
-    "langLabel": "Japanese"
+    "langLabel": "Japanese",
+    "writing": "Writing"
   },
   "footer": {
     "source": "Source of this site",
