@@ -231,3 +231,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Underlines draw in (竜也, after hiraoku.dev/blog): link lines are backgrounds that grow from the left on hover
   (0.45s) over the resting hairline; wrapping names and titles carry them on inline `.u` spans (EN now too). Forced
   colours and print fall back to text-decoration. Article titles turn moss on hover.
+- 2026-10-18 Some title lines showed no underline on the Mac (竜也: 下線のあるものとないもの): the 1px background sat on the
+  span's bottom edge and fell between device pixels. Spans now carry 0.15em of bottom padding (no layout change) and the
+  line sits 1px under the glyph box, inside it. Checked on the Mac preview, dark, 1440: every title line underlined.
