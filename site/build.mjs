@@ -445,4 +445,7 @@ ${urlEntry('about')}
 `,
 );
 out('.nojekyll', '');
+// Google Search Console ownership file for the https://shimo4228.github.io/ property (2026-10-18). Keep it:
+// deleting it un-verifies the property. Google's file content is this exact line.
+out('googleb056734478b4d8a5.html', 'google-site-verification: googleb056734478b4d8a5.html');
 console.log(`built dist/ (Japanese display face: ${jaChars.length} characters, ${(jaFont.length / 1024).toFixed(1)} KB)`);

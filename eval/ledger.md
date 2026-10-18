@@ -145,3 +145,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   - Seen and left as decided: JA running paragraphs break inside words (live check 2); "Tatsuya Shimomoto" may split
     in JA running text (the tie rule ties only Latin–Japanese spaces).
   - eval 0 failing / 7 raw-px warnings.
+- 2026-10-18 Google Search Console (竜也): URL-prefix property `https://shimo4228.github.io/` (covers the hub under
+  `/shimo4228/` too). Verified by the HTML file `googleb056734478b4d8a5.html` at the root, written by build.mjs; byte-identical
+  to the file Google issued. Do not remove it.
