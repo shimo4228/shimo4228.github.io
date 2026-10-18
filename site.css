@@ -162,6 +162,8 @@ a {
    ー and small kana off the start of a line. */
 :lang(ja) {
   line-break: strict;
+  /* A line that starts with （ or 「 sits flush; the bracket's built-in half space is dropped at every line start. */
+  text-spacing-trim: trim-start;
 }
 
 :lang(ja) :is(p, li, dd, dt, h1, h2, h3) {
