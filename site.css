@@ -1083,6 +1083,63 @@ a {
   }
 }
 
+/* ---------- Underlines draw in ---------- */
+/* On hover a line draws in from the left over the resting hairline (竜也, 2026-10-18, after hiraoku.dev/blog). The line
+   is a background, so it can grow; names and titles that wrap carry it on inline spans (.u), cloned onto each line.
+   Single-line labels sit it a fifth of an em under the baseline (from the middle of their line box). */
+:is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a) {
+  --u-y: calc(0.5lh + 0.5em);
+}
+
+.site-nav a,
+.sentence a {
+  --rest: transparent;
+}
+
+.sentence--small a {
+  --rest: var(--color-accent-line);
+}
+
+.work-name a,
+.piece-title {
+  text-decoration-line: none;
+}
+
+:is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a, .work-name .u, .piece-title .u) {
+  text-decoration-line: none;
+  background-image: linear-gradient(currentColor, currentColor), linear-gradient(var(--rest, var(--color-line-strong)), var(--rest, var(--color-line-strong)));
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  background-position: 0 var(--u-y, 100%), 0 var(--u-y, 100%);
+  background-size: 0% var(--line-thin), 100% var(--line-thin);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+:is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a):is(:hover, :focus-visible),
+:is(.work-name a, .piece-title):is(:hover, :focus-visible) .u {
+  background-size: 100% var(--line-thin), 100% var(--line-thin);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a, .work-name .u, .piece-title .u) {
+    transition: background-size 0.45s cubic-bezier(0.2, 0.6, 0.2, 1), color 0.2s ease;
+  }
+}
+
+/* Article titles turn moss under the pointer (竜也, 2026-10-18). */
+.piece-title:hover {
+  color: var(--color-accent);
+}
+
+/* Where backgrounds are dropped (forced colours, print), links fall back to a plain underline. */
+@media (forced-colors: active), print {
+  :is(.site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a, .work-name .u, .piece-title .u) {
+    background: none;
+    text-decoration-line: underline;
+  }
+}
+
 @media (forced-colors: active) {
   .work:target::before,
   .gloss:target > .section-title::before {
