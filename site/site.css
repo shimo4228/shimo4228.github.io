@@ -327,19 +327,26 @@ a {
   font-size: var(--step-1);
 }
 
-/* Links that stay on the page are dotted; links that leave are solid. */
+/* The sentence's links are coloured, not underlined (竜也, 2026-10-18): the phrases that open onto the page read as
+   links before anyone points at them. The colour sits 3:1 from both the ground and the text. */
 .sentence a {
+  color: var(--color-link);
   text-decoration-line: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: var(--color-accent-line);
-  text-decoration-thickness: 0.07em;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.06em;
   text-underline-offset: 0.27em;
-  text-decoration-skip-ink: none;
 }
 
 .sentence a:hover {
   color: var(--color-accent);
-  text-decoration-style: solid;
+  text-decoration-color: var(--color-accent-line);
+}
+
+/* The 404's smaller sentence is not large text, so the light moss would fall below 4.5:1: it takes the deeper moss
+   and keeps a thin line to tell it from the text. */
+.sentence--small a {
+  color: var(--color-accent);
+  text-decoration-color: var(--color-accent-line);
 }
 
 /* ---------- Entrances ---------- */

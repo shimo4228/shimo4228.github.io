@@ -18,6 +18,9 @@ colors:
     # the Charter / Mincho text beside it.
     muted: 6.5
     accent: 8
+    # The sentence's links (竜也, 2026-10-18: colour instead of the dotted underline). Large text, so 3:1 on the ground
+    # is AA; at 4 it also stays 3:1 apart from the text colour, so the links read as links by colour alone.
+    link: 4
     text: 14
 typography:
   scale: { baseMin: 17, baseMax: 19, ratioMin: 1.2, ratioMax: 1.333 }
@@ -64,7 +67,8 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
    Shippori Mincho, subset at build time to the few dozen characters those roles use.
 2. **Colour is a contrast ratio, not a hex value.** Colours come from the ratios above. The accent (moss) marks
    only what belongs to the commentary: quoted titles, the dotted underlines of in-page links, the landing mark.
-3. **Two kinds of link, two underlines.** Links that stay on the page are dotted; links that leave are solid.
+3. **Two kinds of link.** The root sentence's links, which stay on the page, are moss with no underline until hover
+   (竜也, 2026-10-18); links that leave are underlined solid.
 4. **Quotation marks hang.** The opening mark of a quoted title sits in the margin so the words, not the mark,
    share the column edge.
 5. **No numbers that go stale.** No counts, stars, versions, dates of last update or "latest" boxes.
@@ -84,7 +88,8 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 
 - `nav`: Home, Writing, About, then the language switch (竜也, 2026-10-18). The name above the sentence also leads home.
 - `sentence`: the root text, one `.line` per sentence in both languages. English 30px at 375 to 52px from 880px, leading 1.16, measure 19em. Japanese: step-3 capped at 7.1vw with a rem floor
-  (zoom still works), leading 1.5, one `.line` per sentence. Phrases link to `#tools`, `#mind`, the lines.
+  (zoom still works), leading 1.5, one `.line` per sentence. Phrases link to `#tools`, `#mind`, the lines, set in the `link` moss with no underline; hover deepens the moss and
+  draws a thin solid line.
 - `entrances`: the writing platforms, grouped by language, in a definition list (2 columns above 30rem), at the head
   of the writing page. Code, records and X are in the footer of every page, marked rel="me" (竜也, 2026-10-18: the home
   page carries too much at once).

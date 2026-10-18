@@ -221,3 +221,7 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Reveal no longer hides what is on screen at load (竜也: 「読み込みの瞬間一瞬現れがかくつく」): the first
   paint showed every item, then the script hid and re-faded those already in view. Only items below the first screen
   are marked `.pending`; checked at 1280 and 390 on home, writing and about (0 items blink).
+- 2026-10-18 Sentence links in colour, no dotted line (竜也: 「最初から色変えてた方がリンクするってわかるしおしゃれ」).
+  New `link` ratio 4: AA for large text on the ground, 3.5:1 from the text, so colour alone marks the link (axe
+  link-in-text-block). Hover deepens to the accent and draws a thin line. The 404's small sentence keeps the deeper
+  accent with a thin solid line (the light moss is under 4.5:1 at that size).
