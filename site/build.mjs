@@ -76,7 +76,11 @@ function clauses(h, lang) {
 
 // Running text in English: no paragraph ends on a short last line.
 function prose(s, lang) {
-  if (lang === 'ja') return txt(s, lang);
+  // In Japanese running text a Latin run is a name ("Tatsuya Shimomoto", "M1 Mac", "Claude Code"), so it stays on
+  // one line; a bracket after it may then start the next line, so a long name and its gloss never overflow a phone.
+  if (lang === 'ja') return txt(s, lang)
+    .replace(/(?<=[A-Za-z0-9.+#-]) (?=[A-Za-z0-9])/g, '&nbsp;')
+    .replace(/(?<=[A-Za-z0-9])\u2060(?=[（「『【〔])/g, '<wbr>');
   // Tie words onto the last one until the tail is at least 8 letters, so it never stands as a short last line.
   const w = esc(s).split(' ');
   let n = 1;

@@ -225,3 +225,6 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   New `link` ratio 4: AA for large text on the ground, 3.5:1 from the text, so colour alone marks the link (axe
   link-in-text-block). Hover deepens to the accent and draws a thin line. The 404's small sentence keeps the deeper
   accent with a thin solid line (the light moss is under 4.5:1 at that size).
+- 2026-10-18 Latin names stay whole in Japanese running text (竜也: 名前が途中で改行されている): prose() ties spaces inside
+  Latin runs ("Tatsuya Shimomoto", "M1 Mac"); a bracket after a Latin run may start the next line, so the lead fits
+  320px. Titles and work names are left to clauses() (tying "(AAP)" there made a widow).
