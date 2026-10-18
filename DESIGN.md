@@ -81,7 +81,7 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 
 ## Components
 
-- `nav`: language switch, Writing and About; the name above the sentence is the way home.
+- `nav`: Home, Writing, About, then the language switch (竜也, 2026-10-18). The name above the sentence also leads home.
 - `sentence`: the root text, one `.line` per sentence in both languages. English 30px at 375 to 52px from 880px, leading 1.16, measure 19em. Japanese: step-3 capped at 7.1vw with a rem floor
   (zoom still works), leading 1.5, one `.line` per sentence. Phrases link to `#tools`, `#mind`, the lines.
 - `entrances`: the writing platforms, grouped by language, in a definition list (2 columns above 30rem), at the head

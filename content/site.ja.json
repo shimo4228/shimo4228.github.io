@@ -365,6 +365,7 @@
     }
   },
   "nav": {
+    "home": "ホーム",
     "about": "この人について",
     "lang": "English",
     "langLabel": "英語",

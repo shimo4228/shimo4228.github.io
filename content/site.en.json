@@ -362,6 +362,7 @@
     }
   },
   "nav": {
+    "home": "Home",
     "about": "About",
     "lang": "日本語",
     "langLabel": "Japanese",

@@ -181,9 +181,11 @@ function nav(c, page) {
   const p = paths[c.lang];
   const o = other(c.lang);
   const items = [];
+  const here = (k) => (page === k ? ' aria-current="page"' : '');
+  items.push(`<li><a href="${p.home}"${here('home')}>${txt(c.nav.home, c.lang)}</a></li>`);
+  items.push(`<li><a href="${p.writing}"${here('writing')}>${txt(c.nav.writing, c.lang)}</a></li>`);
+  items.push(`<li><a href="${p.about}"${here('about')}>${txt(c.nav.about, c.lang)}</a></li>`);
   items.push(`<li><a href="${paths[o][page] || paths[o].home}" hreflang="${o}" lang="${o}">${esc(c.nav.lang)}</a></li>`);
-  items.push(`<li><a href="${p.writing}"${page === 'writing' ? ' aria-current="page"' : ''}>${txt(c.nav.writing, c.lang)}</a></li>`);
-  items.push(`<li><a href="${p.about}"${page === 'about' ? ' aria-current="page"' : ''}>${txt(c.nav.about, c.lang)}</a></li>`);
   const label = c.lang === 'ja' ? 'サイト' : 'Site';
   return `<header class="site-head center"><nav class="site-nav" aria-label="${label}">
   <ul role="list" class="cluster">${items.join('')}</ul>
