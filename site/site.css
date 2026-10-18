@@ -932,6 +932,49 @@ a {
   }
 }
 
+/* Opening: the name, then the sentence one line at a time, rise into place once as the page loads (竜也, 2026-10-18:
+   「クオリティ感を少しだけ」). Under a second in all; nothing waits on it, and links work while it plays. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .intro .name,
+  .sentence .line {
+    animation: open 0.9s cubic-bezier(0.2, 0.6, 0.2, 1) both;
+  }
+
+  .sentence .line:nth-child(1) { animation-delay: 0.12s; }
+  .sentence .line:nth-child(2) { animation-delay: 0.24s; }
+  .sentence .line:nth-child(3) { animation-delay: 0.36s; }
+  .sentence .line:nth-child(4) { animation-delay: 0.48s; }
+
+  /* Parallax: as the page scrolls past the opening, the sentence drifts a little slower than the page and dims, so
+     the commentary below slides over it. Gone by the time the first section reaches the top. */
+  @supports (animation-timeline: scroll()) {
+    .intro {
+      animation: drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 85vh;
+    }
+
+    .intro ~ * {
+      position: relative;
+      z-index: 1;
+    }
+  }
+}
+
+@keyframes open {
+  from {
+    opacity: 0;
+    translate: 0 0.5em;
+  }
+}
+
+@keyframes drift {
+  to {
+    opacity: 0.2;
+    translate: 0 14vh;
+  }
+}
+
 @media (forced-colors: active) {
   .work:target::before,
   .gloss:target > .section-title::before {

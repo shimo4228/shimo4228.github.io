@@ -94,6 +94,9 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
   step into the right margin. Space alone separates note from column.
 - `scroll-in`: works, intros, entrance groups, pieces and facts fade up 0.6rem as they enter the screen (a CSS view
   timeline; 竜也 chose "控えめに", 2026-10-18). No effect with reduced motion or without view-timeline support.
+- `opening`: the name and then each line of the sentence rise 0.5em into place once on load, 0.12s apart, under a second
+  in all. Scrolling past, the opening drifts down 14vh and dims to 0.2 over the first 85vh, so the sections slide over
+  it (scroll timeline; 竜也, 2026-10-18: 「クオリティ感を少しだけ」). Both off with reduced motion.
 - `section`: three, one per phrase of the bio: tools, mind, lines. Quote rail (15rem, sticky) and gloss column above
   48rem; baseline-aligned.
 - `work`: name (link to its main destination), one line, small links. Reached from the sentence, a moss bar shows in

@@ -205,3 +205,5 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   - `writing-title` added to DISPLAY_ROLES, so 書 and た are in the Shippori subset.
   - Writing page at 80rem: the platform is a third grid column on the title's baseline; hairlines stay under the column.
   - JA work names: no tracking (most are Latin).
+- 2026-10-18 Opening motion (竜也: パララックスとフェードインで「クオリティ感を少しだけ」): name and sentence lines rise in
+  on load, staggered; a scroll-timeline parallax drifts and dims the opening as the page scrolls. Reduced motion: none.
