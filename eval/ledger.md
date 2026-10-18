@@ -110,3 +110,4 @@ EN sentence (竜也, 2026-10-18): each sentence starts its own line, as in Japan
 Mind section (竜也, 2026-10-18): adds the essay "After I Ran Out of Things to Ask AI, One Desire Remained" (JA on note, Sakamaki account; EN on Substack); lines are its first sentence.
 Entrances (竜也, 2026-10-18): Sakamaki note and X added (also to sameAs, matching the hub). Entrance links widen their target with padding + negative margin instead of min-width, so "X" sits as close to its description as other names.
 Analytics (竜也, 2026-10-18): Cloudflare Web Analytics token added as the build default (public value); the preview artifact is built without it.
+Live check (竜也, 2026-10-18): JA brackets no longer break from their word (no line ends on （ or starts with it; a word joiner holds it), and the JA sentence may break after 、 before a linked word, so "AI の" no longer stands alone at ~1000px.

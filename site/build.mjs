@@ -33,7 +33,9 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const tieMixed = (h) => h.replace(/ /g, '&nbsp;').replace(/<wbr>&nbsp;/g, '&nbsp;<wbr>');
 
 function txt(s, lang) {
-  if (lang === 'ja') return tieMixed(budoux.parse(s).map(esc).join('<wbr>'));
+  // Brackets stay with their words: no line ends on （ or starts with ）, and none starts with （ either, since the
+  // bracket's built-in half space would read as an indent (a word joiner holds it to the word before).
+  if (lang === 'ja') return tieMixed(budoux.parse(s).map(esc).join('<wbr>')).replace(/<wbr>([（「『【〔])/g, '$1').replace(/([^\s>;])([（「『【〔])/g, '$1\u2060$2').replace(/([（「『【〔])<wbr>/g, '$1').replace(/<wbr>([）」』】〕、。])/g, '$1');
   return esc(s);
 }
 
@@ -61,6 +63,8 @@ function sentence(c, base = '') {
     // A linked phrase never breaks inside (no <wbr>), so its underline stays on one line.
     let t = p.link ? (c.lang === 'ja' ? tieMixed(esc(p.text)) : esc(p.text)) : txt(p.text, c.lang);
     if (c.lang === 'en') t = t.replace('the age of AI.', 'the&nbsp;age&nbsp;of&nbsp;AI.');
+    // Japanese: a phrase may break after 、 even when the next phrase is a link (BudouX sees each part alone).
+    if (c.lang === 'ja' && !p.link) t = t.replace(/、$/, '、<wbr>');
     return p.link ? `<a href="${base}${p.link}">${t}</a>` : t;
   });
   // Each sentence starts its own line, in both languages.
