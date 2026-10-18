@@ -114,3 +114,17 @@ Live check (竜也, 2026-10-18): JA brackets no longer break from their word (no
 Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku allows (keep-all only on headings, the sentence, names, labels), and only Latin–Japanese spaces are tied, so About lines fill the measure instead of going ragged.
 
 - 2026-10-18 JA third sentence: break after 「著者性、」 so lines follow the section split (判断・責任・著者性 | 人の注意). Sentence parts take optional `open: keep|tail` / `close` groups: `keep` is inline-block (moves whole to the next line on phones), `tail` is a block. Measured: 320/375 → 「AI の時代の／判断、責任、著者性、／人の注意を探る。」; 768/1000/1280 → 「AI の時代の判断、責任、著者性、／人の注意を探る。」. No overflow; eval 0 failing.
+
+- 2026-10-18 phone/PC detail loop (竜也: Japanese looked much smaller than English on PC).
+  - Measured first: the Japanese line 「AI の時代の判断、責任、著者性、」 already fills the 46rem column at 45px, so the
+    Japanese cannot grow on PC without losing the break after 著者性. Balanced from the English side instead:
+    English sentence 60→52px on PC, 35.7→30px on a 375 phone (clamp(1.625rem, 0.75rem + 4.8vw, 3.25rem)); ratio to
+    the Japanese is about 1.15 on PC and 1.13 on phones. Japanese phone cap 6.9vw→7.1vw (25.9→26.6px at 375).
+  - English phrasing: `phrasing` in site.en.json, "|" = allowed break, "[ ]" = keep group. Lines now, 768–1280:
+    Building AI agents, / and watching the mind / through meditation. / Exploring judgment, / accountability,
+    authorship, / and human attention / in the age of AI. Phones (320, 375) split accountability, / authorship,.
+    Before: "Building AI agents, and / watching the mind through / meditation." and "human attention in / the age of AI."
+  - Japanese display face: Shippori Mincho 400 after Hiragino Mincho in the stack, subset at build to the display
+    roles' characters (83 chars, 17.7 KB, unicode-range so EN pages never fetch it). Fixes Android, where there is no
+    system Mincho and the sentence fell back to a Gothic face; Apple devices keep Hiragino and download nothing.
+  - eval 0 failing / 7 raw-px warnings; no overflow at 320–1280.

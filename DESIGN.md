@@ -24,7 +24,13 @@ typography:
     file: newsreader-latin-400-normal.woff2
     weight: 400
     stack: '"Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif'
-    stackJa: '"Newsreader", "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", serif'
+    stackJa: '"Newsreader", "Hiragino Mincho ProN", "Shippori Mincho Display", "Yu Mincho", "YuMincho", "Noto Serif JP", serif'
+  displayJa:
+    # Kanji and kana for the display roles where the system has no Hiragino Mincho (Windows, Android, Linux).
+    # Subset at build time to the characters those roles use; Apple devices never download it.
+    family: Shippori Mincho Display
+    source: site/fonts/ShipporiMincho-Regular.ttf
+    weight: 400
   body:
     stack: 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
     stackJa: 'system-ui, -apple-system, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic UI", Meiryo, sans-serif'
@@ -47,7 +53,8 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 
 1. **One web font, one weight, one job.** Newsreader 400 appears only in the root sentence, the quoted section
    titles, the name, and the About page's opening paragraphs. Everything else is the system face. In Japanese the
-   serif falls back to the system Mincho for kana and kanji; no Japanese web font is loaded.
+   serif takes Hiragino Mincho where the system has it (Apple devices download nothing); elsewhere it takes
+   Shippori Mincho, subset at build time to the few dozen characters those roles use.
 2. **Colour is a contrast ratio, not a hex value.** Colours come from the ratios above. The accent (moss) marks
    only what belongs to the commentary: quoted titles, the dotted underlines of in-page links, the landing mark.
 3. **Two kinds of link, two underlines.** Links that stay on the page are dotted; links that leave are solid.
@@ -57,7 +64,11 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 6. **Every string has a source.** The bio is verbatim from GitHub; project lines are verbatim from the hub README
    (EN / JA). Anything Claude wrote is marked `draft` in `content/` until the author has read it.
 7. **Space and type are fluid.** Sizes come from the Utopia scale between 360 and 1280px; no breakpoint changes a
-   size, only the layout (one column below 48rem, quote rail and gloss above it).
+   size, only the layout (one column below 48rem, quote rail and gloss above it). The root sentence is the one
+   exception: its own clamp keeps the English at about 1.15 times the Japanese, the optical pair for Latin over
+   kanji and kana, and the Japanese is capped by width so its lines fall where they are meant to.
+8. **Lines turn over between phrases.** The root sentence breaks only where its meaning divides: English between
+   the phrases of `phrasing` (every other space is tied), Japanese after the `keep` and `tail` groups.
 8. **Japanese is set, not translated into the English layout.** BudouX phrase breaks, `word-break: keep-all` on all
    running text, `line-break: strict`, looser leading, 「」 hung a full em. Spaces between Latin and kana are
    non-breaking; a break point never starts a line with a space. The sentence is one hanging line per sentence.
@@ -65,7 +76,7 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 ## Components
 
 - `nav`: language switch and About only; the name above the sentence is the way home.
-- `sentence`: the root text, one `.line` per sentence in both languages. step-4, leading 1.16, measure 19em. Japanese: step-3 capped by width with a rem floor
+- `sentence`: the root text, one `.line` per sentence in both languages. English 30px at 375 to 52px from 880px, leading 1.16, measure 19em. Japanese: step-3 capped at 7.1vw with a rem floor
   (zoom still works), leading 1.5, one `.line` per sentence. Phrases link to `#tools`, `#mind`, the lines.
 - `entrances`: the platforms, grouped by language, in a definition list (2 × 2 above 30rem).
 - `section`: three, one per phrase of the bio: tools, mind, lines. Quote rail (15rem, sticky) and gloss column above

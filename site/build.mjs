@@ -3,6 +3,8 @@
 // The Cloudflare Web Analytics beacon is the only script on the site. The token is public (it ships in every page);
 // CF_BEACON_TOKEN overrides it, and an empty value builds without the beacon.
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import subsetFont from 'subset-font';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadDefaultJapaneseParser } from 'budoux';
@@ -64,13 +66,39 @@ const ogLocale = { en: 'en_US', ja: 'ja_JP' };
 // ---------- Sentence ----------
 // The root text with its phrases linked. The plain text must equal the bio (EN) exactly.
 function sentence(c, base = '') {
+  // English: a line may turn over only between the phrases of `phrasing` ("|"); every other space is tied.
+  // [ ... ] marks phrases kept together on one line when they fit (an inline-block), like the Japanese "keep".
+  let breakAt = null;
+  const opens = new Set();
+  const closes = new Set();
+  if (c.phrasing) {
+    if (c.phrasing.replace(/[[\]]/g, '').replaceAll('|', ' ') !== c.bio) throw new Error(`phrasing drift:\n${c.phrasing}\n${c.bio}`);
+    breakAt = new Set();
+    let i = 0;
+    for (const ch of c.phrasing) {
+      if (ch === '[') opens.add(i);
+      else if (ch === ']') closes.add(i);
+      else { if (ch === '|') breakAt.add(i); i++; }
+    }
+  }
+  let offset = 0;
   const parts = c.sentence.map((p) => {
-    // A linked phrase never breaks inside (no <wbr>), so its underline stays on one line.
-    let t = p.link ? (c.lang === 'ja' ? tieMixed(esc(p.text)) : esc(p.text)) : txt(p.text, c.lang);
-    if (c.lang === 'en') t = t.replace('the age of AI.', 'the&nbsp;age&nbsp;of&nbsp;AI.');
+    let t;
+    let lead = ''; // a group that opens where this part starts, kept outside its link
+    if (breakAt) {
+      const chars = [...p.text];
+      if (p.link && chars.some((_, k) => (k > 0 && opens.has(offset + k)) || closes.has(offset + k))) throw new Error(`phrasing group splits the link "${p.text}"`);
+      t = chars.map((ch, k) => (k > 0 && opens.has(offset + k) ? '\uE000keep\uE002' : '') + (closes.has(offset + k) ? '\uE001' : '') + (ch === ' ' && !breakAt.has(offset + k) ? '&nbsp;' : esc(ch))).join('');
+      if (opens.has(offset)) lead = '\uE000keep\uE002';
+      offset += chars.length;
+      if (closes.has(offset) && offset === c.bio.length) t += '\uE001';
+    } else {
+      // A linked phrase never breaks inside (no <wbr>), so its underline stays on one line.
+      t = p.link ? (c.lang === 'ja' ? tieMixed(esc(p.text)) : esc(p.text)) : txt(p.text, c.lang);
+    }
     // Japanese: a phrase may break after 、 even when the next phrase is a link (BudouX sees each part alone).
     if (c.lang === 'ja' && !p.link) t = t.replace(/、$/, '、<wbr>');
-    t = p.link ? `<a href="${base}${p.link}">${t}</a>` : t;
+    t = lead + (p.link ? `<a href="${base}${p.link}">${t}</a>` : t);
     // Optional groups (Japanese): "keep" moves to the next line whole; "tail" always takes its own line.
     if (p.open) t = `\uE000${p.open}\uE002${t}`;
     if (p.close) t = t.endsWith('<wbr>') ? `${t.slice(0, -5)}\uE001<wbr>` : `${t}\uE001`;
@@ -328,14 +356,53 @@ const out = (p, s) => {
   writeFileSync(join(dist, p), s);
 };
 
-out('site.css', tokens.css + '\n' + readFileSync(join(here, 'site.css'), 'utf8'));
+const pages = new Map();
+for (const lang of ['en', 'ja']) {
+  pages.set(`${paths[lang].home.slice(1)}index.html`, home(content[lang]));
+  pages.set(`${paths[lang].about.slice(1)}index.html`, about(content[lang]));
+}
+pages.set('404.html', notFound());
+
+// The Japanese display face, cut down to the kanji, kana and punctuation the display roles use.
+const DISPLAY_ROLES = ['name', 'sentence', 'section-title', 'lead', 'lost-title'];
+function displayText(html) {
+  let text = '';
+  const open = /<([a-z0-9]+)\b[^>]*\bclass="([^"]*)"[^>]*>/g;
+  let m;
+  while ((m = open.exec(html))) {
+    if (!m[2].split(/\s+/).some((c) => DISPLAY_ROLES.includes(c))) continue;
+    const tag = new RegExp(`<(/?)${m[1]}\\b[^>]*>`, 'g');
+    tag.lastIndex = open.lastIndex;
+    let depth = 1;
+    let t;
+    while (depth && (t = tag.exec(html))) depth += t[1] ? -1 : 1;
+    text += html.slice(open.lastIndex, t ? t.index : html.length).replace(/<[^>]*>/g, '');
+    open.lastIndex = tag.lastIndex;
+  }
+  return text;
+}
+const ja = design.typography.displayJa;
+const jaChars = [...new Set([...[...pages.values()].map(displayText).join('')].filter((ch) => ch.codePointAt(0) >= 0x2e80))].sort();
+const jaFont = await subsetFont(readFileSync(join(root, ja.source)), jaChars.join(''), { targetFormat: 'woff2' });
+const jaFile = `shippori-mincho-display.${createHash('sha256').update(jaFont).digest('hex').slice(0, 10)}.woff2`;
+const jaRange = jaChars.map((ch) => `U+${ch.codePointAt(0).toString(16).toUpperCase()}`).join(', ');
+const jaFace = `/* ${jaChars.length} characters from the display roles, subset from ${ja.source} (SIL OFL 1.1, fonts/OFL.txt). */
+@font-face {
+  font-family: "${ja.family}";
+  src: url("/fonts/${jaFile}") format("woff2");
+  font-weight: ${ja.weight};
+  font-style: normal;
+  font-display: swap;
+  unicode-range: ${jaRange};
+}
+`;
+
+out('site.css', tokens.css + jaFace + '\n' + readFileSync(join(here, 'site.css'), 'utf8'));
 mkdirSync(join(dist, 'fonts'), { recursive: true });
 copyFileSync(join(root, 'node_modules/@fontsource/newsreader/files', design.typography.display.file), join(dist, 'fonts', design.typography.display.file));
-for (const lang of ['en', 'ja']) {
-  out(`${paths[lang].home.slice(1)}index.html`, home(content[lang]));
-  out(`${paths[lang].about.slice(1)}index.html`, about(content[lang]));
-}
-out('404.html', notFound());
+writeFileSync(join(dist, 'fonts', jaFile), jaFont);
+copyFileSync(join(root, 'site/fonts/ShipporiMincho-OFL.txt'), join(dist, 'fonts', 'OFL.txt'));
+for (const [p, html] of pages) out(p, html);
 out('favicon.svg', favicon());
 out(
   'robots.txt',
@@ -367,4 +434,4 @@ ${urlEntry('about')}
 `,
 );
 out('.nojekyll', '');
-console.log('built dist/');
+console.log(`built dist/ (Japanese display face: ${jaChars.length} characters, ${(jaFont.length / 1024).toFixed(1)} KB)`);

@@ -214,7 +214,9 @@ a {
   margin-block: var(--space-xs) var(--space-xl);
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--step-4);
+  /* Below step-4 at both ends (30px on a 375px phone, 52px from about 880px), so the English sits at about 1.15
+     times the Japanese line beside it, the usual optical pair for Latin over kanji and kana. */
+  font-size: clamp(1.625rem, 0.75rem + 4.8vw, 3.25rem);
   line-height: 1.16;
   letter-spacing: -0.012em;
   max-inline-size: 19em;
@@ -222,9 +224,9 @@ a {
 }
 
 .sentence:lang(ja) {
-  /* About 12.5 characters across a 375px phone, so the first two sentences stay on one line each.
+  /* About 12 characters across a 375px phone, so the first two sentences stay on one line each.
      The rem floor keeps it growing under page and text zoom (WCAG 1.4.4). */
-  font-size: max(min(var(--step-3), 6.9vw), 1.375rem);
+  font-size: max(min(var(--step-3), 7.1vw), 1.375rem);
   line-height: 1.5;
   letter-spacing: 0.02em;
   max-inline-size: 23em;
@@ -235,7 +237,7 @@ a {
   display: block;
 }
 
-/* Japanese: a "keep" group moves to the next line whole rather than splitting (phones);
+/* A "keep" group moves to the next line whole rather than splitting (phones);
    a "tail" group always starts its own line, so the break falls where the sections divide. */
 .sentence .keep {
   display: inline-block;
