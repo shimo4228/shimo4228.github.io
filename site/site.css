@@ -137,7 +137,15 @@ a {
 }
 
 .site-nav ul {
-  --cluster-space: 0 var(--space-m);
+  --cluster-space: 0 var(--space-s);
+  /* Four items fit one line from 375px; at 320px the last one wraps, and stays at the right edge with the rest. */
+  justify-content: flex-end;
+}
+
+@media (min-width: 30rem) {
+  .site-nav ul {
+    --cluster-space: 0 var(--space-m);
+  }
 }
 
 .site-nav a,
