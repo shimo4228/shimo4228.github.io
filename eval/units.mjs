@@ -322,6 +322,42 @@ const checks = {
     return bad;
   }, JA_TEXT) },
 
+  'title-ties': { pages: ['writing/'], widths: [320, 375, 414, 768, 1024, 1280, 1440], run: (page) => page.evaluate(() => {
+    const bad = [];
+    for (const t of [...document.querySelectorAll('.piece-title')].filter(__visible)) {
+      const lines = __linesOf(t).map((l) => l.text.trim()).filter(Boolean);
+      lines.forEach((l, i) => {
+        if (i > 0 && l.startsWith('—')) bad.push(`line starts with a dash: 「${l.slice(0, 16)}」`);
+        if (i < lines.length - 1 && /(?:^|\s)(?:\d{1,3}|a|A|I)$/.test(l)) bad.push(`line ends on 「${l.slice(-12)}」`);
+        if (i < lines.length - 1 && /Claude$/.test(l) && /^Code\b/.test(lines[i + 1])) bad.push(`Claude / Code split: 「${l.slice(-12)}」`);
+      });
+    }
+    return bad;
+  }) },
+
+  'title-quote-hang': { pages: ['writing/'], widths: [320, 768, 1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    for (const t of [...document.querySelectorAll('.piece-title')].filter(__visible)) {
+      const first = __linesOf(t)[0]?.chars.find((c) => !/[“‘\s]/.test(c.ch));
+      if (!first) continue;
+      const d = first.left - t.getBoundingClientRect().left;
+      if (Math.abs(d) > 0.5) bad.push(`「${t.textContent.trim().slice(0, 20)}」 first letter ${d.toFixed(1)}px from the edge`);
+    }
+    return bad;
+  }) },
+
+  'ja-title-phrases': { pages: ['ja/writing/', 'ja/'], widths: [320, 375, 414, 768, 1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    for (const t of [...document.querySelectorAll('.piece-title, .work-line')].filter(__visible)) {
+      const lines = __linesOf(t).map((l) => l.text.trim()).filter(Boolean);
+      for (let i = 1; i < lines.length; i++) {
+        if (/[）」』)]$/.test(lines[i - 1]) && /^[はのがをにとでもへ]/.test(lines[i])) bad.push(`particle after a bracket starts a line: 「${lines[i - 1].slice(-6)} / ${lines[i].slice(0, 6)}」`);
+        if (/Claude$/.test(lines[i - 1]) && /^Code\b/.test(lines[i])) bad.push(`Claude / Code split: 「${lines[i - 1].slice(-10)}」`);
+      }
+    }
+    return bad;
+  }) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
@@ -352,7 +388,25 @@ const results = [];
 const frozen = units.filter((u) => u.status === 'frozen');
 for (const u of frozen) {
   const fails = [];
-  if (u.id === 'skip-link-visible') {
+  if (u.id === 'focus-in-intro') {
+    // Motion on: scrolled part-way past the opening, a sentence link that takes focus is drawn at full opacity.
+    for (const [w, h] of [[1280, 800], [1280, 600], [375, 812]]) for (const p of ['', 'ja/']) {
+      const mctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'no-preference' });
+      const mp = await mctx.newPage();
+      await mp.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+      await mp.waitForTimeout(1500);
+      const o = await mp.evaluate(async () => {
+        window.scrollTo(0, innerHeight * 0.45);
+        await new Promise((r) => setTimeout(r, 150));
+        const links = [...document.querySelectorAll('.intro .sentence a')];
+        links[links.length - 1].focus({ preventScroll: true });
+        await new Promise((r) => setTimeout(r, 150));
+        return parseFloat(getComputedStyle(document.querySelector('.intro')).opacity);
+      });
+      if (o < 0.99) fails.push(`/${p} ${w}x${h}: focused sentence link drawn at opacity ${o.toFixed(2)}`);
+      await mctx.close();
+    }
+  } else if (u.id === 'skip-link-visible') {
     // Motion on: the focused skip link is the topmost element under itself, on every page and width.
     for (const w of [320, 375, 768, 1000]) for (const p of ['', 'ja/']) {
       const mctx = await browser.newContext({ viewport: { width: w, height: 800 }, reducedMotion: 'no-preference' });
@@ -378,8 +432,9 @@ for (const u of frozen) {
         for (const el of [...document.querySelectorAll('a, button')].filter(__visible)) {
           el.focus();
           if (document.activeElement !== el || !el.matches(':focus-visible')) continue;
-          const cs = getComputedStyle(el);
-          if (!(cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 1)) out.push(`「${el.textContent.trim().slice(0, 16)}」`);
+          // The ring is on the link, or on its underlined words (.u) when the link is a wider grid cell.
+          const ring = (e) => { const cs = getComputedStyle(e); return cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 1; };
+          if (!ring(el) && !(el.querySelector(':scope > .u') && ring(el.querySelector(':scope > .u')))) out.push(`「${el.textContent.trim().slice(0, 16)}」`);
         }
         return out;
       });
@@ -455,7 +510,7 @@ for (const u of frozen) {
         const links = [...document.querySelectorAll('.pending a')].slice(0, 12);
         for (const a of links) {
           a.focus();
-          await new Promise((r) => setTimeout(r, 900));
+          await new Promise((r) => setTimeout(r, 50)); // at once: no fade or slide after focus
           let o = 1;
           for (let e = a; e; e = e.parentElement) o *= parseFloat(getComputedStyle(e).opacity);
           if (o < 0.9) out.push(`「${a.textContent.trim().slice(0, 20)}」 opacity ${o.toFixed(2)}`);

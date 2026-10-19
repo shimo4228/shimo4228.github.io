@@ -332,3 +332,30 @@ Fresh reviewers on the round-4 build (same four roles, new agents, a copy withou
 Round 5 notes: 7 adopted, so the round is not clean. One adopted finding was a regression the loop itself made in
 round 4. note-column-x's first mutation moved the note by margin instead of padding, which renders identically; the
 mutation now reverts the grid track. 37 frozen units, all green, each red under its mutation.
+
+## Round 6 — detail-loop (2026-10-20)
+
+Fresh reviewers on the round-5 build. Reports in `reviews/r6-*.md`. The third and last round of this session.
+
+| ID | Finding | Decision | Why / unit |
+|---|---|---|---|
+| r6-typography-en 1 | label underlines cut descenders | author call | third round to raise it (r4, r5, r6); the author's "fifth of an em" renders at 0.15em and would still cut the 0.218em descenders at 0.2em |
+| r6-typography-en 2, r6-typography-ja 3 | titles break before a dash, after a number, inside Claude Code | adopted | title-ties (EN), ja-title-phrases (JA); ties are `.tie` spans, not U+00A0 (body-nbsp-width) |
+| r6-typography-en 3 | an opening quote in a writing title does not hang | adopted | title-quote-hang |
+| r6-typography-en 4 | sentence keep group misses 375 by 3px | not adopted | recorded decision (2026-10-18); the reviewer called the fix fragile |
+| r6-typography-en 5 | Newsreader 16pt optical size | author call | repeat |
+| r6-art 1, r6-typography-ja 2 | JA work lines balanced: words cut, ragged edge | adopted | a regression from round 5 (balance reached Japanese); `text-wrap: pretty` plus a tail tie; title-no-widow, ja-title-phrases |
+| r6-art 2 | piece title hover and ring span the grid cell | adopted | focus-visible (ring on .u), `justify-self: start` |
+| r6-art 3 | dark moss twice the light chroma | author call | colour tokens; suggested oklch(0.585 0.055 154) |
+| r6-art 4 | writing and 404 titles outside DESIGN Rules 1–2 | author call | the author's document |
+| r6-art 5 | mislabeled section comments in site.css | adopted | moved (no unit: code comments) |
+| r6-typography-ja 1 | particle after a closing bracket starts a line | adopted | ja-title-phrases |
+| r6-typography-ja 4 | About lead (display) breaks inside words | author call | live check 2 lists the display roles kept whole; the lead is not among them |
+| r6-typography-ja 5, 6 | DESIGN keep-all wording; Latin–Japanese spacing | author call | repeats |
+| r6-accessibility 1 | focus on a dimmed sentence link at 1.62:1 | adopted | focus-in-intro (the dim itself stays an author call) |
+| r6-accessibility 2 | a focused pending item still fades and slides | adopted | focus-not-hidden, tightened to 50ms |
+
+Round 6 notes: 9 adopted, so the session ends without a clean round. Interference ran through four units this
+round: JA work-line `pretty` left 「せる。」 alone (title-no-widow) → a tail tie → the tie overflowed at 200% text zoom
+(reflow-text-zoom) → ties became inline-blocks that wrap only when wider than the line. A bug in `clauses()` (a
+one-clause title returned untied) was found by ja-title-phrases. 41 frozen units, all green.

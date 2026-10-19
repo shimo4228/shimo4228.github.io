@@ -34,6 +34,8 @@
     instances: ".section-title:lang(ja)"
   cause: ".section-title:lang(ja):has(> q:first-child) { text-indent }, :lang(ja) { text-spacing-trim }"
   relations:
+    - unit: edge-alignment
+      how: co-arising — a wrong hang moves the title's first letter off the shared edge
     - unit: ja-kinsoku-start
       how: co-arising (see there)
   origin: r3-typography 2, ledger R3 T2
@@ -344,8 +346,8 @@
   what: A multi-line article title or work line does not end on one word (EN) or on two characters or fewer (JA).
   why: A lone word under a title reads as a widow, down a list of 80 titles.
   eval: {judge: machine, check: title-no-widow, env: "Chrome on macOS, reduced motion", expect: "0 at 375-1440", instances: ".piece-title on the writing pages, .work-line on the home pages"}
-  cause: "site.css .piece-title { text-wrap: balance }; .work-line:not(:has(.tie)) { text-wrap: balance }"
-  origin: r4-typography-en 1, r4-typography-ja 7, r5-typography-en 3
+  cause: "site.css .piece-title { text-wrap: balance }; English untied .work-line balance; build.mjs prose() ties a Japanese paragraph's last phrases (5+ characters)"
+  origin: r4-typography-en 1, r4-typography-ja 7, r5-typography-en 3, r6-art 1, r6-typography-ja 2
   status: frozen
 
 - id: link-label-whole
@@ -417,9 +419,9 @@
   field: Accessibility
   what: A link that takes keyboard focus is visible at once, even inside an item still waiting to reveal.
   why: Focus scrolling can stop an item inside the observer's margin, leaving a focus ring on an invisible link (WCAG 2.4.7, 2.4.11).
-  eval: {judge: machine, check: focus-not-hidden, env: "Chrome, motion on", expect: "effective opacity >= 0.9 within 0.9s of focus for links in .pending items", instances: "/ /ja/ /writing/ at 375 and 1280"}
+  eval: {judge: machine, check: focus-not-hidden, env: "Chrome, motion on", expect: "effective opacity >= 0.9 within 50ms of focus for links in .pending items (no fade or slide)", instances: "/ /ja/ /writing/ at 375 and 1280"}
   cause: "site.css .reveal .pending:focus-within"
-  origin: r4-accessibility 1
+  origin: r4-accessibility 1, r6-accessibility 2
   status: frozen
 
 - id: sentence-link-large
@@ -497,4 +499,51 @@
   eval: {judge: machine, check: skip-link-visible, env: "Chrome, motion on", expect: "0 covered sample points in the focused skip link at 320-1000 on / and /ja/"}
   cause: "site.css .skip-link { z-index: 2 }"
   origin: r5-accessibility 2
+  status: frozen
+
+# Round r6 (2026-10-20)
+
+- id: title-ties
+  field: English typesetting
+  what: In English article titles a spaced dash stays with the word before it, a short number or one-letter word with the word after it, and "Claude Code" stays whole.
+  why: A line that starts with a dash, or ends on "3" or "a", breaks the title's phrases.
+  eval: {judge: machine, check: title-ties, env: "Chrome on macOS", expect: "0 such breaks at 320-1440 on /writing/", instances: ".piece-title"}
+  cause: "build.mjs tieTitle(): .tie spans around the dash, number and Claude Code"
+  relations:
+    - unit: body-nbsp-width
+      how: co-arising — the reviewer's fix used U+00A0; ties are spans so Charter draws an ordinary space
+  origin: r6-typography-en 2
+  status: frozen
+
+- id: title-quote-hang
+  field: English typesetting
+  what: An article title that opens with a quotation mark hangs it; the first letter sits on the column edge.
+  why: The quoted title started a quote-width inside its neighbours.
+  eval: {judge: machine, check: title-quote-hang, env: "Chrome on macOS", expect: "every title's first letter within 0.5px of its box edge, 320-1280"}
+  cause: "build.mjs .hang on titles opening with “ or ‘; site.css text-indent -0.42em where hanging-punctuation is unsupported"
+  relations:
+    - unit: ja-quote-hang
+      how: support — the same rule, DESIGN rule 4
+  origin: r6-typography-en 3
+  status: frozen
+
+- id: focus-in-intro
+  field: Accessibility
+  what: A sentence link that takes keyboard focus is drawn at full strength, however far the opening has dimmed.
+  why: Shift+Tab back into the dimmed sentence put focus on a link at 1.6:1 (WCAG 1.4.3, 2.4.7).
+  eval: {judge: machine, check: focus-in-intro, env: "Chrome, motion on", expect: ".intro opacity >= 0.99 with a sentence link focused, scrolled 45% of the viewport, at 1280x800, 1280x600, 375x812"}
+  cause: "site.css .intro:focus-within { opacity: 1 !important } under motion"
+  relations:
+    - unit: drift-gap
+      how: co-arising — the same drift animation
+  origin: r6-accessibility 1
+  status: frozen
+
+- id: ja-title-phrases
+  field: Japanese typesetting
+  what: In Japanese titles and work lines a particle stays with the bracketed word before it, and a Latin name stays whole.
+  why: A line that opens with は or の after 」 cuts the particle from its word; "Claude / Code" split one name.
+  eval: {judge: machine, check: ja-title-phrases, env: "Chrome on macOS", expect: "0 lines opening with a particle after a closing bracket, 0 Claude / Code splits, 320-1280", instances: ".piece-title on /ja/writing/, .work-line on /ja/"}
+  cause: "build.mjs txt(): U+2060 after a closing bracket before a particle; clauses(): Latin spaces before <wbr> tied"
+  origin: r6-typography-ja 1, r6-typography-ja 3
   status: frozen

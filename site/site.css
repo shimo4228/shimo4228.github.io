@@ -633,9 +633,14 @@ a {
   max-inline-size: var(--measure);
 }
 
-/* A line the build could not tie (its last two words are too long) is balanced instead, so it ends on more than one word. */
-.work-line:not(:has(.tie)) {
+/* An English line the build could not tie (its last two words are too long) is balanced instead, so it ends on more
+   than one word. Japanese running text fills the measure instead (balance would cut its words at arbitrary points). */
+.work-line:not(:has(.tie)):not(:lang(ja)) {
   text-wrap: balance;
+}
+
+.work-line:lang(ja) {
+  text-wrap: pretty;
 }
 
 .work-links {
@@ -932,7 +937,6 @@ a {
   color: var(--color-text);
 }
 
-/* ---------- 404 ---------- */
 /* Wide screens: the platform steps into the margin note, as a work's links do on the home page. */
 @media (min-width: 80rem) {
   /* The platform is a third grid column running into the margin, so it shares the row's baseline. The hairlines
@@ -962,6 +966,7 @@ a {
   }
 }
 
+/* ---------- 404 ---------- */
 .lost {
   display: grid;
   gap: var(--space-s);
@@ -984,7 +989,7 @@ a {
   border-block-start: var(--line-thin) solid var(--color-line);
 }
 
-/* ---------- Forced colours and print ---------- */
+/* ---------- Reveal ---------- */
 /* Reveal: each work, intro, quoted title and piece below the first screen fades up once as it comes into view (the
    script in the page head marks those as .pending, then .in; 竜也, 2026-10-18, after hiraoku.dev/blog). What is on
    screen at load is never hidden. Without the script, or with reduced motion, nothing is hidden. */
@@ -1002,6 +1007,10 @@ a {
   .reveal .pending:focus-within {
     opacity: 1;
     translate: 0 0;
+  }
+
+  .reveal .pending:focus-within {
+    transition: none;
   }
 }
 
@@ -1120,6 +1129,7 @@ a {
   color: var(--color-accent);
 }
 
+/* ---------- Forced colours and print ---------- */
 /* Where backgrounds are dropped (forced colours, print), links fall back to a plain underline. */
 @media (forced-colors: active), print {
   :is(.site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a, .work-name .u, .piece-title .u) {
@@ -1210,5 +1220,42 @@ main :is(p, dd, li) {
 @media print {
   .sentence a {
     text-decoration-color: currentColor;
+  }
+}
+
+/* An article title that opens with a quotation mark hangs it, as the section titles do; Safari hangs it itself. */
+@supports not (hanging-punctuation: first) {
+  .piece-title.hang {
+    text-indent: -0.42em;
+  }
+}
+
+/* A tie in an article title or a Japanese paragraph turns over whole, and wraps inside only when it alone is wider than
+   the line (text zoom). Nothing follows a paragraph's tail tie, so no line starts with a space after it. */
+.piece-title .tie,
+:lang(ja) :is(p, dd, li) > .tie {
+  display: inline-block;
+  max-inline-size: 100%;
+  white-space: normal;
+}
+
+/* An article title's hover and focus belong to its words, not to the empty end of its grid cell. */
+.piece-title {
+  justify-self: start;
+}
+
+.piece-title:focus-visible {
+  outline: none;
+}
+
+.piece-title:focus-visible .u {
+  outline: 2px solid var(--color-text);
+  outline-offset: 3px;
+}
+
+/* The opening dims as the page scrolls past it; a link in it that takes keyboard focus is shown at full strength. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .intro:focus-within {
+    opacity: 1 !important;
   }
 }

@@ -50,7 +50,9 @@ const tieMixed = (h) => h
 function txt(s, lang) {
   // Brackets stay with their words: no line ends on （ or starts with ）, and none starts with （ either, since the
   // bracket's built-in half space would read as an indent (a word joiner holds it to the word before).
-  if (lang === 'ja') return tieMixed(budoux.parse(s).map(esc).join('<wbr>')).replace(/<wbr>([（「『【〔])/g, '$1').replace(/([^\s>;])([（「『【〔])/g, '$1\u2060$2').replace(/([（「『【〔])<wbr>/g, '$1').replace(/<wbr>([）」』】〕、。])/g, '$1');
+  if (lang === 'ja') return tieMixed(budoux.parse(s).map(esc).join('<wbr>')).replace(/<wbr>([（「『【〔])/g, '$1').replace(/([^\s>;])([（「『【〔])/g, '$1\u2060$2').replace(/([（「『【〔])<wbr>/g, '$1').replace(/<wbr>([）」』】〕、。])/g, '$1')
+    // A closing bracket holds the particle after it (「価値」は): the line breaks at the phrase boundary, not after 」.
+    .replace(/([）」』】〕)])(?=[^\s<、。—\u2060&])/g, '$1\u2060');
   return esc(s);
 }
 
@@ -65,12 +67,12 @@ const underlined = (h) => (h.includes('class="u"') ? h : `<span class="u">${h}</
 function clauses(h, lang) {
   if (lang !== 'ja') return h;
   const tied = h
-    .replace(/(?<=[A-Za-z0-9.+#-]) (?=[A-Za-z0-9])/g, '&nbsp;')
+    .replace(/(?<=[A-Za-z0-9.+#-]) (?:<wbr>)?(?=[A-Za-z0-9])/g, '&nbsp;')
     .replace(/—(?:&nbsp;| )/g, '—&nbsp;');
   const parts = tied
     .split(/(?<=[、。])(?:<wbr>)?|(?<=&nbsp;| )(?:<wbr>)?(?<!—)(?=—)|(?<![\s;—])(?:<wbr>)?(?=—)/)
     .filter(Boolean);
-  if (parts.length < 2) return h;
+  if (parts.length < 2) return tied;
   // The 、 and 。 stay outside the underline, as in the root sentence, so a line ending on one has no underlined blank half.
   return parts
     .map((x) => {
@@ -85,9 +87,17 @@ function clauses(h, lang) {
 function prose(s, lang) {
   // In Japanese running text a Latin run is a name ("Tatsuya Shimomoto", "M1 Mac", "Claude Code"), so it stays on
   // one line; a bracket after it may then start the next line, so a long name and its gloss never overflow a phone.
-  if (lang === 'ja') return txt(s, lang)
-    .replace(/(?<=[A-Za-z0-9.+#-]) (?=[A-Za-z0-9])/g, '&nbsp;')
-    .replace(/(?<=[A-Za-z0-9])\u2060(?=[（「『【〔])/g, '<wbr>');
+  if (lang === 'ja') {
+    const h = txt(s, lang)
+      .replace(/(?<=[A-Za-z0-9.+#-]) (?:<wbr>)?(?=[A-Za-z0-9])/g, '&nbsp;')
+      .replace(/(?<=[A-Za-z0-9])\u2060(?=[（「『【〔])/g, '<wbr>');
+    // Tie the last phrases until the tail holds at least 5 characters, so no line ends a paragraph on 「せる。」 alone.
+    const parts = h.split('<wbr>');
+    const shown = (x) => x.replace(/<[^>]*>|&[a-z]+;|\u2060/g, '').length;
+    let n = 1;
+    while (n < Math.min(3, parts.length) && shown(parts.slice(-n).join('')) < 5) n++;
+    return n > 1 || parts.length > 1 ? [...parts.slice(0, -n), `<span class="tie">${parts.slice(-n).join('<wbr>')}</span>`].join('<wbr>') : h;
+  }
   // Tie words onto the last one until the tail is at least 8 letters, so it never stands as a short last line.
   const w = esc(s).split(' ');
   let n = 1;
@@ -389,6 +399,16 @@ const typographic = (s) =>
     .replace(/(^|[\s(\[「（])'/gu, '$1‘')
     .replace(/'/g, '’');
 
+// English article titles: a spaced dash stays with the word before it, a short number or a one-letter word with the
+// word after it, and "Claude Code" stays whole. Ties are nowrap spans, since Charter draws U+00A0 twice as wide.
+// A word is a run without spaces or tags, or a tie already made, so a later rule never cuts into a tag.
+const WORD = '(?:<span class="tie">[^<]*</span>|[^\\s<>]+)';
+const tieTitle = (h) =>
+  h
+    .replace(/Claude Code/g, '<span class="tie">Claude Code</span>')
+    .replace(new RegExp(`(${WORD} —)`, 'g'), '<span class="tie">$1</span>')
+    .replace(new RegExp(`(?<![\\w’>])(\\d{1,3}|a|A|I) (${WORD})`, 'g'), '<span class="tie">$1 $2</span>');
+
 function writing(c) {
   const w = c.writing;
   const lang = c.lang;
@@ -397,7 +417,9 @@ function writing(c) {
   const row = (i) => {
     const e = i[lang];
     const title = typographic(e.title);
-    return `<li class="piece"><a class="piece-title" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(title, lang), lang) : esc(title))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
+    // A title that opens with a quotation mark hangs it, as the section titles do.
+    const hang = lang !== 'ja' && /^[“‘]/.test(title) ? ' hang' : '';
+    return `<li class="piece"><a class="piece-title${hang}" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(title, lang), lang) : tieTitle(esc(title)))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
   };
   const groups = years
     .map(
