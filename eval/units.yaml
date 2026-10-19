@@ -105,3 +105,221 @@
   origin: ledger 2026-10-18 phone/PC detail loop
   decided_by: 2026-10-18 author, 「日本語がかなり小さく見える」 → lower the English side
   status: frozen
+
+# Open and author-eye units: the rest of the adopted findings, folded by rule.
+
+- id: ja-keep-all-scope
+  field: Japanese typesetting
+  what: Short lines (headings, the sentence, names, labels) keep BudouX phrases whole; running paragraphs break wherever kinsoku allows.
+  why: Short lines read by phrase; running text fills the measure instead of going ragged.
+  eval: {judge: machine, expect: "no line in a short-line element breaks inside a BudouX phrase; running paragraphs end within 2 characters of the measure except their last line"}
+  cause: ":lang(ja) :is(h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd) { word-break: keep-all }"
+  origin: R3 T4, live check 2
+  status: open
+
+- id: underline-extent
+  field: Japanese typesetting
+  what: A link underline ends at the text — it does not run under a trailing 、 or the empty half of a bracket — and clears descenders.
+  why: An underline over blank space reads as a stray mark.
+  eval: {judge: hybrid, expect: "underline box ends within 1px of the last ink glyph; offset decided by the author"}
+  cause: "the 、 outside the link in build.mjs; halt on JA work links; text-underline-offset"
+  origin: R2 T8, Hiragino pass
+  status: open
+
+- id: ja-display-face-fallback
+  field: Bilingual balance
+  what: Without Hiragino (Android, Windows) the Japanese display text is set in a Mincho, not a Gothic.
+  why: The sentence's voice depends on the serif; a Gothic fallback changes the page.
+  eval: {judge: machine, expect: "the platform font for the JA sentence and titles is a Mincho when Hiragino is absent"}
+  cause: "Shippori Mincho subset @font-face with unicode-range, after Hiragino Mincho in the stack"
+  origin: phone/PC detail loop
+  status: open
+
+- id: lang-marks
+  field: Page metadata
+  what: Every run of text in the other language carries its lang attribute.
+  why: Screen readers and line breaking pick rules by lang.
+  eval: {judge: machine, expect: "0 Latin-only text blocks without lang=en inside /ja/ pages, and the reverse"}
+  cause: "build.mjs lang attributes on dd and quoted English"
+  origin: R3 A2, V4
+  status: open
+
+- id: typographic-punctuation
+  field: English typesetting
+  what: Typographic apostrophes and quotes, and none of the generated-page tells.
+  why: Straight quotes and stock patterns read as unedited.
+  eval: {judge: machine, expect: "0 straight apostrophes in visible text; run.mjs tell checks pass"}
+  cause: "content/site.*.json strings; site.css"
+  origin: R1, run.mjs L2
+  status: open
+
+- id: type-scale-roles
+  field: Layout
+  what: Each type role has one size and face (one title size both sides, JA rail titles capped, the display face only for the name and titles).
+  why: A role that changes size between pages reads as two roles.
+  eval: {judge: machine, expect: "computed font-size and family per role equal across pages at each width"}
+  cause: "site.css role sizes; tokens.mjs"
+  origin: R2 T7, T14, R3 T3
+  status: open
+
+- id: edge-alignment
+  field: Layout
+  what: Text that shares a column starts on the same edge; rail titles sit on the gloss baseline.
+  why: Edges 1–3px apart read as a mistake.
+  eval: {judge: machine, expect: "0 left edges 1-3px apart at the key widths (run.mjs near-miss)"}
+  cause: "site.css grid and padding"
+  origin: R2 T6
+  status: open
+
+- id: entrance-grid
+  field: Layout
+  what: The entrances sit in 1, 2x2 or 4 columns by width, never 3 + 1.
+  why: A lone item on the last row reads as left over.
+  eval: {judge: machine, expect: "entrance rows hold equal counts at every width 320-1920"}
+  cause: "site.css .entrances grid-template-columns"
+  origin: R2 T2
+  status: open
+
+- id: sticky-rail-quotes
+  field: Layout
+  what: At 48rem and wider each quoted section title stays in view while its gloss scrolls.
+  why: The quote and its gloss read together.
+  eval: {judge: machine, expect: "title top stays at its sticky offset while the gloss scrolls, at 768 and 1280"}
+  cause: ".gloss > .section-title { position: sticky }"
+  origin: R3 R1
+  status: open
+
+- id: no-overflow
+  field: Layout
+  what: Nothing runs past the viewport, including long tokens.
+  why: Horizontal scroll on a phone breaks reading.
+  eval: {judge: machine, expect: "0 blocks past the viewport at 320-1920 (run.mjs overflow)"}
+  cause: "overflow-wrap: break-word; widths in site.css"
+  origin: R3 A4
+  status: open
+
+- id: text-zoom
+  field: Accessibility
+  what: Text grows with page and text zoom; no size is set in vw alone.
+  why: WCAG 1.4.4.
+  eval: {judge: machine, expect: "every font-size grows when the root size doubles"}
+  cause: "max(min(..., vw), rem) floors in site.css"
+  origin: R3 A1
+  status: open
+
+- id: target-size
+  field: Accessibility
+  what: Links outside running text are at least 24 by 24 px.
+  why: WCAG 2.5.8.
+  eval: {judge: machine, expect: "0 targets under 24px (run.mjs target-size)"}
+  cause: "padding on entrance and work links"
+  origin: R2 V6, entrances
+  status: open
+
+- id: focus-visible
+  field: Accessibility
+  what: Every tab stop shows a focus ring.
+  why: Keyboard users see where they are.
+  eval: {judge: machine, expect: "every tab stop has an outline (run.mjs focus-visible)"}
+  cause: ":focus-visible outline in site.css"
+  origin: R2 X-C6
+  status: open
+
+- id: forced-colors
+  field: Accessibility
+  what: In forced colors, lines, borders and focus stay visible.
+  why: Windows high contrast drops background-drawn marks.
+  eval: {judge: machine, expect: "rails, hairlines and focus rings keep a visible border under forced-colors emulation"}
+  cause: "@media (forced-colors: active) blocks"
+  origin: R2 X-B1
+  status: open
+
+- id: print
+  field: Accessibility
+  what: Printed pages use the light palette, print link URLs, and set Japanese at 16pt.
+  why: A dark screen palette prints grey on grey.
+  eval: {judge: machine, expect: "under print emulation: light tokens, URLs after external links, JA sentence 16pt"}
+  cause: "@media print in site.css"
+  origin: R2 X1, X2, R3 A3
+  status: open
+
+- id: icons
+  field: Page metadata
+  what: /favicon.ico exists, and the mark keeps the page ground in light and dark.
+  why: A 404 on the icon and a dark block in a light tab bar both read as unfinished.
+  eval: {judge: hybrid, expect: "favicon.ico 200; the mark's ground matches each scheme"}
+  cause: "images.mjs icons; favicon.svg media query"
+  origin: R3 A5, R7
+  status: open
+
+- id: head-metadata
+  field: Page metadata
+  what: theme-color, JSON-LD with the shared Person id, the ownership file and the analytics token are present.
+  why: Search and sharing read these, and losing one is silent.
+  eval: {judge: machine, expect: "each present and valid on every page (run.mjs json-ld covers the JSON-LD)"}
+  cause: "build.mjs head"
+  origin: R1, Search Console, analytics
+  status: open
+
+- id: no-dead-ends
+  field: Copy
+  what: Every page links on to the rest of the site.
+  why: A visitor who reaches About should find the projects.
+  eval: {judge: machine, expect: "every page has a link to / (or /ja/) outside the header"}
+  cause: "About and 404 page templates in build.mjs"
+  origin: R3 V2
+  status: open
+
+- id: authors-words-verbatim
+  field: Copy
+  what: The bio and the hub one-liners appear in the author's words.
+  why: The site speaks in the author's voice.
+  eval: {judge: machine, expect: "the build's bio and phrasing drift checks pass"}
+  cause: "build.mjs drift checks against content/*.json"
+  origin: R1, R3 V4
+  status: open
+
+- id: spacing-rhythm
+  field: Layout
+  what: Rows and gaps follow the spacing scale (footer rows, entrance name to description).
+  why: Uneven gaps make related things read as unrelated.
+  eval: {judge: author, expect: "the author's eye at 375 and 1280"}
+  cause: "space tokens"
+  origin: R2 T4, entrances
+  status: author-eye
+
+- id: section-intros
+  field: Copy
+  what: Each section intro says what the section holds.
+  why: The intro promises what follows.
+  eval: {judge: author, expect: "the author's read"}
+  cause: "content/site.*.json intros"
+  origin: R2 V1, R3 V1, V3
+  status: author-eye
+
+- id: page-family
+  field: Layout
+  what: About and 404 share the gloss layout of the home page.
+  why: The pages read as one site.
+  eval: {judge: author, expect: "the author's eye"}
+  cause: "page templates"
+  origin: R3 R4, R6
+  status: author-eye
+
+- id: state-marks
+  field: Layout
+  what: Landing on a section shows the moss mark; links that leave the site look different from links that stay.
+  why: The reader knows where they arrived and where a link goes.
+  eval: {judge: author, expect: "the author's eye"}
+  cause: ":target bar; footer link underline"
+  origin: R3 R2, R5
+  status: author-eye
+
+- id: whole-page
+  field: Layout
+  what: The page as a whole, in the author's fonts.
+  why: No set of units adds up to the impression.
+  eval: {judge: author, expect: "the author's eye in Hiragino, light and dark"}
+  cause: "everything"
+  origin: Hiragino pass
+  status: author-eye
