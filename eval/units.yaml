@@ -184,28 +184,36 @@
   field: Layout
   what: At 48rem and wider each quoted section title stays in view while its gloss scrolls.
   why: The quote and its gloss read together.
-  eval: {judge: machine, expect: "title top stays at its sticky offset while the gloss scrolls, at 768 and 1280"}
-  cause: ".gloss > .section-title { position: sticky }"
+  eval: {judge: machine, check: sticky-rail-quotes, env: "Chrome, reduced motion", expect: "title top stays at its sticky offset while the gloss scrolls, at 768 and 1280"}
+  cause: "site.css: the 48rem .gloss > .section-title { position: sticky } after the position: relative rule for landing marks"
   origin: R3 R1
-  status: open
+  status: frozen
 
 - id: no-overflow
   field: Layout
   what: Nothing runs past the viewport, including long tokens.
   why: Horizontal scroll on a phone breaks reading.
-  eval: {judge: machine, expect: "0 blocks past the viewport at 320-1920 (run.mjs overflow)"}
+  eval: {judge: machine, check: no-overflow, env: "Chrome, reduced motion", expect: "0 blocks past the viewport at 320-1920 (run.mjs overflow)"}
   cause: "overflow-wrap: break-word; widths in site.css"
+  relations:
+    - unit: en-sentence-lines
+      how: co-arising — moving a phrasing mark made an unbreakable group overflow at 320
   origin: R3 A4
-  status: open
+  status: frozen
 
 - id: text-zoom
   field: Accessibility
   what: Text grows with page and text zoom; no size is set in vw alone.
   why: WCAG 1.4.4.
-  eval: {judge: machine, expect: "every font-size grows when the root size doubles"}
+  eval: {judge: machine, check: text-zoom, env: "Chrome, reduced motion", expect: "every font-size grows when the root size doubles"}
   cause: "max(min(..., vw), rem) floors in site.css"
+  relations:
+    - unit: ja-sentence-lines
+      how: co-arising — the JA sentence size is the zoom floor; a vw-only size also moved its line breaks
+    - unit: sentence-size-balance
+      how: co-arising — the same font-size declaration
   origin: R3 A1
-  status: open
+  status: frozen
 
 - id: target-size
   field: Accessibility
@@ -256,19 +264,19 @@
   field: Page metadata
   what: theme-color, JSON-LD with the shared Person id, the ownership file and the analytics token are present.
   why: Search and sharing read these, and losing one is silent.
-  eval: {judge: machine, expect: "each present and valid on every page (run.mjs json-ld covers the JSON-LD)"}
+  eval: {judge: machine, check: head-metadata, env: "Chrome, reduced motion", expect: "theme-color for both schemes, the analytics beacon and an icon link on every page; JSON-LD Person with the shared @id on / and /ja/"}
   cause: "build.mjs head"
   origin: R1, Search Console, analytics
-  status: open
+  status: frozen
 
 - id: no-dead-ends
   field: Copy
   what: Every page links on to the rest of the site.
   why: A visitor who reaches About should find the projects.
-  eval: {judge: machine, expect: "every page has a link to / (or /ja/) outside the header"}
+  eval: {judge: machine, check: no-dead-ends, env: "Chrome, reduced motion", expect: "every page has a link to / (or /ja/) outside the header"}
   cause: "About and 404 page templates in build.mjs"
   origin: R3 V2
-  status: open
+  status: frozen
 
 - id: authors-words-verbatim
   field: Copy

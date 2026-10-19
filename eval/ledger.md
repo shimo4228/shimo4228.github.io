@@ -247,3 +247,9 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   the mutation (render the raw title) turns only this unit red.
 - 2026-10-19 entrance-grid retired: the entrances moved to the writing pages as two groups (In English, In
   Japanese), so no width can split them 3 + 1, and no mutation of the grid turns a check red.
+- 2026-10-19 Frozen five more units (no-dead-ends, text-zoom, no-overflow, head-metadata, sticky-rail-quotes); each
+  mutation in eval/mutate.sh turns its unit red. sticky-rail-quotes was a false green at first: the mutation hit the
+  first `position: sticky`, but a later 48rem rule declares it again after `position: relative`; the mutation and the
+  unit's cause now name that rule. head-metadata's JSON-LD expectation is scoped to / and /ja/ (the pages that carry
+  it); JSON-LD on About is an author call. Observed relations recorded: text-zoom with the sentence units,
+  no-overflow with en-sentence-lines.

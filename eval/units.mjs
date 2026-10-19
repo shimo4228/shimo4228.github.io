@@ -87,6 +87,64 @@ const checks = {
     return bad;
   }) },
 
+  'no-dead-ends': { pages: ['about/', 'writing/', 'ja/about/', 'ja/writing/', '404.html'], widths: [1280], run: (page) => page.evaluate(() => {
+    const home = /^\/(ja\/)?(#[\w-]+)?$/;
+    const links = [...document.querySelectorAll('main a[href], footer a[href]')].map((a) => a.getAttribute('href'));
+    return links.some((h) => home.test(h)) ? [] : ['no link back to the home page in main or footer'];
+  }) },
+
+  'text-zoom': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [375, 1280], run: (page) => page.evaluate(() => {
+    const els = [...document.querySelectorAll('main :is(h1, h2, h3, p, li, dt, dd, a)')].filter(__visible);
+    const before = els.map((e) => parseFloat(getComputedStyle(e).fontSize));
+    document.documentElement.style.fontSize = '200%';
+    const bad = [];
+    els.forEach((e, i) => { const after = parseFloat(getComputedStyle(e).fontSize); if (after < before[i] * 1.2) bad.push(`${e.tagName.toLowerCase()}.${e.className} 「${(e.textContent || '').trim().slice(0, 12)}」 ${before[i].toFixed(1)}→${after.toFixed(1)}px at 200% root`); });
+    document.documentElement.style.fontSize = '';
+    return bad;
+  }) },
+
+  'no-overflow': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [320, 360, 375, 414, 600, 768, 1024, 1280, 1920], run: (page) => page.evaluate(() => {
+    const vw = document.documentElement.clientWidth;
+    const bad = [];
+    if (document.documentElement.scrollWidth > vw) bad.push(`page scrollWidth ${document.documentElement.scrollWidth} > ${vw}`);
+    for (const el of [...document.querySelectorAll('h1, h2, h3, p, li, dt, dd, figure')].filter(__visible)) {
+      const r = el.getBoundingClientRect();
+      if (r.right > vw + 0.5) bad.push(`${el.tagName.toLowerCase()} 「${(el.textContent || '').trim().slice(0, 12)}」 right ${r.right.toFixed(0)} > ${vw}`);
+    }
+    return bad;
+  }) },
+
+  'head-metadata': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const themes = [...document.querySelectorAll('meta[name="theme-color"]')].map((m) => m.media);
+    if (!themes.some((m) => m.includes('light')) || !themes.some((m) => m.includes('dark'))) bad.push('theme-color for light and dark');
+    const ld = [...document.querySelectorAll('script[type="application/ld+json"]')];
+    const ok = ld.some((s) => { try { const j = JSON.parse(s.textContent); const p = j['@type'] === 'Person' ? j : j.mainEntity; return p && p['@id'] === 'https://orcid.org/0009-0002-6168-4162'; } catch { return false; } });
+    if (/^\/(ja\/)?$/.test(location.pathname) && !ok) bad.push('JSON-LD Person with the shared @id on the home page');
+    if (!document.querySelector('script[data-cf-beacon]')) bad.push('analytics beacon');
+    if (!document.querySelector('link[rel="icon"]')) bad.push('icon link');
+    return bad;
+  }) },
+
+  'sticky-rail-quotes': { pages: ['', 'ja/'], widths: [768, 1280], run: (page) => page.evaluate(async () => {
+    const bad = [];
+    let measured = 0;
+    for (const t of [...document.querySelectorAll('.gloss > .section-title')].filter(__visible)) {
+      const g = t.parentElement;
+      const gTop = g.getBoundingClientRect().top + scrollY;
+      const room = g.offsetHeight - t.offsetHeight;
+      if (room < 160) continue;
+      window.scrollTo(0, gTop + 120);
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      measured++;
+      const top = t.getBoundingClientRect().top;
+      if (top < 0) bad.push(`「${t.textContent.trim().slice(0, 12)}」 scrolled away (${top.toFixed(0)}px) while its gloss is in view`);
+    }
+    window.scrollTo(0, 0);
+    if (!measured) bad.push('no gloss tall enough to measure');
+    return bad;
+  }) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
