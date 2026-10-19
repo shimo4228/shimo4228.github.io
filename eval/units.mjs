@@ -1,8 +1,9 @@
 // Frozen detail units (eval/units.yaml): one check per unit, measured on the rendered page.
 // Usage: node eval/units.mjs [root=dist] [--update-golden]
+// EVAL_CHANNEL=chrome measures in the installed Chrome; EVAL_ENGINE=webkit measures in WebKit (Safari's engine).
 // Exit 1 when a frozen unit fails. Fonts are the machine's own: on macOS the Japanese text is set in Hiragino,
 // the author's font; elsewhere the results for font-dependent units (ja-quote-hang) do not transfer.
-import { chromium } from 'playwright';
+import { chromium, webkit } from 'playwright';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { parse } from 'yaml';
 import { serve } from './serve.mjs';
@@ -27,7 +28,7 @@ window.__linesOf = (el) => {
       const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1);
       const rect = r.getClientRects()[0];
       if (!rect || (rect.width === 0 && /\\s/.test(t[i]))) continue;
-      chars.push({ ch: t[i], top: rect.top, bottom: rect.bottom, left: rect.left });
+      chars.push({ ch: t[i], top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right });
     }
   }
   const lines = [];
@@ -164,7 +165,7 @@ const checks = {
   'ja-text-in-ja-stack': { pages: ['ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [375, 1280], run: (page) => page.evaluate(() => {
     const bad = [];
     // Running text only: the sentence, titles and leads are display lines with their own leading.
-    for (const el of [...document.querySelectorAll('main :lang(ja) :is(p, dd, li):not(.sentence, .section-title, .lead)')].filter(__visible)) {
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(p, dd, li):not(.sentence, .section-title)')].filter(__visible)) {
       const cs = getComputedStyle(el);
       const ratio = parseFloat(cs.lineHeight) / parseFloat(cs.fontSize);
       if (!(ratio >= 1.8)) bad.push(`「${el.textContent.trim().slice(0, 12)}」 line-height ${ratio.toFixed(2)}`);
@@ -213,7 +214,7 @@ const checks = {
 
   'ja-keep-all-scope': { pages: ['ja/', 'ja/about/', 'ja/writing/'], widths: [375], run: (page) => page.evaluate(() => {
     const bad = [];
-    const short = 'h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd, .piece-title, .lead';
+    const short = 'h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd, .piece-title';
     for (const el of [...document.querySelectorAll(`main :lang(ja) :is(${short})`)].filter(__visible))
       if (getComputedStyle(el).wordBreak !== 'keep-all') bad.push(`short line 「${el.textContent.trim().slice(0, 10)}」 breaks inside phrases`);
     for (const el of [...document.querySelectorAll('main :lang(ja) :is(.work-line, .section-intro, .fact dd)')].filter(__visible))
@@ -237,7 +238,7 @@ const checks = {
   }) },
 
   'type-scale-roles': { pages: ['', 'about/', 'writing/'], widths: [375, 1280], run: (page) => page.evaluate(() => {
-    const roles = { 'section-title': '.gloss > .section-title', 'piece-title': '.piece-title', 'work-name': '.work-name', 'body': 'main p:not(.sentence, .section-title, .lead)' };
+    const roles = { 'section-title': '.gloss > .section-title', 'piece-title': '.piece-title', 'work-name': '.work-name', 'body': 'main p:not(.sentence, .section-title)' };
     const out = {};
     for (const [k, sel] of Object.entries(roles)) {
       const sizes = [...new Set([...document.querySelectorAll(sel)].filter(__visible).map((e) => `${getComputedStyle(e).fontSize} ${getComputedStyle(e).fontFamily.split(',')[0]}`))];
@@ -383,9 +384,14 @@ const checks = {
       const size = parseFloat(getComputedStyle(el).fontSize);
       for (const l of __linesOf(el)) {
         const c = l.chars;
+        // A justified line adds the same slack after every character; take it off to read the space itself.
+        const steps = [];
+        for (let k = 0; k < c.length - 1; k++) if (/[\u3040-\u9fff]/.test(c[k].ch) && /[\u3040-\u9fff]/.test(c[k + 1].ch)) steps.push(c[k + 1].left - c[k].left - size);
+        steps.sort((a, b) => a - b);
+        const slack = steps.length ? Math.max(0, steps[Math.floor(steps.length / 2)]) : 0;
         for (let i = 1; i < c.length - 1; i++) {
           if (!/[  ]/.test(c[i].ch) || !/[A-Za-z0-9]/.test(c[i - 1].ch) || !/[぀-鿿]/.test(c[i + 1].ch)) continue;
-          const gap = (c[i + 1].left - (c[i].left)) / size;
+          const gap = (c[i + 1].left - c[i].left - slack) / size;
           if (gap < 0.22 || gap > 0.28) bad.push(`「${c[i - 1].ch} ${c[i + 1].ch}」 gap ${gap.toFixed(3)}em`);
         }
       }
@@ -397,6 +403,42 @@ const checks = {
     const cur = document.querySelector('.site-nav [aria-current="page"]');
     const rest = getComputedStyle(cur).getPropertyValue('--rest').trim();
     return rest && rest !== 'transparent' ? [] : ['the current page has no resting line'];
+  }) },
+
+  'ja-running-fill': { pages: ['ja/', 'ja/about/'], widths: [480, 768, 1000, 1280, 1440], run: (page) => page.evaluate(() => {
+    // Japanese running text ends every line but the last on the column edge.
+    const bad = [];
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(.section-intro, .work-line, .fact dd)')].filter(__visible)) {
+      const cs = getComputedStyle(el);
+      const right = el.getBoundingClientRect().right - parseFloat(cs.paddingRight);
+      const lines = __linesOf(el);
+      lines.slice(0, -1).forEach((l) => {
+        const end = Math.max(...l.chars.map((c) => c.right));
+        const short = (right - end) / parseFloat(cs.fontSize);
+        if (short > 0.5) bad.push(`「${l.text.trim().slice(-8)}」 ends ${short.toFixed(2)}em short of the edge`);
+      });
+    }
+    return bad;
+  }) },
+
+  'latin-word-intact': { pages: ['ja/', 'ja/about/'], widths: [768, 1000, 1280], run: (page) => page.evaluate(() => {
+    // Justified Japanese text never letter-spaces a Latin word: each word keeps its natural width.
+    const bad = [];
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(.section-intro, .work-line, .fact dd)')].filter(__visible)) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      for (let n; (n = walker.nextNode()); ) for (const m of n.textContent.matchAll(/[A-Za-z][A-Za-z0-9]{2,}/g)) {
+        const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length);
+        if (rg.getClientRects().length !== 1) continue;
+        const probe = document.createElement('span');
+        probe.textContent = m[0];
+        probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap';
+        n.parentElement.appendChild(probe);
+        const natural = probe.getBoundingClientRect().width;
+        probe.remove();
+        if (rg.getBoundingClientRect().width > natural * 1.02) bad.push(`「${m[0]}」 spread to ${(rg.getBoundingClientRect().width / natural).toFixed(2)}x`);
+      }
+    }
+    return [...new Set(bad)];
   }) },
 
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
@@ -412,7 +454,7 @@ const checks = {
 const sentenceLines = (page) => page.evaluate(() => __linesOf(document.querySelector('p.sentence')).map((l) => l.text.trim()));
 
 const { port, close } = await serve(root);
-const browser = await chromium.launch(process.env.EVAL_CHANNEL ? { channel: process.env.EVAL_CHANNEL } : {});
+const browser = await (process.env.EVAL_ENGINE === 'webkit' ? webkit.launch() : chromium.launch(process.env.EVAL_CHANNEL ? { channel: process.env.EVAL_CHANNEL } : {}));
 const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
 await ctx.addInitScript(LINES);
 const page = await ctx.newPage();

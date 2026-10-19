@@ -1,13 +1,12 @@
 {
   "_sources": {
-    "sentence": "下書き（Claude）。英語の bio を正本とし、日本語の文は著者の確定待ち。facts.md の one-liner「AI エージェントを作り、瞑想で心を見る人。」に語をそろえた",
+    "sentence": "Claude の下書きを著者が確定（2026-10-20「この文でいいよ。気に入っている」）。英語の bio を正本とし、facts.md の one-liner「AI エージェントを作り、瞑想で心を見る人。」に語をそろえた",
     "work.line": "hub README.ja.md の文をそのまま。違うものは lineSource に書く",
     "draft": "\"draft\": true のブロックは Claude の下書きで、著者の通読待ち"
   },
   "lang": "ja",
   "name": "Tatsuya Shimomoto",
   "handle": "shimo4228",
-  "bioDraft": true,
   "sentence": [
     {
       "link": "#tools",

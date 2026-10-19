@@ -711,19 +711,6 @@ a {
 }
 
 /* ---------- About ---------- */
-.lead {
-  font-family: var(--font-display);
-  font-size: var(--step-2);
-  line-height: 1.35;
-  max-inline-size: 24em;
-}
-
-.lead:lang(ja) {
-  font-size: var(--step-1);
-  line-height: 1.75;
-  max-inline-size: 28em;
-}
-
 /* About: the name in the rail, as the sections quote their phrase. */
 .about > .section-title {
   /* On phones the name is a byline above the page title, smaller and muted; from 48rem it holds the rail. */
@@ -1271,8 +1258,13 @@ main :is(p, dd, li) {
   word-spacing: -0.083em;
 }
 
-/* The About lead is a display role: its phrases stay whole, like the sentence and the titles. */
-:lang(ja) .lead {
-  word-break: keep-all;
-  overflow-wrap: anywhere;
+/* Japanese running text is justified (JLReq), so lines end on one edge. Below 30rem a line before a tied Latin name
+   would spread too far, so phones keep a ragged edge. */
+@media (min-width: 30rem) {
+  :lang(ja) :is(.section-intro, .work-line, .fact dd) {
+    text-align: justify;
+    /* auto spreads the slack between Japanese characters and spaces; inter-character would also letter-space Latin
+       words ("M 1  M a c"). */
+    text-justify: auto;
+  }
 }

@@ -117,7 +117,7 @@
   eval: {judge: machine, check: ja-keep-all-scope, env: "Chrome on macOS", expect: "no line in a short-line element breaks inside a BudouX phrase; running paragraphs end within 2 characters of the measure except their last line"}
   cause: ":lang(ja) :is(h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd) { word-break: keep-all }"
   origin: R3 T4, live check 2, r6-typography-ja 4
-  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (the About lead joins the display roles)"
+  decided_by: "2026-10-20 author: 「aboutの日本語ページだけ改行位置変じゃないか？…文の幅がまちまちなのも変」 — the About lead stays running text (keep-all left ragged lines and, in Safari, a line ending on （)"
   status: frozen
 
 - id: underline-extent
@@ -603,4 +603,31 @@
   cause: "site.css .work-links a:hover color"
   origin: r5-art 4
   decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて"
+  status: frozen
+
+- id: ja-running-fill
+  field: Japanese typesetting
+  what: Japanese running text is justified from 30rem, so every line but a paragraph's last ends on the column edge.
+  why: Ragged lines 2-5em short (tied Latin names, kinsoku push-out) made the column widths look uneven.
+  eval: {judge: hybrid, check: ja-running-fill, env: "Chrome on macOS; Safari through WebKit", expect: "non-final lines within 0.5em of the edge at 480-1440 on /ja/ and /ja/about/", instances: ".lead, .section-intro, .work-line, .fact dd"}
+  cause: "site.css :lang(ja) running roles text-align: justify at min-width 30rem"
+  relations:
+    - unit: ja-keep-all-scope
+      how: support — justification fills lines only while running text may break anywhere
+  origin: r5-typography-ja 3, r6-typography-ja 2, author 2026-10-20
+  decided_by: "2026-10-20 author: 「文の幅がまちまちなのも変な感じがする」"
+  status: frozen
+
+- id: latin-word-intact
+  field: Japanese typesetting
+  what: In justified Japanese text a Latin word keeps its natural width; the slack goes between Japanese characters and spaces.
+  why: inter-character justification letter-spaced "M1 Mac" and "Shimomoto" (1.07-1.18x).
+  eval: {judge: machine, check: latin-word-intact, env: "Chrome on macOS", expect: "every Latin word of 3+ letters within 2% of its natural width, 768-1280", instances: "JA .section-intro, .work-line, .fact dd"}
+  cause: "site.css text-justify: auto on justified Japanese running text"
+  relations:
+    - unit: ja-running-fill
+      how: co-arising — the same justification
+    - unit: ja-latin-space
+      how: co-arising — auto lets the spaces take some slack, which the spacing check subtracts per line
+  origin: author 2026-10-20 (About page review)
   status: frozen

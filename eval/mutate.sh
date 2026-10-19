@@ -65,7 +65,9 @@ mutate ja-latin-space site/site.css 's/(\.lost > p:not\(\.sentence\), \.site-foo
 mutate dark-moss-chroma DESIGN.md 's/keyDark: "#618a6e"/keyDark: "#4f9a68"/'
 mutate nav-current-mark site/site.css 's/(\.site-nav \[aria-current="page"\] \{\n)  --rest: var\(--color-line-strong\);\n/$1/'
 mutate work-link-hover-ink site/site.css 's/(\.work-links a:hover \{\n  )color: var\(--color-text\);/${1}color: var(--color-accent);/'
-mutate ja-keep-all-scope site/site.css 's/(:lang\(ja\) \.lead \{\n)  word-break: keep-all;\n/$1/'
+mutate ja-running-fill site/site.css 's/(\.fact dd\) \{\n)    text-align: justify;\n/$1/'
+mutate ja-keep-all-scope site/site.css 's/\z/\n:lang(ja) .section-intro { word-break: keep-all; }\n/'
+mutate latin-word-intact site/site.css 's/text-justify: auto;/text-justify: inter-character;/'
 mutate sentence-size-balance site/site.css 's/(clamp\(1\.625rem, 0\.75rem \+ 4\.8vw, )3\.25rem/${1}3.75rem/'
 
 node site/build.mjs >/dev/null 2>&1

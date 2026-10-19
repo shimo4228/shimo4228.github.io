@@ -380,3 +380,20 @@ one-clause title returned untied) was found by ja-title-phrases. 41 frozen units
 | JSON-LD on About | left on / and /ja/ only: the Person is already there | — |
 | the Japanese sentence (`bioDraft: true`) | not decided: the author's own words | — |
 | icons (hybrid, open) | not decided: favicon.ico needs `images.mjs`, not run here | — |
+
+## The author's read of /ja/about/ (2026-10-20)
+
+- The Japanese sentence is confirmed (竜也: 「この文でいいよ。気に入っている」): `bioDraft` removed, the source note
+  records it.
+- 竜也: 「aboutの日本語ページだけ改行位置変じゃないか？（の後に改行したり、M1MAc上の　の後に改行したり、あと文の幅
+  がまちまちなのも変」. Cause: the lead had joined the display roles (keep-all) the same day; with no ordinary break
+  left, `overflow-wrap: anywhere` made emergency breaks, which in Safari fell after （. The frozen checks run in
+  Chrome, where （ moved to the next line, so they missed it. The lead is running text again.
+- Uneven line ends: Japanese running text is now justified from 30rem (`text-justify: auto`; inter-character
+  letter-spaced "M1 Mac" and was replaced). Units ja-running-fill and latin-word-intact; ja-latin-space now subtracts
+  each justified line's slack before measuring the quarter em.
+- 竜也: 「Aboutの自己紹介文の文字だけなんでこんな大きいの？」→「書いたものと同じような感じにしたら？Tatsuya Shimomotoの
+  右にこの人についてを根にして自己紹介文は本文にしたら」. About now follows the writing page: the name in the rail, the
+  page title in the gloss column, the intro in body text. The `.lead` role is gone.
+- Safari: the author reads in Safari. `EVAL_ENGINE=webkit` runs the units in WebKit once its download completes;
+  until then the Safari-only behaviour is unchecked.

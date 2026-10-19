@@ -369,11 +369,11 @@ function about(c) {
     .join('\n    ');
   return `${head(c, 'about', { title, description: a.paragraphs[0], path: paths[c.lang].about })}${nav(c, 'about')}
 <main id="main" class="center page">
-  <h1 id="about-h" class="visually-hidden">${esc(a.title)}</h1>
-  <section class="gloss about" aria-labelledby="about-h">
+  <section class="gloss about writing-head" aria-labelledby="about-h">
     <p class="section-title"><a href="${paths[c.lang].home}">${esc(c.name)}</a></p>
     <div class="about-body">
-      ${a.paragraphs.map((p) => `<p class="lead">${prose(p, c.lang)}</p>`).join('\n      ')}
+      <h1 id="about-h" class="writing-title">${txt(a.title, c.lang)}</h1>
+      ${a.paragraphs.map((p) => `<p class="section-intro">${prose(p, c.lang)}</p>`).join('\n      ')}
       <ul role="list" class="about-next cluster">${a.next.map((n) => `<li><a href="${n.href}">${txt(n.text, c.lang)}</a></li>`).join('')}</ul>
     </div>
   </section>
@@ -502,7 +502,7 @@ for (const lang of ['en', 'ja']) {
 pages.set('404.html', notFound());
 
 // The Japanese display face, cut down to the kanji, kana and punctuation the display roles use.
-const DISPLAY_ROLES = ['name', 'sentence', 'section-title', 'lead', 'lost-title', 'writing-title'];
+const DISPLAY_ROLES = ['name', 'sentence', 'section-title', 'lost-title', 'writing-title'];
 function displayText(html) {
   let text = '';
   const open = /<([a-z0-9]+)\b[^>]*\bclass="([^"]*)"[^>]*>/g;

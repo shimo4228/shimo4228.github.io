@@ -64,7 +64,7 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 ## Rules
 
 1. **One web font, one weight, one job.** Newsreader 400 appears only in the root sentence, the quoted section
-   titles, the name, the About page's opening paragraphs, and the writing and 404 page titles. Everything else is the system face. In Japanese the
+   titles, the name, and the About, writing and 404 page titles. Everything else is the system face. In Japanese the
    serif takes Hiragino Mincho where the system has it (Apple devices download nothing); elsewhere it takes
    Shippori Mincho, subset at build time to the few dozen characters those roles use.
 2. **Colour is a contrast ratio, not a hex value.** Colours come from the ratios above. The accent (moss) marks
@@ -85,9 +85,9 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 8. **Lines turn over between phrases.** The root sentence breaks only where its meaning divides: English between
    the phrases of `phrasing` (every other space is tied), Japanese after the `keep` and `tail` groups.
 9. **Japanese is set, not translated into the English layout.** BudouX phrase breaks; `word-break: keep-all` on the
-   short lines (headings, the sentence, names, labels, the About lead), while running paragraphs break wherever
-   `line-break: strict` allows so they fill the measure, their last phrases tied so no paragraph ends on two
-   characters. Looser leading. 「」 hang half an em under `palt`, so the words sit on the column edge. A Latin word and
+   short lines (headings, the sentence, names, labels), while running paragraphs break wherever
+   `line-break: strict` allows and, from 30rem, are justified (`text-justify: auto`, so Latin words keep their
+   width), their last phrases tied so no paragraph ends on two characters. Looser leading. 「」 hang half an em under `palt`, so the words sit on the column edge. A Latin word and
    Japanese are a quarter em apart in body text (JLReq); a break point never starts a line with a space, and a particle
    stays with the closing bracket before it. The sentence is one hanging line per sentence.
 
@@ -122,8 +122,9 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
   48rem; baseline-aligned.
 - `work`: name (link to its main destination), one line, small links. Reached from the sentence, a moss bar shows in
   the margin and fades.
-- `about`: the name in the rail, the hub intro in the gloss column, a link back to the projects; then `facts` in the
-  same rail. The hub is called "research hub" (「研究の hub」) everywhere.
+- `about`: laid out as the writing page (竜也, 2026-10-20): the name in the rail, then 「この人について」 / About as the
+  page title in the gloss column, the hub intro under it in body text, a link back to the projects; then `facts` in
+  the same rail. The hub is called "research hub" (「研究の hub」) everywhere.
 - `404`: both languages, each ending in the linked sentence as the way back.
 - icons: SVG quote mark on the page ground (dark-aware), ICO at the root, apple-touch-icon on the light ground.
 
