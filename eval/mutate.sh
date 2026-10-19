@@ -16,7 +16,7 @@ mutate() { # id file perl-substitution
 }
 
 mutate ja-kinsoku-start site/site.css 's/line-break: strict;/line-break: auto;/'
-mutate ja-quote-hang site/site.css 's/(:lang\(ja\):has\(> q:first-child\) \{\n  text-indent: )-1em/${1}-0.9em/'
+mutate ja-quote-hang site/site.css 's/text-indent: -0\.5em;/text-indent: -0.4em;/'
 mutate ja-sentence-lines site/site.css 's/(\.sentence \.keep \{\n  display: )inline-block/${1}inline/'
 mutate en-sentence-lines content/site.en.json 's/and watching the mind\|through/and watching|the mind through/'
 mutate ja-no-space-at-line-start site/build.mjs 's/\.replace\(\/<wbr>&nbsp;\/g, .&nbsp;<wbr>.\)//'

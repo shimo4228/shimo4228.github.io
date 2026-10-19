@@ -234,3 +234,8 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
 - 2026-10-18 Some title lines showed no underline on the Mac (竜也: 下線のあるものとないもの): the 1px background sat on the
   span's bottom edge and fell between device pixels. Spans now carry 0.15em of bottom padding (no layout change) and the
   line sits 1px under the glyph box, inside it. Checked on the Mac preview, dark, 1440: every title line underlined.
+- 2026-10-19 Frozen units on this branch (`npm run units`, `EVAL_CHANNEL=chrome` on macOS for Hiragino; reduced
+  motion so the reveal leaves positions alone). Sentence goldens unchanged from `source`. Five of six pass, and each
+  mutation in `eval/mutate.sh` turns its own unit red. ja-quote-hang fails by +0.84px at 375 and 1280: the 0.04em
+  letter-spacing of the JA display lines also follows the hung 「, so the words sit 0.84px inside the edge (0.02px
+  with the mark's letter-spacing at 0). Left for the author: fix, or widen the unit's tolerance.

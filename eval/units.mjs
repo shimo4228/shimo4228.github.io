@@ -91,7 +91,7 @@ const sentenceLines = (page) => page.evaluate(() => __linesOf(document.querySele
 
 const { port, close } = await serve(root);
 const browser = await chromium.launch(process.env.EVAL_CHANNEL ? { channel: process.env.EVAL_CHANNEL } : {});
-const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' });
 await ctx.addInitScript(LINES);
 const page = await ctx.newPage();
 const open = async (p, w) => {
