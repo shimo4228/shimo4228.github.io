@@ -1,0 +1,107 @@
+# Detail units. One unit = one rule of the craft (a dharma), recorded on four faces:
+#   what  = characteristic (lakkhana): what the rule is
+#   why   = function (rasa): what it does for the reader
+#   eval  = manifestation (paccupatthana): how it shows on the rendered page, as one check with one expectation
+#   cause = proximate cause (padatthana): what to change to move it
+# relations lists only interference that was observed. judge: machine | hybrid | author.
+# status: open | frozen | author-eye | retired. A frozen unit's check runs in `npm run units` (check name = id).
+# Changing an expectation is a decision: add one line to eval/ledger.md with the author's words.
+
+- id: ja-kinsoku-start
+  field: Japanese typesetting
+  what: No line starts with a closing bracket, comma, full stop, middle dot, iteration mark, prolonged sound mark or small kana; no line ends with an opening bracket (JLReq 3.1.7-3.1.8).
+  why: A word split as ハ／ーネス breaks the reading; ハーネス is the word the site is about.
+  eval:
+    judge: machine
+    check: ja-kinsoku-start
+    expect: 0 lines, at every unit width, on /ja/ /ja/about/
+    instances: ":lang(ja) :is(h1, h2, h3, p, dt, dd, li)"
+  cause: "site.css :lang(ja) { line-break: strict }"
+  relations:
+    - unit: ja-quote-hang
+      how: co-arising — the same :lang(ja) rule also sets text-spacing-trim, which changes the hang
+  origin: r3-typography 1, ledger R3 T1
+  status: frozen
+
+- id: ja-quote-hang
+  field: Japanese typesetting
+  what: In a quoted section title the first letter after 「, not the mark, sits on the column edge, on every line of the title.
+  why: The quoted phrase reads as a lemma aligned with its gloss; a mark that juts or a letter that sits in reads as an error.
+  eval:
+    judge: machine
+    check: ja-quote-hang
+    expect: first letter within 0.5px of the content edge, at 375 and 1280, in the author's font (Hiragino on macOS)
+    instances: ".section-title:lang(ja)"
+  cause: ".section-title:lang(ja):has(> q:first-child) { text-indent }, :lang(ja) { text-spacing-trim }"
+  relations:
+    - unit: ja-kinsoku-start
+      how: co-arising (see there)
+  origin: r3-typography 2, ledger R3 T2
+  status: frozen
+
+- id: ja-sentence-lines
+  field: Japanese typesetting
+  what: The Japanese root sentence turns over where its phrases split; the third sentence breaks after 「著者性、」.
+  why: Line breaks follow the meaning (DESIGN.md, lines turn over between phrases).
+  eval:
+    judge: machine
+    check: ja-sentence-lines
+    expect: golden lines per width (eval/golden/sentence-lines.json)
+    instances: "/ja/ p.sentence"
+  cause: "site.ja.json sentence open/close groups; .sentence .keep / .tail; .sentence:lang(ja) font-size"
+  relations:
+    - unit: sentence-size-balance
+      how: co-arising — both draw on the same column width
+  origin: ledger 2026-10-18 (keep/tail)
+  decided_by: 2026-10-18 author, break after 著者性、 so lines follow the section split
+  status: frozen
+
+- id: en-sentence-lines
+  field: English typesetting
+  what: The English root sentence turns over only at its phrasing marks.
+  why: Lines break between phrases, not inside them.
+  eval:
+    judge: machine
+    check: en-sentence-lines
+    expect: golden lines per width (eval/golden/sentence-lines.json)
+    instances: "/ p.sentence"
+  cause: "site.en.json phrasing (| and [ ]); .sentence font-size and max-inline-size"
+  relations:
+    - unit: sentence-size-balance
+      how: co-arising
+  origin: ledger 2026-10-18 phone/PC detail loop
+  decided_by: 2026-10-18 author, English phrasing by phrase
+  status: frozen
+
+- id: ja-no-space-at-line-start
+  field: Japanese typesetting
+  what: No Japanese line starts with a space; a break point sits after a Latin–Japanese space, not before it.
+  why: A leading space shifts the line by one space and breaks the edge alignment.
+  eval:
+    judge: machine
+    check: ja-no-space-at-line-start
+    expect: 0 lines, at every unit width, on /ja/ /ja/about/
+    instances: ":lang(ja) :is(h1, h2, h3, p, dt, dd, li)"
+  cause: "build.mjs: <wbr> placed after &nbsp;"
+  relations:
+    - unit: ja-quote-hang
+      how: support — the edge alignment depends on lines not starting with a space
+  origin: ledger R3 T8 (found in screenshots)
+  status: frozen
+
+- id: sentence-size-balance
+  field: Bilingual balance
+  what: The English root sentence is set about 1.15 times the Japanese one.
+  why: Author — Japanese looked much smaller than English on PC. Latin needs a larger size to match Japanese optically.
+  eval:
+    judge: hybrid
+    check: sentence-size-balance
+    expect: EN/JA font-size ratio in [1.10, 1.20] at 375 and 1280; the look itself stays with the author's eye
+    instances: "p.sentence on / and /ja/"
+  cause: ".sentence clamp(); .sentence:lang(ja) font-size"
+  relations:
+    - unit: ja-sentence-lines
+      how: co-arising — the Japanese size cannot grow without losing the break after 著者性、
+  origin: ledger 2026-10-18 phone/PC detail loop
+  decided_by: 2026-10-18 author, 「日本語がかなり小さく見える」 → lower the English side
+  status: frozen

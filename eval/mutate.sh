@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Prove each frozen unit can fail: apply one mutation to the source, rebuild, run the units, restore.
+# A unit whose mutation leaves it green is a false green. Usage: bash eval/mutate.sh
+set -u
+cd "$(dirname "$0")/.."
+
+mutate() { # id file perl-substitution
+  local id=$1 file=$2 expr=$3
+  cp "$file" "$file.bak"
+  perl -0pi -e "$expr" "$file"
+  if cmp -s "$file" "$file.bak"; then echo "== $id: MUTATION DID NOT APPLY"; mv "$file.bak" "$file"; return; fi
+  node site/build.mjs >/dev/null 2>&1
+  echo "== mutation for $id"
+  node eval/units.mjs dist | grep -E '^(FAIL|pass)'
+  mv "$file.bak" "$file"
+}
+
+mutate ja-kinsoku-start site/site.css 's/line-break: strict;/line-break: auto;/'
+mutate ja-quote-hang site/site.css 's/(:lang\(ja\):has\(> q:first-child\) \{\n  text-indent: )-1em/${1}-0.9em/'
+mutate ja-sentence-lines site/site.css 's/(\.sentence \.keep \{\n  display: )inline-block/${1}inline/'
+mutate en-sentence-lines content/site.en.json 's/and watching the mind\|through/and watching|the mind through/'
+mutate ja-no-space-at-line-start site/build.mjs 's/\.replace\(\/<wbr>&nbsp;\/g, .&nbsp;<wbr>.\)//'
+mutate sentence-size-balance site/site.css 's/(clamp\(1\.625rem, 0\.75rem \+ 4\.8vw, )3\.25rem/${1}3.75rem/'
+
+node site/build.mjs >/dev/null 2>&1
+echo "== restored"
+node eval/units.mjs dist | tail -1
