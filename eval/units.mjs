@@ -27,7 +27,7 @@ window.__linesOf = (el) => {
       const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 1);
       const rect = r.getClientRects()[0];
       if (!rect || (rect.width === 0 && /\\s/.test(t[i]))) continue;
-      chars.push({ ch: t[i], top: rect.top, left: rect.left });
+      chars.push({ ch: t[i], top: rect.top, bottom: rect.bottom, left: rect.left });
     }
   }
   const lines = [];
@@ -145,10 +145,10 @@ const checks = {
     return bad;
   }) },
 
-  'title-no-widow': { pages: ['writing/', 'ja/writing/'], widths: [375, 414, 768, 1024, 1280, 1440], run: (page) => page.evaluate(() => {
+  'title-no-widow': { pages: ['writing/', 'ja/writing/', '', 'ja/'], widths: [375, 414, 768, 1024, 1280, 1440], run: (page) => page.evaluate(() => {
     const bad = [];
     const ja = document.documentElement.lang === 'ja';
-    for (const t of [...document.querySelectorAll('.piece-title')].filter(__visible)) {
+    for (const t of [...document.querySelectorAll('.piece-title, .work-line')].filter(__visible)) {
       const lines = __linesOf(t).map((l) => l.text.trim()).filter(Boolean);
       if (lines.length < 2) continue;
       const last = lines[lines.length - 1];
@@ -274,6 +274,54 @@ const checks = {
     return bad;
   }) },
 
+  'body-nbsp-width': { pages: ['', 'about/', 'writing/', '404.html'], widths: [1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const walker = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT);
+    for (let n; (n = walker.nextNode()); ) {
+      if (!n.textContent.includes(' ') || n.parentElement.closest(':lang(ja)')) continue;
+      if (/Charter/.test(getComputedStyle(n.parentElement).fontFamily.split(',')[0])) bad.push(`no-break space in Charter: 「${n.textContent.trim().slice(0, 20)}」`);
+    }
+    return bad;
+  }) },
+
+  'note-on-first-line': { pages: ['', 'ja/'], widths: [1280, 1440], run: (page) => page.evaluate(() => {
+    // A work's links (the margin note) sit on the first line of its name, also when the name wraps.
+    const mid = (c) => (c.top + c.bottom) / 2;
+    const bad = [];
+    for (const w of [...document.querySelectorAll('.work')].filter(__visible)) {
+      const nameLines = __linesOf(w.querySelector('.work-name'));
+      const link = w.querySelector('.work-links a');
+      if (nameLines.length < 2 || !link) continue;
+      const note = mid(__linesOf(link)[0].chars[0]);
+      if (Math.abs(note - mid(nameLines[1].chars[0])) < Math.abs(note - mid(nameLines[0].chars[0]))) bad.push(`「${nameLines[0].text.trim().slice(0, 24)}」 has its note on line 2`);
+    }
+    return bad;
+  }) },
+
+  'note-column-x': { pages: ['writing/', 'ja/writing/'], widths: [1280, 1440, 1920], run: (page) => page.evaluate(() => {
+    // The margin note starts one space-xl past the column end, as on the home page, and titles stop at their hairline.
+    const piece = document.querySelector('.piece');
+    const measure = (css) => { const d = document.createElement('div'); d.style.cssText = `position:absolute;visibility:hidden;inline-size:${css}`; piece.appendChild(d); const w = d.getBoundingClientRect().width; d.remove(); return w; };
+    const hairlineEnd = piece.getBoundingClientRect().right - measure('calc(var(--note) + var(--space-xl))');
+    const noteX = hairlineEnd + measure('var(--space-xl)');
+    const bad = [];
+    const overrun = [...document.querySelectorAll('.piece-title')].filter(__visible).find((t) => t.getBoundingClientRect().right > hairlineEnd + 1);
+    if (overrun) bad.push(`「${overrun.textContent.trim().slice(0, 20)}」 runs to ${overrun.getBoundingClientRect().right.toFixed(0)}, hairline ends at ${hairlineEnd.toFixed(0)}`);
+    const whereX = __linesOf(document.querySelector('.piece-where'))[0].chars[0].left;
+    if (Math.abs(whereX - noteX) > 1) bad.push(`margin note at x ${whereX.toFixed(1)}, home's at ${noteX.toFixed(1)}`);
+    return bad;
+  }) },
+
+  'ja-no-trailing-nbsp': { pages: ['ja/', 'ja/about/', 'ja/writing/'], widths: [320, 375, 414, 768, 1280, 1440], run: (page) => page.evaluate((sel) => {
+    const bad = [];
+    for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
+      if (el.querySelector(sel)) continue;
+      const lines = __linesOf(el);
+      lines.slice(0, -1).forEach((l) => { if (l.chars[l.chars.length - 1].ch === ' ') bad.push(`line ends in a no-break space: 「${l.text.trim().slice(-10)}」`); });
+    }
+    return bad;
+  }, JA_TEXT) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
@@ -304,7 +352,25 @@ const results = [];
 const frozen = units.filter((u) => u.status === 'frozen');
 for (const u of frozen) {
   const fails = [];
-  if (u.id === 'focus-visible') {
+  if (u.id === 'skip-link-visible') {
+    // Motion on: the focused skip link is the topmost element under itself, on every page and width.
+    for (const w of [320, 375, 768, 1000]) for (const p of ['', 'ja/']) {
+      const mctx = await browser.newContext({ viewport: { width: w, height: 800 }, reducedMotion: 'no-preference' });
+      const mp = await mctx.newPage();
+      await mp.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+      await mp.keyboard.press('Tab');
+      await mp.waitForTimeout(300);
+      const covered = await mp.evaluate(() => {
+        const a = document.querySelector('.skip-link');
+        const r = a.getBoundingClientRect();
+        let hit = 0, n = 0;
+        for (let x = r.left + 2; x < r.right - 2; x += 6) for (let y = r.top + 2; y < r.bottom - 2; y += 6) { n++; if (a.contains(document.elementFromPoint(x, y))) hit++; }
+        return n - hit;
+      });
+      if (covered) fails.push(`/${p} ${w}px: ${covered} points of the focused skip link are covered`);
+      await mctx.close();
+    }
+  } else if (u.id === 'focus-visible') {
     for (const p of ['', 'ja/', 'writing/', 'about/']) {
       await open(p, 1280);
       const missing = await page.evaluate(async () => {
@@ -331,6 +397,8 @@ for (const u of frozen) {
         if (fg !== 'rgb(0, 0, 0)') bad.push(`body prints in ${fg}`);
         if (/rgb\((\d+), (\d+), (\d+)\)/.test(bg) && +RegExp.$1 < 128) bad.push(`dark background ${bg}`);
         if (document.documentElement.lang === 'ja' && getComputedStyle(document.querySelector('p.sentence')).fontSize !== `${(16 * 4) / 3}px` && Math.abs(parseFloat(getComputedStyle(document.querySelector('p.sentence')).fontSize) - 21.333) > 0.1) bad.push('JA sentence is not 16pt');
+        const sl = document.querySelector('p.sentence a');
+        if (sl) { const cs = getComputedStyle(sl); if (!cs.textDecorationLine.includes('underline') || cs.textDecorationColor === 'rgba(0, 0, 0, 0)') bad.push('sentence links print without an underline'); }
         const ext = document.querySelector('.work-links a[href^="http"]');
         if (ext && !getComputedStyle(ext, '::after').content.includes('http')) bad.push('external link URL not printed');
         return bad;

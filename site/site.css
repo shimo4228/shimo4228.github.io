@@ -107,6 +107,8 @@ a {
 
 .skip-link {
   position: absolute;
+  /* Above the header, which becomes its own stacking context when view transitions name it (motion on). */
+  z-index: 2;
   inset-inline-start: var(--space-s);
   inset-block-start: var(--space-s);
   padding: var(--space-2xs) var(--space-s);
@@ -596,10 +598,9 @@ a {
 }
 
 .work-name a {
-  /* Padding grows the target to 24px without moving the text (the margin gives the space back). */
-  display: inline-block;
+  /* Inline, so a name that wraps keeps its first line as the heading's baseline (the margin note sits on it);
+     padding grows the target to 24px without moving the text. */
   padding-block: 0.15em;
-  margin-block: -0.15em;
   text-decoration-line: underline;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -630,6 +631,11 @@ a {
 
 .work-line {
   max-inline-size: var(--measure);
+}
+
+/* A line the build could not tie (its last two words are too long) is balanced instead, so it ends on more than one word. */
+.work-line:not(:has(.tie)) {
+  text-wrap: balance;
 }
 
 .work-links {
@@ -933,7 +939,9 @@ a {
      stay under the date and title only. */
   .piece,
   .piece:lang(ja) {
-    grid-template-columns: var(--rail) minmax(0, 1fr) var(--note);
+    /* The note track takes the extra step to the margin, so the title ends where its hairline does and the note
+       starts at the same x as a work's links on the home page. */
+    grid-template-columns: var(--rail) minmax(0, 1fr) calc(var(--note) + var(--space-xl) - var(--space-l));
     grid-template-areas: "date title where";
     margin-inline-end: calc(-1 * (var(--note) + var(--space-xl)));
     border: 0;
@@ -949,7 +957,7 @@ a {
   }
 
   .piece-where {
-    margin-inline-start: calc(var(--space-xl) - var(--space-l));
+    padding-inline-start: calc(var(--space-xl) - var(--space-l));
     white-space: normal;
   }
 }
@@ -1196,4 +1204,11 @@ main :is(p, dd, li) {
 
 .sentence .keep {
   max-inline-size: 100%;
+}
+
+/* On paper the sentence's links are underlined like every other link; their screen underline is transparent until hover. */
+@media print {
+  .sentence a {
+    text-decoration-color: currentColor;
+  }
 }

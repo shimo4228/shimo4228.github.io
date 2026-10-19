@@ -36,13 +36,16 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 // Text for display. Japanese gets BudouX phrase breaks; English gets non-breaking spaces where a line must not end.
 // In Japanese every space is tied: lines break only at BudouX phrase boundaries (<wbr>), so neither "AI" nor
 // "Claude Code" is split or left alone at a line end.
-// A break point never starts a line with the space: <wbr> moves to after it.
+// A break point never starts a line with the space: <wbr> moves to after it. Where a line may break there, the space
+// is an ordinary one, so at a line end it hangs instead of keeping its width and the link's underline (a no-break
+// space is not white space to the line breaker).
 // Only a space between Latin and Japanese is tied ("AI エージェント"); a space between two Latin words
 // ("Tatsuya Shimomoto") stays an ordinary break point.
 const CJK = '\\u3000-\\u30ff\\u3400-\\u9fff\\uff00-\\uffef';
 const tieMixed = (h) => h
   .replace(new RegExp(` (?=(?:<wbr>)?[${CJK}])|(?<=[${CJK}](?:<wbr>)?) `, 'gu'), '&nbsp;')
-  .replace(/<wbr>&nbsp;/g, '&nbsp;<wbr>');
+  .replace(/<wbr>&nbsp;/g, '&nbsp;<wbr>')
+  .replace(/&nbsp;<wbr>/g, ' <wbr>');
 
 function txt(s, lang) {
   // Brackets stay with their words: no line ends on （ or starts with ）, and none starts with （ either, since the
@@ -347,7 +350,7 @@ function about(c) {
   // A fact links only its noun (linkText), not the whole sentence.
   const value = (f) =>
     f.linkText
-      ? `${txt(f.before, c.lang)}<a href="${esc(f.href)}">${c.lang === 'ja' ? tieMixed(esc(f.linkText)) : esc(f.linkText).replaceAll(' ', '&nbsp;')}</a>${prose(f.after, c.lang)}`
+      ? `${txt(f.before, c.lang)}<a href="${esc(f.href)}">${c.lang === 'ja' ? tieMixed(esc(f.linkText)) : (f.linkText.includes(' ') ? `<span class="tie">${esc(f.linkText)}</span>` : esc(f.linkText))}</a>${prose(f.after, c.lang)}`
       : f.href
         ? `<a href="${esc(f.href)}">${esc(f.value)}</a>`
         : f.lang && f.lang !== c.lang ? esc(f.value) : prose(f.value, c.lang);

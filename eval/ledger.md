@@ -302,3 +302,33 @@ Round 4 notes:
   phrasing check stopped the build). lang-marks exempts proper names (WCAG 3.1.2). Left open: underline-extent and
   icons (hybrid, waiting on the author). The JA sentence is still `bioDraft: true` in content/site.ja.json — the
   author's confirmation is pending.
+
+## Round 5 — detail-loop (2026-10-19/20)
+
+Fresh reviewers on the round-4 build (same four roles, new agents, a copy without eval/). Reports in `reviews/r5-*.md`.
+
+| ID | Finding | Decision | Why / unit |
+|---|---|---|---|
+| r5-typography-en 1, r5-art 1 | Charter draws the `&nbsp;` in "research hub" twice as wide | adopted | body-nbsp-width — a regression from round 4's label fix; English labels now tie with a `.tie` span |
+| r5-typography-en 2 | label underlines cut descenders | author call | repeat of r4-typography-en 2 (the author's "fifth of an em") |
+| r5-typography-en 3 | "phenomenology." alone on the last work line at 320/375 | adopted | title-no-widow, widened to untied work lines (r4-typography-en 6 was not adopted as "not a short widow"; balance fixes it without cost) |
+| r5-typography-en 4 | Newsreader is the static 16pt cut at display sizes | author call | font asset choice |
+| r5-typography-en 5 | About lead 26–28 characters per line | author call | layout |
+| r5-typography-en 6 | sentence at 320/375 | not adopted | recorded decision (2026-10-18) |
+| r5-art 2 | wrapped work name puts its margin note on line 2 | adopted | note-on-first-line (`.work-name a` inline) |
+| r5-art 3 | writing note 19px right of home's; titles past their hairline | adopted | note-column-x |
+| r5-art 4 | work-links hover in moss, names in ink | author call | colour roles are the author's |
+| r5-art 5, r5-typography-ja 4 | DESIGN.md drift (dotted underlines, keep-all scope, two rule 8s) | author call | the author's document (also r4-typography-ja 5) |
+| r5-art 6 | "Unaffiliated by design" in English on /ja/about/ | not adopted | verbatim, marked lang="en" (R3 V4) |
+| r5-typography-ja 1 | line-final `&nbsp;` keeps its width and the underline | adopted | ja-no-trailing-nbsp (plain space before `<wbr>`) |
+| r5-typography-ja 2 | Latin–Japanese space 0.125–0.333em | author call | repeat of r4-typography-ja 3 |
+| r5-typography-ja 3 | ragged running text; justify? | author call | taste |
+| r5-typography-ja 5 | /ja/about/ at 320 lead opens alone | not adopted | below the 360 minimum; the author's words |
+| r5-accessibility 1 | parallax dims sentence links to 1.41–2.22:1 | author call | repeat of r4-accessibility 2; reviewer's floor: opacity 0.85 keeps links ≥ 3.21:1 |
+| r5-accessibility 2 | header paints over the focused skip link (motion on) | adopted | skip-link-visible |
+| r5-accessibility 3 | sentence links print without an underline | adopted | print (widened) |
+| r5-accessibility 4 | text zoom plus text spacing together overflows at 320 | not adopted | not required jointly |
+
+Round 5 notes: 7 adopted, so the round is not clean. One adopted finding was a regression the loop itself made in
+round 4. note-column-x's first mutation moved the note by margin instead of padding, which renders identically; the
+mutation now reverts the grid track. 37 frozen units, all green, each red under its mutation.

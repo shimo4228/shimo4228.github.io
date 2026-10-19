@@ -46,6 +46,13 @@ mutate focus-visible site/site.css 's/\z/\n:focus-visible { outline: none !impor
 mutate print site/site.css 's/(  \.sentence:lang\(ja\) \{\n    font-size: )16pt;/${1}18pt;/'
 mutate ja-display-face-fallback site/build.mjs 's/codePointAt\(0\) >= 0x2e80/codePointAt(0) >= 0x4e00/'
 mutate authors-words-verbatim site/build.mjs 's/const parts = c\.sentence\.map\(\(p\) => \{/const parts = c.sentence.map((p, i) => { if (i === 0 && c.lang === "ja") p = { ...p, text: p.text.slice(0, -1) };/'
+mutate title-no-widow site/site.css 's/\.work-line:not\(:has\(\.tie\)\) \{\n  text-wrap: balance;\n\}/.work-line:not(:has(.tie)) {\n}/'
+mutate body-nbsp-width site/build.mjs 's/\(f\.linkText\.includes\(. .\) \? `<span class="tie">\$\{esc\(f\.linkText\)\}<\/span>` : esc\(f\.linkText\)\)/esc(f.linkText).replaceAll(" ", "&nbsp;")/'
+mutate ja-no-trailing-nbsp site/build.mjs 's/\n  \.replace\(\/&nbsp;<wbr>\/g, . <wbr>.\);/;/'
+mutate note-on-first-line site/site.css 's/(\.work-name a \{\n(?:  \/\*.*\n.*\n))/$1  display: inline-block;\n/'
+mutate note-column-x site/site.css 's/grid-template-columns: var\(--rail\) minmax\(0, 1fr\) calc\(var\(--note\) \+ var\(--space-xl\) - var\(--space-l\)\);/grid-template-columns: var(--rail) minmax(0, 1fr) var(--note);/'
+mutate skip-link-visible site/site.css 's/  \/\* Above the header[^\n]*\n  z-index: 2;\n//'
+mutate print site/site.css 's/(\.sentence a \{\n    text-decoration-color: )currentColor;/${1}transparent;/'
 mutate sentence-size-balance site/site.css 's/(clamp\(1\.625rem, 0\.75rem \+ 4\.8vw, )3\.25rem/${1}3.75rem/'
 
 node site/build.mjs >/dev/null 2>&1

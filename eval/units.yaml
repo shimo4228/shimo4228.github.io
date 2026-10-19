@@ -248,9 +248,9 @@
   field: Accessibility
   what: Printed pages use the light palette, print link URLs, and set Japanese at 16pt.
   why: A dark screen palette prints grey on grey.
-  eval: {judge: machine, check: print, env: "Chrome on macOS", expect: "under print emulation: light tokens, URLs after external links, JA sentence 16pt"}
+  eval: {judge: machine, check: print, env: "Chrome on macOS", expect: "under print emulation: black text on a light ground, URLs after external links, JA sentence 16pt, sentence links underlined"}
   cause: "@media print in site.css"
-  origin: R2 X1, X2, R3 A3
+  origin: R2 X1, X2, R3 A3, r5-accessibility 3
   status: frozen
 
 - id: icons
@@ -341,11 +341,11 @@
 
 - id: title-no-widow
   field: English typesetting
-  what: A multi-line article title does not end on one word (EN) or on two characters or fewer (JA).
+  what: A multi-line article title or work line does not end on one word (EN) or on two characters or fewer (JA).
   why: A lone word under a title reads as a widow, down a list of 80 titles.
-  eval: {judge: machine, check: title-no-widow, env: "Chrome on macOS, reduced motion", expect: "0 titles at 375-1440 on /writing/ and /ja/writing/", instances: ".piece-title"}
-  cause: "site.css .piece-title { text-wrap: balance }"
-  origin: r4-typography-en 1, r4-typography-ja 7
+  eval: {judge: machine, check: title-no-widow, env: "Chrome on macOS, reduced motion", expect: "0 at 375-1440", instances: ".piece-title on the writing pages, .work-line on the home pages"}
+  cause: "site.css .piece-title { text-wrap: balance }; .work-line:not(:has(.tie)) { text-wrap: balance }"
+  origin: r4-typography-en 1, r4-typography-ja 7, r5-typography-en 3
   status: frozen
 
 - id: link-label-whole
@@ -444,4 +444,57 @@
     - unit: no-overflow
       how: co-arising — both read the page's scrollWidth
   origin: r4-accessibility 4
+  status: frozen
+
+# Round r5 (2026-10-19)
+
+- id: body-nbsp-width
+  field: English typesetting
+  what: English body text in Charter carries no no-break space; ties are nowrap spans with ordinary spaces.
+  why: Charter draws U+00A0 twice as wide as a space, opening a hole inside a two-word label.
+  eval: {judge: machine, check: body-nbsp-width, env: "Chrome on macOS", expect: "0 text nodes with U+00A0 set in Charter on the English pages"}
+  cause: "build.mjs: English fact link labels wrapped in .tie instead of &nbsp;"
+  relations:
+    - unit: link-label-whole
+      how: co-arising — the round-4 fix for whole labels used &nbsp; and made this hole
+  origin: r5-typography-en 1, r5-art 1
+  status: frozen
+
+- id: ja-no-trailing-nbsp
+  field: Japanese typesetting
+  what: A Japanese line that breaks after a Latin–Japanese space ends at its last character; the space hangs.
+  why: A no-break space keeps its width at the line end and carries the underline past the last character.
+  eval: {judge: machine, check: ja-no-trailing-nbsp, env: "Chrome on macOS", expect: "0 non-final lines ending in U+00A0, every JA page, 320-1440"}
+  cause: "build.mjs tieMixed: a plain space before <wbr>"
+  relations:
+    - unit: ja-no-space-at-line-start
+      how: support — the same break point, kept after the space
+  origin: r5-typography-ja 1
+  status: frozen
+
+- id: note-on-first-line
+  field: Layout
+  what: A work's margin note sits on the first line of its name, also when the name wraps.
+  why: On a wrapped name the note read as belonging to the second line.
+  eval: {judge: machine, check: note-on-first-line, env: "Chrome on macOS", expect: "every wrapped work name has its first link nearer its first line, 1280 and 1440"}
+  cause: "site.css .work-name a inline (not inline-block)"
+  origin: r5-art 2
+  status: frozen
+
+- id: note-column-x
+  field: Layout
+  what: On the writing pages the margin note starts where the home page's does, and titles stop at their hairline.
+  why: The note column jumped 19px between pages, and long titles ran past their rule.
+  eval: {judge: machine, check: note-column-x, env: "Chrome on macOS", expect: "note x within 1px of column end + space-xl; no title box past the hairline end, 1280-1920"}
+  cause: "site.css 80rem .piece grid third track and .piece-where padding"
+  origin: r5-art 3
+  status: frozen
+
+- id: skip-link-visible
+  field: Accessibility
+  what: The focused skip link is drawn above the header, with motion on as well as off.
+  why: With motion on the header becomes a stacking context and painted over "Skip to content" (WCAG 2.4.1, 2.4.7).
+  eval: {judge: machine, check: skip-link-visible, env: "Chrome, motion on", expect: "0 covered sample points in the focused skip link at 320-1000 on / and /ja/"}
+  cause: "site.css .skip-link { z-index: 2 }"
+  origin: r5-accessibility 2
   status: frozen
