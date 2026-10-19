@@ -173,12 +173,12 @@
 
 - id: entrance-grid
   field: Layout
-  what: The entrances sit in 1, 2x2 or 4 columns by width, never 3 + 1.
-  why: A lone item on the last row reads as left over.
-  eval: {judge: machine, expect: "entrance rows hold equal counts at every width 320-1920"}
-  cause: "site.css .entrances grid-template-columns"
+  what: The entrance groups sit in rows of equal count at every width, never 3 + 1.
+  why: A lone group on the last row reads as left over.
+  eval: {judge: machine, expect: "every row of .entrance-group holds the same count, 320-1920"}
+  cause: "site.css .entrance-groups grid-template-columns"
   origin: R2 T2
-  status: open
+  status: retired
 
 - id: sticky-rail-quotes
   field: Layout

@@ -245,3 +245,5 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   apostrophes and quotes (24 + 5) while the rest of the site sets them typographically (R1). build.mjs sets them at
   render (`typographic()`); the feed and the author's wording are unchanged. Frozen as typographic-punctuation;
   the mutation (render the raw title) turns only this unit red.
+- 2026-10-19 entrance-grid retired: the entrances moved to the writing pages as two groups (In English, In
+  Japanese), so no width can split them 3 + 1, and no mutation of the grid turns a check red.
