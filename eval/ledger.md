@@ -241,3 +241,7 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   with the mark's letter-spacing at 0). Left for the author: fix, or widen the unit's tolerance.
 - 2026-10-19 ja-quote-hang fixed: `.section-title:lang(ja) > q::before { letter-spacing: 0 }`. The words now sit on the
   edge (+0.0px) at 375 and 1280 in Hiragino; the tracking stays on the rest of the title.
+- 2026-10-19 r4-author 1 (found while the r4 reviewers ran): the writing pages showed feed titles with straight
+  apostrophes and quotes (24 + 5) while the rest of the site sets them typographically (R1). build.mjs sets them at
+  render (`typographic()`); the feed and the author's wording are unchanged. Frozen as typographic-punctuation;
+  the mutation (render the raw title) turns only this unit red.

@@ -77,6 +77,16 @@ const checks = {
   'ja-sentence-lines': { pages: ['ja/'], widths: WIDTHS, golden: true },
   'en-sentence-lines': { pages: [''], widths: WIDTHS, golden: true },
 
+  'typographic-punctuation': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    for (let n; (n = walker.nextNode()); ) {
+      if (n.parentElement.closest('script, style, code, pre')) continue;
+      for (const m of n.textContent.matchAll(/.{0,20}['"].{0,20}/g)) bad.push(`straight quote: 「${m[0].trim()}」`);
+    }
+    return bad;
+  }) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {

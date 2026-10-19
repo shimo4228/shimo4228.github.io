@@ -376,6 +376,16 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const shortDate = (d, lang) => (lang === 'ja' ? `${+d.slice(5, 7)}月${+d.slice(8, 10)}日` : `${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}`);
 const where = (e, lang) => (e.platform === 'note' && e.url.includes('/sakamaki4228/') ? (lang === 'ja' ? 'note（Sakamaki 名義）' : 'note (as Sakamaki)') : e.platform);
 
+// Feed titles are the author's words as published; only apostrophes and quotes are set typographically, as on the
+// rest of the site. A quote at the start or after a space or opening bracket opens; any other closes.
+const typographic = (s) =>
+  s
+    .replace(/([\p{L}\p{N}])'([\p{L}\p{N}])/gu, '$1’$2')
+    .replace(/(^|[\s(\[「（])"/gu, '$1“')
+    .replace(/"/g, '”')
+    .replace(/(^|[\s(\[「（])'/gu, '$1‘')
+    .replace(/'/g, '’');
+
 function writing(c) {
   const w = c.writing;
   const lang = c.lang;
@@ -383,7 +393,8 @@ function writing(c) {
   const years = [...new Set(items.map((i) => i.date.slice(0, 4)))];
   const row = (i) => {
     const e = i[lang];
-    return `<li class="piece"><a class="piece-title" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(e.title, lang), lang) : esc(e.title))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
+    const title = typographic(e.title);
+    return `<li class="piece"><a class="piece-title" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(title, lang), lang) : esc(title))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
   };
   const groups = years
     .map(

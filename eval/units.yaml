@@ -146,12 +146,12 @@
 
 - id: typographic-punctuation
   field: English typesetting
-  what: Typographic apostrophes and quotes, and none of the generated-page tells.
-  why: Straight quotes and stock patterns read as unedited.
-  eval: {judge: machine, expect: "0 straight apostrophes in visible text; run.mjs tell checks pass"}
-  cause: "content/site.*.json strings; site.css"
-  origin: R1, run.mjs L2
-  status: open
+  what: Visible text uses typographic apostrophes and quotes, including the feed titles on the writing pages.
+  why: Straight quotes read as unedited next to the typographic ones on the rest of the site.
+  eval: {judge: machine, check: typographic-punctuation, env: "Chrome, 1280", expect: "0 straight ' or \" in visible text on every page", instances: "all pages, text outside code"}
+  cause: "content/site.*.json strings; build.mjs typographic() on feed titles"
+  origin: R1, r4-author 1
+  status: frozen
 
 - id: type-scale-roles
   field: Layout

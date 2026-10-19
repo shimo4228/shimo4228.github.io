@@ -20,6 +20,7 @@ mutate ja-quote-hang site/site.css 's/text-indent: -0\.5em;/text-indent: -0.4em;
 mutate ja-sentence-lines site/site.css 's/(\.sentence \.keep \{\n  display: )inline-block/${1}inline/'
 mutate en-sentence-lines content/site.en.json 's/and watching the mind\|through/and watching|the mind through/'
 mutate ja-no-space-at-line-start site/build.mjs 's/\.replace\(\/<wbr>&nbsp;\/g, .&nbsp;<wbr>.\)//'
+mutate typographic-punctuation site/build.mjs 's/const title = typographic\(e\.title\);/const title = e.title;/'
 mutate sentence-size-balance site/site.css 's/(clamp\(1\.625rem, 0\.75rem \+ 4\.8vw, )3\.25rem/${1}3.75rem/'
 
 node site/build.mjs >/dev/null 2>&1
