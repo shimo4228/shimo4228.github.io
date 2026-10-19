@@ -239,3 +239,5 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   mutation in `eval/mutate.sh` turns its own unit red. ja-quote-hang fails by +0.84px at 375 and 1280: the 0.04em
   letter-spacing of the JA display lines also follows the hung 「, so the words sit 0.84px inside the edge (0.02px
   with the mark's letter-spacing at 0). Left for the author: fix, or widen the unit's tolerance.
+- 2026-10-19 ja-quote-hang fixed: `.section-title:lang(ja) > q::before { letter-spacing: 0 }`. The words now sit on the
+  edge (+0.0px) at 375 and 1280 in Hiragino; the tracking stays on the rest of the title.

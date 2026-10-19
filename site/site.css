@@ -483,6 +483,11 @@ a {
   text-indent: -0.5em;
 }
 
+/* The display lines' 0.04em tracking would follow the hung 「 too and set the words that far inside the edge. */
+.section-title:lang(ja) > q::before {
+  letter-spacing: 0;
+}
+
 @media (min-width: 48rem) {
   /* The quoted phrase stays in view while its gloss scrolls past. */
   .gloss > .section-title {
