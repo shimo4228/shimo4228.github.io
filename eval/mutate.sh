@@ -37,6 +37,15 @@ mutate focus-not-hidden site/site.css 's/  \.reveal \.pending\.in,\n  \.reveal \
 mutate forced-colors site/site.css 's/  \.site-nav \[aria-current="page"\] \{\n    text-decoration: underline 2px;\n    text-underline-offset: 0\.3em;\n  \}\n\n//'
 mutate sentence-link-large site/site.css 's/7\.1vw\), 1\.5rem\);/7.1vw), 1.375rem);/'
 mutate reflow-text-zoom site/site.css 's/  :is\(\.gloss, \.years, \.year, \.pieces, \.lost, \.about-body\) \{\n    grid-template-columns: minmax\(0, 1fr\);\n  \}\n//'
+mutate ja-keep-all-scope site/site.css 's/(:lang\(ja\) :is\(h1, h2, h3, dt, \.sentence, \.work-name, \.entrance-group dd\) \{\n)  word-break: keep-all;\n/$1/'
+mutate lang-marks site/build.mjs 's/<dd\$\{f\.lang && f\.lang !== c\.lang \? ` lang="\$\{f\.lang\}"` : .{2}\}>/<dd>/'
+mutate type-scale-roles site/site.css 's/\z/\n.work:first-child .work-name { font-size: 1.1em; }\n/'
+mutate edge-alignment site/site.css 's/\z/\n.section-intro { padding-inline-start: 2px; }\n/'
+mutate target-size site/site.css 's/\z/\n.site-foot * { gap: 0 !important; } .site-foot a { padding: 0 !important; margin: 0 !important; min-inline-size: 0 !important; }\n/'
+mutate focus-visible site/site.css 's/\z/\n:focus-visible { outline: none !important; }\n/'
+mutate print site/site.css 's/(  \.sentence:lang\(ja\) \{\n    font-size: )16pt;/${1}18pt;/'
+mutate ja-display-face-fallback site/build.mjs 's/codePointAt\(0\) >= 0x2e80/codePointAt(0) >= 0x4e00/'
+mutate authors-words-verbatim site/build.mjs 's/const parts = c\.sentence\.map\(\(p\) => \{/const parts = c.sentence.map((p, i) => { if (i === 0 && c.lang === "ja") p = { ...p, text: p.text.slice(0, -1) };/'
 mutate sentence-size-balance site/site.css 's/(clamp\(1\.625rem, 0\.75rem \+ 4\.8vw, )3\.25rem/${1}3.75rem/'
 
 node site/build.mjs >/dev/null 2>&1

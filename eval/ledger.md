@@ -294,3 +294,11 @@ Round 4 notes:
   (reflow-text-zoom); `inline-block` then let a line start with the tied space after the link
   (ja-no-space-at-line-start). `word-break: keep-all` plus tied spaces inside English labels satisfies all three.
 - r4-typography-en 4's fix moved from CSS nowrap to the build (English link labels tie their spaces).
+- 2026-10-19 Froze the last nine open machine units (ja-keep-all-scope, lang-marks, type-scale-roles, edge-alignment,
+  target-size, focus-visible, print, ja-display-face-fallback, authors-words-verbatim): 32 frozen, all green, each
+  with a mutation that turns it red. Three first mutations proved nothing and were replaced: target-size (without
+  the padding the footer still met WCAG 2.5.8's spacing exception), ja-display-face-fallback (「」 come from generated
+  content the check does not read; the mutation now drops kana from the subset), authors-words-verbatim (the English
+  phrasing check stopped the build). lang-marks exempts proper names (WCAG 3.1.2). Left open: underline-extent and
+  icons (hybrid, waiting on the author). The JA sentence is still `bioDraft: true` in content/site.ja.json — the
+  author's confirmation is pending.

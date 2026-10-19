@@ -211,6 +211,69 @@ const checks = {
     return sw <= vw ? [] : [`scrollWidth ${sw} > ${vw} at 200% text zoom`];
   }) },
 
+  'ja-keep-all-scope': { pages: ['ja/', 'ja/about/', 'ja/writing/'], widths: [375], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const short = 'h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd, .piece-title';
+    for (const el of [...document.querySelectorAll(`main :lang(ja) :is(${short})`)].filter(__visible))
+      if (getComputedStyle(el).wordBreak !== 'keep-all') bad.push(`short line 「${el.textContent.trim().slice(0, 10)}」 breaks inside phrases`);
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(.work-line, .section-intro, .lead)')].filter(__visible))
+      if (getComputedStyle(el).wordBreak === 'keep-all') bad.push(`running text 「${el.textContent.trim().slice(0, 10)}」 keeps whole phrases`);
+    return bad;
+  }) },
+
+  'lang-marks': { pages: ['ja/', 'ja/about/', 'ja/writing/', '', 'about/', 'writing/'], widths: [1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const pageLang = document.documentElement.lang;
+    for (const el of [...document.querySelectorAll('main :is(p, dd, li, dt, h1, h2, h3, a, span)')].filter(__visible)) {
+      if (el.children.length || el.closest('.work-name, .entrance, .site-foot')) continue; // proper names need no lang mark (WCAG 3.1.2)
+      const t = el.textContent.trim();
+      const latin = /^[\x20-\x7e‘-”–— ]+$/.test(t) && t.split(/\s+/).length >= 3;
+      const cjk = /[぀-ヿ一-鿿]/.test(t) && !/[A-Za-z]{3}/.test(t);
+      const lang = el.closest('[lang]').getAttribute('lang');
+      if (pageLang === 'ja' && latin && lang !== 'en') bad.push(`English 「${t.slice(0, 24)}」 marked ${lang}`);
+      if (pageLang === 'en' && cjk && lang !== 'ja') bad.push(`Japanese 「${t.slice(0, 12)}」 marked ${lang}`);
+    }
+    return bad;
+  }) },
+
+  'type-scale-roles': { pages: ['', 'about/', 'writing/'], widths: [375, 1280], run: (page) => page.evaluate(() => {
+    const roles = { 'section-title': '.gloss > .section-title', 'piece-title': '.piece-title', 'work-name': '.work-name', 'body': 'main p:not(.sentence, .section-title, .lead)' };
+    const out = {};
+    for (const [k, sel] of Object.entries(roles)) {
+      const sizes = [...new Set([...document.querySelectorAll(sel)].filter(__visible).map((e) => `${getComputedStyle(e).fontSize} ${getComputedStyle(e).fontFamily.split(',')[0]}`))];
+      if (sizes.length) out[k] = sizes;
+    }
+    window.__roles = out;
+    return Object.entries(out).filter(([, v]) => v.length > 1).map(([k, v]) => `${k} has ${v.length} sizes on one page: ${v.join(' | ')}`);
+  }) },
+
+  'edge-alignment': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/'], widths: [375, 768, 1280], run: (page) => page.evaluate(() => {
+    const lefts = [];
+    for (const el of [...document.querySelectorAll('main :is(h1, h2, h3, p, li, dt, dd)')].filter(__visible)) {
+      if (getComputedStyle(el).textAlign === 'center') continue;
+      const first = __linesOf(el)[0]?.chars.find((c) => !/[「『“‘\s]/.test(c.ch));
+      if (first) lefts.push(Math.round(first.left * 2) / 2);
+    }
+    const xs = [...new Set(lefts)].sort((a, b) => a - b);
+    const bad = [];
+    for (let i = 1; i < xs.length; i++) { const d = xs[i] - xs[i - 1]; if (d > 1 && d <= 3) bad.push(`text edges ${xs[i - 1]} and ${xs[i]} are ${d}px apart`); }
+    return bad;
+  }) },
+
+  'target-size': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [320, 1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const links = [...document.querySelectorAll('a')].filter(__visible).filter((a) => !a.closest('p, svg') && !a.classList.contains('skip-link'));
+    for (const a of links) {
+      const r = a.getBoundingClientRect();
+      if (r.width >= 24 && r.height >= 24) continue;
+      // WCAG 2.5.8 spacing exception: a 24px circle on the target's centre meets no other target.
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const near = links.some((b) => b !== a && (() => { const q = b.getBoundingClientRect(); const dx = Math.max(q.left - cx, 0, cx - q.right), dy = Math.max(q.top - cy, 0, cy - q.bottom); return Math.hypot(dx, dy) < 12; })());
+      if (near) bad.push(`「${a.textContent.trim().slice(0, 16)}」 ${r.width.toFixed(0)}x${r.height.toFixed(0)}`);
+    }
+    return bad;
+  }) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
@@ -241,7 +304,78 @@ const results = [];
 const frozen = units.filter((u) => u.status === 'frozen');
 for (const u of frozen) {
   const fails = [];
-  if (u.id === 'focus-not-hidden') {
+  if (u.id === 'focus-visible') {
+    for (const p of ['', 'ja/', 'writing/', 'about/']) {
+      await open(p, 1280);
+      const missing = await page.evaluate(async () => {
+        const out = [];
+        for (const el of [...document.querySelectorAll('a, button')].filter(__visible)) {
+          el.focus();
+          if (document.activeElement !== el || !el.matches(':focus-visible')) continue;
+          const cs = getComputedStyle(el);
+          if (!(cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) >= 1)) out.push(`「${el.textContent.trim().slice(0, 16)}」`);
+        }
+        return out;
+      });
+      await page.keyboard.press('Tab'); // keyboard modality, so :focus-visible matches on later focus() calls
+      for (const m of missing) fails.push(`/${p}: no focus ring on ${m}`);
+    }
+  } else if (u.id === 'print') {
+    for (const p of ['', 'ja/']) {
+      await open(p, 1280);
+      await page.emulateMedia({ media: 'print', colorScheme: 'dark' });
+      const r = await page.evaluate(() => {
+        const bad = [];
+        const bg = getComputedStyle(document.body).backgroundColor;
+        const fg = getComputedStyle(document.body).color;
+        if (fg !== 'rgb(0, 0, 0)') bad.push(`body prints in ${fg}`);
+        if (/rgb\((\d+), (\d+), (\d+)\)/.test(bg) && +RegExp.$1 < 128) bad.push(`dark background ${bg}`);
+        if (document.documentElement.lang === 'ja' && getComputedStyle(document.querySelector('p.sentence')).fontSize !== `${(16 * 4) / 3}px` && Math.abs(parseFloat(getComputedStyle(document.querySelector('p.sentence')).fontSize) - 21.333) > 0.1) bad.push('JA sentence is not 16pt');
+        const ext = document.querySelector('.work-links a[href^="http"]');
+        if (ext && !getComputedStyle(ext, '::after').content.includes('http')) bad.push('external link URL not printed');
+        return bad;
+      });
+      await page.emulateMedia({ media: 'screen', colorScheme: 'light' });
+      for (const b of r) fails.push(`/${p} print: ${b}`);
+    }
+  } else if (u.id === 'ja-display-face-fallback') {
+    // Without Hiragino: drop it from every display stack and read which fonts actually render the glyphs.
+    for (const p of ['ja/', 'ja/about/', 'ja/writing/', '404.html']) {
+      await open(p, 1280);
+      const cdp = await page.context().newCDPSession(page);
+      await cdp.send('DOM.enable'); await cdp.send('CSS.enable');
+      const n = await page.evaluate(() => {
+        let i = 0;
+        for (const el of document.querySelectorAll('main *')) {
+          const ff = getComputedStyle(el).fontFamily;
+          if (!/Shippori/.test(ff) || !el.closest(':lang(ja)')) continue;
+          el.style.fontFamily = ff.replace(/"Hiragino Mincho ProN",\s*/, '');
+          if ([...el.childNodes].some((c) => c.nodeType === 3 && /[\u3000-\u9fff]/.test(c.textContent))) el.setAttribute('data-fb', i++);
+        }
+        return i;
+      });
+      await page.evaluate(() => document.fonts.ready);
+      const { root } = await cdp.send('DOM.getDocument', { depth: -1 });
+      for (let i = 0; i < n; i++) {
+        const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: `[data-fb="${i}"]` });
+        const { fonts } = await cdp.send('CSS.getPlatformFontsForNode', { nodeId });
+        const other = fonts.filter((f) => !/Shippori|Newsreader/.test(f.familyName));
+        if (other.length) fails.push(`/${p}: display text falls back to ${other.map((f) => `${f.familyName} (${f.glyphCount})`).join(', ')}`);
+      }
+      await cdp.detach();
+      await page.goto('about:blank');
+    }
+  } else if (u.id === 'authors-words-verbatim') {
+    // The sentence on the page reads exactly as the author's bio in the content files.
+    for (const [p, file] of [['', 'content/site.en.json'], ['ja/', 'content/site.ja.json']]) {
+      const c = JSON.parse(readFileSync(file, 'utf8'));
+      const bio = c.bio ?? c.sentence.map((part) => part.text).join('');
+      await open(p, 1280);
+      const shown = await page.evaluate(() => document.querySelector('p.sentence').textContent);
+      const norm = (t) => t.replace(/[\s\u00a0\u2060\u200b]+/g, '');
+      if (norm(shown) !== norm(bio)) fails.push(`/${p}: the sentence differs from content bio`);
+    }
+  } else if (u.id === 'focus-not-hidden') {
     // Motion on: every link inside an item still waiting to reveal is visible as soon as it takes focus.
     for (const w of [375, 1280]) for (const p of ['', 'ja/', 'writing/']) {
       const mctx = await browser.newContext({ viewport: { width: w, height: 800 }, reducedMotion: 'no-preference' });

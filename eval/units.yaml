@@ -112,10 +112,10 @@
   field: Japanese typesetting
   what: Short lines (headings, the sentence, names, labels) keep BudouX phrases whole; running paragraphs break wherever kinsoku allows.
   why: Short lines read by phrase; running text fills the measure instead of going ragged.
-  eval: {judge: machine, expect: "no line in a short-line element breaks inside a BudouX phrase; running paragraphs end within 2 characters of the measure except their last line"}
+  eval: {judge: machine, check: ja-keep-all-scope, env: "Chrome on macOS", expect: "no line in a short-line element breaks inside a BudouX phrase; running paragraphs end within 2 characters of the measure except their last line"}
   cause: ":lang(ja) :is(h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd) { word-break: keep-all }"
   origin: R3 T4, live check 2
-  status: open
+  status: frozen
 
 - id: underline-extent
   field: Japanese typesetting
@@ -130,19 +130,19 @@
   field: Bilingual balance
   what: Without Hiragino (Android, Windows) the Japanese display text is set in a Mincho, not a Gothic.
   why: The sentence's voice depends on the serif; a Gothic fallback changes the page.
-  eval: {judge: machine, expect: "the platform font for the JA sentence and titles is a Mincho when Hiragino is absent"}
+  eval: {judge: machine, check: ja-display-face-fallback, env: "Chrome on macOS", expect: "the platform font for the JA sentence and titles is a Mincho when Hiragino is absent"}
   cause: "Shippori Mincho subset @font-face with unicode-range, after Hiragino Mincho in the stack"
   origin: phone/PC detail loop
-  status: open
+  status: frozen
 
 - id: lang-marks
   field: Page metadata
   what: Every run of text in the other language carries its lang attribute.
   why: Screen readers and line breaking pick rules by lang.
-  eval: {judge: machine, expect: "0 Latin-only text blocks without lang=en inside /ja/ pages, and the reverse"}
+  eval: {judge: machine, check: lang-marks, env: "Chrome on macOS", expect: "0 Latin-only text blocks without lang=en inside /ja/ pages, and the reverse"}
   cause: "build.mjs lang attributes on dd and quoted English"
   origin: R3 A2, V4
-  status: open
+  status: frozen
 
 - id: typographic-punctuation
   field: English typesetting
@@ -157,19 +157,19 @@
   field: Layout
   what: Each type role has one size and face (one title size both sides, JA rail titles capped, the display face only for the name and titles).
   why: A role that changes size between pages reads as two roles.
-  eval: {judge: machine, expect: "computed font-size and family per role equal across pages at each width"}
+  eval: {judge: machine, check: type-scale-roles, env: "Chrome on macOS", expect: "computed font-size and family per role equal across pages at each width"}
   cause: "site.css role sizes; tokens.mjs"
   origin: R2 T7, T14, R3 T3
-  status: open
+  status: frozen
 
 - id: edge-alignment
   field: Layout
   what: Text that shares a column starts on the same edge; rail titles sit on the gloss baseline.
   why: Edges 1–3px apart read as a mistake.
-  eval: {judge: machine, expect: "0 left edges 1-3px apart at the key widths (run.mjs near-miss)"}
+  eval: {judge: machine, check: edge-alignment, env: "Chrome on macOS", expect: "0 left edges 1-3px apart at the key widths (run.mjs near-miss)"}
   cause: "site.css grid and padding"
   origin: R2 T6
-  status: open
+  status: frozen
 
 - id: entrance-grid
   field: Layout
@@ -208,6 +208,8 @@
   eval: {judge: machine, check: text-zoom, env: "Chrome, reduced motion", expect: "every font-size grows when the root size doubles"}
   cause: "max(min(..., vw), rem) floors in site.css"
   relations:
+    - unit: sentence-link-large
+      how: co-arising — the rem floor holds both
     - unit: ja-sentence-lines
       how: co-arising — the JA sentence size is the zoom floor; a vw-only size also moved its line breaks
     - unit: sentence-size-balance
@@ -219,19 +221,19 @@
   field: Accessibility
   what: Links outside running text are at least 24 by 24 px.
   why: WCAG 2.5.8.
-  eval: {judge: machine, expect: "0 targets under 24px (run.mjs target-size)"}
+  eval: {judge: machine, check: target-size, env: "Chrome on macOS", expect: "0 targets under 24px (run.mjs target-size)"}
   cause: "padding on entrance and work links"
   origin: R2 V6, entrances
-  status: open
+  status: frozen
 
 - id: focus-visible
   field: Accessibility
   what: Every tab stop shows a focus ring.
   why: Keyboard users see where they are.
-  eval: {judge: machine, expect: "every tab stop has an outline (run.mjs focus-visible)"}
+  eval: {judge: machine, check: focus-visible, env: "Chrome on macOS", expect: "every tab stop has an outline (run.mjs focus-visible)"}
   cause: ":focus-visible outline in site.css"
   origin: R2 X-C6
-  status: open
+  status: frozen
 
 - id: forced-colors
   field: Accessibility
@@ -246,10 +248,10 @@
   field: Accessibility
   what: Printed pages use the light palette, print link URLs, and set Japanese at 16pt.
   why: A dark screen palette prints grey on grey.
-  eval: {judge: machine, expect: "under print emulation: light tokens, URLs after external links, JA sentence 16pt"}
+  eval: {judge: machine, check: print, env: "Chrome on macOS", expect: "under print emulation: light tokens, URLs after external links, JA sentence 16pt"}
   cause: "@media print in site.css"
   origin: R2 X1, X2, R3 A3
-  status: open
+  status: frozen
 
 - id: icons
   field: Page metadata
@@ -273,7 +275,7 @@
   field: Copy
   what: Every page links on to the rest of the site.
   why: A visitor who reaches About should find the projects.
-  eval: {judge: machine, check: no-dead-ends, env: "Chrome, reduced motion", expect: "every page has a link to / (or /ja/) outside the header"}
+  eval: {judge: machine, check: no-dead-ends, env: "Chrome, reduced motion", expect: "every page but the home pages has a link to / or /ja/ (or their sections) in main or the footer"}
   cause: "About and 404 page templates in build.mjs"
   origin: R3 V2
   status: frozen
@@ -282,10 +284,13 @@
   field: Copy
   what: The bio and the hub one-liners appear in the author's words.
   why: The site speaks in the author's voice.
-  eval: {judge: machine, expect: "the build's bio and phrasing drift checks pass"}
+  eval: {judge: machine, check: authors-words-verbatim, env: "Chrome on macOS", expect: "the sentence on / and /ja/ reads exactly as content/site.*.json (bio, or the joined sentence parts)"}
   cause: "build.mjs drift checks against content/*.json"
+  relations:
+    - unit: ja-sentence-lines
+      how: co-arising — the JA golden lines are the same words
   origin: R1, R3 V4
-  status: open
+  status: frozen
 
 - id: spacing-rhythm
   field: Layout
