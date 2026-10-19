@@ -235,12 +235,12 @@
 
 - id: forced-colors
   field: Accessibility
-  what: In forced colors, lines, borders and focus stay visible.
-  why: Windows high contrast drops background-drawn marks.
-  eval: {judge: machine, expect: "rails, hairlines and focus rings keep a visible border under forced-colors emulation"}
-  cause: "@media (forced-colors: active) blocks"
-  origin: R2 X-B1
-  status: open
+  what: In forced colours every link keeps an underline and the current page in the nav is underlined.
+  why: Windows high contrast drops colour and background-drawn lines; the current page was invisible.
+  eval: {judge: machine, check: forced-colors, env: "Chrome, forced-colors active", expect: "current nav link underlined; links in main and the footer underlined", instances: "/about/ /ja/about/ /writing/"}
+  cause: "@media (forced-colors: active) blocks in site.css"
+  origin: R2 X-B1, r4-accessibility 6
+  status: frozen
 
 - id: print
   field: Accessibility
@@ -331,3 +331,112 @@
   cause: "everything"
   origin: Hiragino pass
   status: author-eye
+
+# Round r4 (2026-10-19)
+
+- id: title-no-widow
+  field: English typesetting
+  what: A multi-line article title does not end on one word (EN) or on two characters or fewer (JA).
+  why: A lone word under a title reads as a widow, down a list of 80 titles.
+  eval: {judge: machine, check: title-no-widow, env: "Chrome on macOS, reduced motion", expect: "0 titles at 375-1440 on /writing/ and /ja/writing/", instances: ".piece-title"}
+  cause: "site.css .piece-title { text-wrap: balance }"
+  origin: r4-typography-en 1, r4-typography-ja 7
+  status: frozen
+
+- id: link-label-whole
+  field: Japanese typesetting
+  what: A link label in the About facts stays on one line.
+  why: A split label breaks its words (研究) and its underline in two.
+  eval: {judge: machine, check: link-label-whole, env: "Chrome on macOS", expect: "every .fact a draws one line box at 320-1280", instances: "/about/ and /ja/about/ facts"}
+  cause: "site.css .fact a { word-break: keep-all }; build.mjs ties the spaces inside an English link label"
+  relations:
+    - unit: reflow-text-zoom
+      how: co-arising — nowrap pushed ORCID past the viewport at 200% text zoom, and inline-block let a line start with the tied space after the link; keep-all and tied label spaces satisfy all three
+    - unit: ja-no-space-at-line-start
+      how: co-arising — an inline-block label let the next line start with its tied space
+  origin: r4-typography-en 4, r4-typography-ja 2
+  status: frozen
+
+- id: ja-text-in-ja-stack
+  field: Japanese typesetting
+  what: Japanese running text is set in the Japanese stack with Japanese leading, on every page including the bilingual 404.
+  why: Japanese poured into the English stack and leading is cramped and falls back glyph by glyph.
+  eval: {judge: machine, check: ja-text-in-ja-stack, env: "Chrome on macOS", expect: "every JA p, dd, li in main: line-height >= 1.8 of the size, Hiragino Mincho in the first three families", instances: "/ja/, /ja/about/, /ja/writing/, the JA half of /404.html"}
+  cause: "site.css .lost:lang(ja) { font-family; line-height }"
+  origin: r4-typography-ja 1
+  status: frozen
+
+- id: underline-word-length
+  field: Layout
+  what: A footer link's underline is as long as its word.
+  why: The X underline ran 15px past the letter and read as unfinished on every page.
+  eval: {judge: machine, check: underline-word-length, env: "Chrome on macOS", expect: "content box within 1.5px of the text width for every footer link", instances: ".site-foot a"}
+  cause: "site.css .site-foot a: padding and negative margin for the target, min-inline-size 0"
+  relations:
+    - unit: target-size
+      how: co-arising — the 24px target now comes from padding instead of min-inline-size
+  origin: r4-art 3
+  status: frozen
+
+- id: landing-bar-visible
+  field: Layout
+  what: The moss landing bar beside a quoted section title is on screen at every width.
+  why: On the Japanese phone page a sentence link landed with no mark.
+  eval: {judge: machine, check: landing-bar-visible, env: "Chrome on macOS", expect: "bar left >= 4px at 320, 375, 1280", instances: "/#mind /#tools /ja/#mind /ja/#tools"}
+  cause: "site.css phone offsets for .gloss:target > .section-title::before"
+  relations:
+    - unit: ja-quote-hang
+      how: support — the bar's offset includes the hang
+  origin: r4-art 2
+  status: frozen
+
+- id: single-hairline-first-piece
+  field: Layout
+  what: At 80rem and wider the first article row has one hairline above it, the column-width one.
+  why: A second, full-width line ran into the margin note on the English page only.
+  eval: {judge: machine, check: single-hairline-first-piece, env: "Chrome on macOS", expect: "first .piece border-top 0 at 1280-1920", instances: "/writing/ /ja/writing/"}
+  cause: "site.css 80rem .piece:first-child { border: 0 }"
+  origin: r4-art 4
+  status: frozen
+
+- id: drift-gap
+  field: Layout
+  what: As the page scrolls, the drifting opening never reaches the first section.
+  why: On phones the sentence's descenders printed over the first quoted title.
+  eval: {judge: machine, check: drift-gap, env: "Chrome on macOS, motion on", expect: "gap between the sentence and the first section >= 0 at 375x812, 375x667, 1280x900 while scrolling 0-900px", instances: "/ and /ja/"}
+  cause: "site.css drift-sm keyframes below 48rem"
+  origin: r4-art 1
+  status: frozen
+
+- id: focus-not-hidden
+  field: Accessibility
+  what: A link that takes keyboard focus is visible at once, even inside an item still waiting to reveal.
+  why: Focus scrolling can stop an item inside the observer's margin, leaving a focus ring on an invisible link (WCAG 2.4.7, 2.4.11).
+  eval: {judge: machine, check: focus-not-hidden, env: "Chrome, motion on", expect: "effective opacity >= 0.9 within 0.9s of focus for links in .pending items", instances: "/ /ja/ /writing/ at 375 and 1280"}
+  cause: "site.css .reveal .pending:focus-within"
+  origin: r4-accessibility 1
+  status: frozen
+
+- id: sentence-link-large
+  field: Accessibility
+  what: The Japanese sentence stays large text (24px or more) at every width, since its links are 4:1.
+  why: Below 24px the 4:1 link colour fails WCAG 1.4.3 for normal text.
+  eval: {judge: machine, check: sentence-link-large, env: "Chrome", expect: "JA sentence font-size >= 24px at 320-375"}
+  cause: "site.css .sentence:lang(ja) font-size rem floor (1.5rem)"
+  relations:
+    - unit: ja-sentence-lines
+      how: co-arising — the same font-size sets the line breaks
+  origin: r4-accessibility 3
+  status: frozen
+
+- id: reflow-text-zoom
+  field: Accessibility
+  what: At 200% text-only zoom no page scrolls sideways on a phone.
+  why: WCAG 1.4.4 and 1.4.12 — grid tracks grew to the min-content of unbreakable Japanese headings.
+  eval: {judge: machine, check: reflow-text-zoom, env: "Chrome", expect: "scrollWidth <= viewport with the root at 200%, every page, 320 and 375"}
+  cause: "site.css phone minmax(0, 1fr) tracks, overflow-wrap on running text, .keep max-inline-size"
+  relations:
+    - unit: no-overflow
+      how: co-arising — both read the page's scrollWidth
+  origin: r4-accessibility 4
+  status: frozen

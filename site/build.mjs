@@ -347,7 +347,7 @@ function about(c) {
   // A fact links only its noun (linkText), not the whole sentence.
   const value = (f) =>
     f.linkText
-      ? `${txt(f.before, c.lang)}<a href="${esc(f.href)}">${c.lang === 'ja' ? tieMixed(esc(f.linkText)) : esc(f.linkText)}</a>${prose(f.after, c.lang)}`
+      ? `${txt(f.before, c.lang)}<a href="${esc(f.href)}">${c.lang === 'ja' ? tieMixed(esc(f.linkText)) : esc(f.linkText).replaceAll(' ', '&nbsp;')}</a>${prose(f.after, c.lang)}`
       : f.href
         ? `<a href="${esc(f.href)}">${esc(f.value)}</a>`
         : f.lang && f.lang !== c.lang ? esc(f.value) : prose(f.value, c.lang);

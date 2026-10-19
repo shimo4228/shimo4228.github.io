@@ -253,3 +253,44 @@ Live check 2 (竜也, 2026-10-18): JA running paragraphs break anywhere kinsoku 
   unit's cause now name that rule. head-metadata's JSON-LD expectation is scoped to / and /ja/ (the pages that carry
   it); JSON-LD on About is an author call. Observed relations recorded: text-zoom with the sentence units,
   no-overflow with en-sentence-lines.
+
+## Round 4 — detail-loop (2026-10-19)
+
+Reviewers (fresh, a copy of dist/ without eval/, the author's Mac in Chrome with Hiragino): Japanese typography,
+English typography, accessibility, art direction. Reports in `reviews/r4-*.md`. Every adopted finding is a frozen
+unit in `units.yaml` with a mutation in `mutate.sh`.
+
+| ID | Finding | Decision | Why / unit |
+|---|---|---|---|
+| r4-typography-ja 1 | 404 JA paragraph in the English stack and leading | adopted | ja-text-in-ja-stack |
+| r4-typography-ja 2, r4-typography-en 4 | fact link labels split across lines (研究 / hub.) | adopted | link-label-whole (`.fact a{white-space:nowrap}` covers both languages) |
+| r4-typography-ja 3 | Latin–Japanese space 0.33em, JLReq default 0.25em | author call | changes every Japanese page's texture |
+| r4-typography-ja 4 | word joiner before 「 and （ | not adopted | deliberate build step (live check 1); mixed effect |
+| r4-typography-ja 5 | DESIGN.md disagrees with the CSS (keep-all scope, hang 1em vs 0.5em, two rule 8s) | author call | the author's document |
+| r4-typography-ja 6 | short line ends before the tied Claude Code | not adopted | the tie is the author's decision; only justify cures it |
+| r4-typography-ja 7, r4-typography-en 1 | widows in article titles (pretty dropped by box-decoration-break: clone) | adopted | title-no-widow (`text-wrap: balance`) |
+| r4-typography-en 2 | label underlines cut descenders (0.15em vs 0.22em descender) | author call | the "fifth of an em under the baseline" is the author's decision (2026-10-18, underline draw-in) |
+| r4-typography-en 3 | EN sentence 8 lines at 360–380 | not adopted | recorded decision: phones (320, 375) split accountability, / authorship, (2026-10-18) |
+| r4-typography-en 5, r4-author 1 | straight quotes in feed titles | adopted | typographic-punctuation (already frozen) |
+| r4-typography-en 6 | long last word on a work line | not adopted | a 14-letter word is not a short widow |
+| r4-art 1 | phone drift prints the sentence over the first title | adopted | drift-gap |
+| r4-art 2 | landing bar off screen on phones | adopted | landing-bar-visible |
+| r4-art 3 | footer X underline twice the word | adopted | underline-word-length |
+| r4-art 4 | doubled first hairline on /writing/ at 80rem+ | adopted | single-hairline-first-piece |
+| r4-art 5 | nav hover stronger than current page | author call | taste |
+| r4-art 6 | writing title in Newsreader, absent from DESIGN Rule 1 | author call | the author's document |
+| r4-accessibility 1 | focused link stays invisible inside a pending reveal | adopted | focus-not-hidden |
+| r4-accessibility 2 | scroll fade drops sentence links below 3:1 while on screen | author call | the fade is the author's parallax (2026-10-18); WCAG 1.4.3 fails while scrolled part-way |
+| r4-accessibility 3 | JA sentence below large text at 320–337 with 4:1 links | adopted | sentence-link-large (floor 1.5rem) |
+| r4-accessibility 4 | phone pages scroll sideways under 200% text zoom | adopted | reflow-text-zoom |
+| r4-accessibility 5 | fluid type grows < 2× under text-only zoom | not adopted | 1.4.4 holds through page zoom |
+| r4-accessibility 6 | current page invisible in forced colours | adopted | forced-colors (frozen) |
+
+Round 4 notes:
+- False greens caught by mutation: underline-word-length (the mutation removed only min-inline-size, while padding
+  kept the old width) and drift-gap (two animation frames were not enough for the scroll-driven animation to update;
+  the check now waits 120ms per step). Both now turn red under their mutation.
+- Interference: `.fact a{white-space:nowrap}` (link-label-whole) pushed ORCID past the viewport at 200% text zoom
+  (reflow-text-zoom); `inline-block` then let a line start with the tied space after the link
+  (ja-no-space-at-line-start). `word-break: keep-all` plus tied spaces inside English labels satisfies all three.
+- r4-typography-en 4's fix moved from CSS nowrap to the build (English link labels tie their spaces).

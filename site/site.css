@@ -207,6 +207,10 @@ a {
 
 /* Footer links leave the site, so they carry the solid underline like every other outbound link. */
 .site-foot a {
+  /* The target grows by padding, so the underline stays the length of the word (X). */
+  min-inline-size: 0;
+  padding-inline: 0.5rem;
+  margin-inline: -0.5rem;
   text-decoration-line: underline;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -297,7 +301,7 @@ a {
   word-spacing: -0.05em;
   /* About 12 characters across a 375px phone, so the first two sentences stay on one line each.
      The rem floor keeps it growing under page and text zoom (WCAG 1.4.4). */
-  font-size: max(min(var(--step-3), 7.1vw), 1.375rem);
+  font-size: max(min(var(--step-3), 7.1vw), 1.5rem);
   line-height: 1.5;
   max-inline-size: 23em;
 }
@@ -549,6 +553,17 @@ a {
   inset-inline-start: calc(var(--space-s) * -1 - 0.5em);
 }
 
+/* The phone gutter is narrower than the bar's offset plus the hang, so the bar sits closer in. */
+@media (max-width: 47.99rem) {
+  .gloss:target > .section-title::before {
+    inset-inline-start: calc(var(--space-2xs) * -1 - 0.41em);
+  }
+
+  .gloss:target > .section-title:lang(ja)::before {
+    inset-inline-start: calc(var(--space-2xs) * -1 - 0.5em);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .work:target::before,
   .gloss:target > .section-title::before {
@@ -763,7 +778,10 @@ a {
 }
 
 .fact a {
-  /* Inline (not inline-block) keeps the first baseline for the rail; padding grows the target only. */
+  /* Inline (not inline-block) keeps the first baseline for the rail; padding grows the target only.
+     The label's words stay together (keep-all here, tied spaces from the build), so a label and its underline turn
+     over whole; a label without spaces (ORCID) can still break at its hyphens under text zoom. */
+  word-break: keep-all;
   padding-block: 0.15em;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -855,6 +873,8 @@ a {
 
 .piece-title {
   grid-area: title;
+  /* balance, not pretty: Chrome drops pretty on lines whose .u span clones its box per line. */
+  text-wrap: balance;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
   text-underline-offset: 0.2em;
@@ -922,6 +942,7 @@ a {
   }
 
   .piece:first-child {
+    border: 0;
     background:
       linear-gradient(var(--color-line), var(--color-line)) left top / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat,
       linear-gradient(var(--color-line), var(--color-line)) left bottom / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat;
@@ -936,6 +957,12 @@ a {
 .lost {
   display: grid;
   gap: var(--space-s);
+}
+
+/* body resolves the font and leading variables in English on this page; the Japanese half takes its own. */
+.lost:lang(ja) {
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
 }
 
 .lost-title {
@@ -962,7 +989,9 @@ a {
       translate 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
   }
 
-  .reveal .pending.in {
+  /* Focus can land on an item still waiting at the bottom edge (inside the observer's margin); show it at once. */
+  .reveal .pending.in,
+  .reveal .pending:focus-within {
     opacity: 1;
     translate: 0 0;
   }
@@ -1008,6 +1037,20 @@ a {
   to {
     opacity: 0.2;
     translate: 0 14vh;
+  }
+}
+
+/* On phones 14vh is more than the gap under the sentence, so the drift stops short of the first section. */
+@keyframes drift-sm {
+  to {
+    opacity: 0.2;
+    translate: 0 min(14vh, calc(var(--space-2xl) - var(--space-s)));
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .intro {
+    animation-name: drift-sm;
   }
 }
 
@@ -1078,6 +1121,12 @@ a {
 }
 
 @media (forced-colors: active) {
+  /* Colour alone marks the current page elsewhere; forced colours drop it, so the current page is underlined. */
+  .site-nav [aria-current="page"] {
+    text-decoration: underline 2px;
+    text-underline-offset: 0.3em;
+  }
+
   .work:target::before,
   .gloss:target > .section-title::before {
     background: Highlight;
@@ -1123,4 +1172,28 @@ a {
     font-size: 0.8em;
     word-break: break-all;
   }
+}
+
+/* Text-only zoom and text spacing (WCAG 1.4.4, 1.4.12): on phones the single-column tracks shrink below the
+   min-content of unbreakable Japanese headings and labels instead of widening the page. */
+@media (max-width: 47.99rem) {
+  :is(.gloss, .years, .year, .pieces, .lost, .about-body) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .piece {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .piece-where {
+    white-space: normal;
+  }
+}
+
+main :is(p, dd, li) {
+  overflow-wrap: break-word;
+}
+
+.sentence .keep {
+  max-inline-size: 100%;
 }

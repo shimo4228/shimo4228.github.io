@@ -145,6 +145,72 @@ const checks = {
     return bad;
   }) },
 
+  'title-no-widow': { pages: ['writing/', 'ja/writing/'], widths: [375, 414, 768, 1024, 1280, 1440], run: (page) => page.evaluate(() => {
+    const bad = [];
+    const ja = document.documentElement.lang === 'ja';
+    for (const t of [...document.querySelectorAll('.piece-title')].filter(__visible)) {
+      const lines = __linesOf(t).map((l) => l.text.trim()).filter(Boolean);
+      if (lines.length < 2) continue;
+      const last = lines[lines.length - 1];
+      const short = ja ? [...last.replace(/[、。」』）\s]/g, '')].length <= 2 : !/\s/.test(last);
+      if (short) bad.push(`「${lines[lines.length - 2].slice(-12)} / ${last}」`);
+    }
+    return bad;
+  }) },
+
+  'link-label-whole': { pages: ['about/', 'ja/about/'], widths: [320, 375, 390, 414, 768, 1280], run: (page) => page.evaluate(() =>
+    [...document.querySelectorAll('.fact a')].filter(__visible).map((a) => [a, __linesOf(a).length]).filter(([, n]) => n > 1).map(([a, n]) => `「${a.textContent.trim()}」 split over ${n} lines`)) },
+
+  'ja-text-in-ja-stack': { pages: ['ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [375, 1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    // Running text only: the sentence, titles and leads are display lines with their own leading.
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(p, dd, li):not(.sentence, .section-title, .lead)')].filter(__visible)) {
+      const cs = getComputedStyle(el);
+      const ratio = parseFloat(cs.lineHeight) / parseFloat(cs.fontSize);
+      if (!(ratio >= 1.8)) bad.push(`「${el.textContent.trim().slice(0, 12)}」 line-height ${ratio.toFixed(2)}`);
+      if (!/Hiragino Mincho/.test(cs.fontFamily.split(',').slice(0, 3).join(','))) bad.push(`「${el.textContent.trim().slice(0, 12)}」 stack ${cs.fontFamily.slice(0, 30)}`);
+    }
+    return bad;
+  }) },
+
+  'underline-word-length': { pages: ['', 'ja/'], widths: [375, 1280], run: (page) => page.evaluate(() => {
+    const bad = [];
+    for (const a of [...document.querySelectorAll('.site-foot a')].filter(__visible)) {
+      const cs = getComputedStyle(a);
+      const box = a.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      const r = document.createRange(); r.selectNodeContents(a);
+      const text = r.getBoundingClientRect().width;
+      if (box - text > 1.5) bad.push(`「${a.textContent.trim()}」 line ${box.toFixed(1)}px for a ${text.toFixed(1)}px word`);
+    }
+    return bad;
+  }) },
+
+  'landing-bar-visible': { pages: ['#mind', 'ja/#mind', '#tools', 'ja/#tools'], widths: [320, 375, 1280], run: (page) => page.evaluate(() => {
+    const t = document.querySelector('.gloss:target > .section-title');
+    if (!t) return ['no target title'];
+    const left = t.getBoundingClientRect().left + parseFloat(getComputedStyle(t, '::before').left);
+    return left >= 4 ? [] : [`bar at ${left.toFixed(1)}px`];
+  }) },
+
+  'single-hairline-first-piece': { pages: ['writing/', 'ja/writing/'], widths: [1280, 1440, 1920], run: (page) => page.evaluate(() => {
+    const first = document.querySelector('.piece');
+    const w = parseFloat(getComputedStyle(first).borderTopWidth);
+    return w === 0 ? [] : [`first piece has a ${w}px border above its own hairline`];
+  }) },
+
+  'sentence-link-large': { pages: ['ja/'], widths: [320, 330, 336, 340, 360, 375], run: (page) => page.evaluate(() => {
+    const px = parseFloat(getComputedStyle(document.querySelector('p.sentence')).fontSize);
+    return px >= 24 ? [] : [`JA sentence ${px.toFixed(2)}px: its 4:1 links are not large text`];
+  }) },
+
+  'reflow-text-zoom': { pages: ['', 'about/', 'writing/', 'ja/', 'ja/about/', 'ja/writing/', '404.html'], widths: [320, 375], run: (page) => page.evaluate(() => {
+    document.documentElement.style.fontSize = '200%';
+    const vw = document.documentElement.clientWidth;
+    const sw = document.documentElement.scrollWidth;
+    document.documentElement.style.fontSize = '';
+    return sw <= vw ? [] : [`scrollWidth ${sw} > ${vw} at 200% text zoom`];
+  }) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
@@ -164,7 +230,10 @@ await ctx.addInitScript(LINES);
 const page = await ctx.newPage();
 const open = async (p, w) => {
   await page.setViewportSize({ width: w, height: 900 });
-  if (page.url() !== `http://localhost:${port}/${p}`) await page.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+  if (page.url() !== `http://localhost:${port}/${p}`) {
+    await page.goto('about:blank');
+    await page.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+  }
   await page.evaluate(() => document.fonts.ready);
 };
 
@@ -172,7 +241,70 @@ const results = [];
 const frozen = units.filter((u) => u.status === 'frozen');
 for (const u of frozen) {
   const fails = [];
-  if (u.id === 'sentence-size-balance') {
+  if (u.id === 'focus-not-hidden') {
+    // Motion on: every link inside an item still waiting to reveal is visible as soon as it takes focus.
+    for (const w of [375, 1280]) for (const p of ['', 'ja/', 'writing/']) {
+      const mctx = await browser.newContext({ viewport: { width: w, height: 800 }, reducedMotion: 'no-preference' });
+      const mp = await mctx.newPage();
+      await mp.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+      await mp.waitForTimeout(300);
+      const hidden = await mp.evaluate(async () => {
+        const out = [];
+        const links = [...document.querySelectorAll('.pending a')].slice(0, 12);
+        for (const a of links) {
+          a.focus();
+          await new Promise((r) => setTimeout(r, 900));
+          let o = 1;
+          for (let e = a; e; e = e.parentElement) o *= parseFloat(getComputedStyle(e).opacity);
+          if (o < 0.9) out.push(`「${a.textContent.trim().slice(0, 20)}」 opacity ${o.toFixed(2)}`);
+        }
+        return out;
+      });
+      for (const h of hidden) fails.push(`/${p} ${w}px: focused ${h}`);
+      await mctx.close();
+    }
+  } else if (u.id === 'forced-colors') {
+    const fctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, forcedColors: 'active' });
+    const fp = await fctx.newPage();
+    for (const p of ['about/', 'ja/about/', 'writing/']) {
+      await fp.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+      const r = await fp.evaluate(() => {
+        const cur = document.querySelector('.site-nav [aria-current="page"]');
+        const bad = [];
+        if (!cur || !getComputedStyle(cur).textDecorationLine.includes('underline')) bad.push('current page not underlined');
+        for (const a of document.querySelectorAll('main a, .site-foot a')) {
+          if (a.closest('.section-title')) continue;
+          const d = (el) => getComputedStyle(el).textDecorationLine.includes('underline');
+          if (!d(a) && !(a.querySelector('.u') && d(a.querySelector('.u')))) { bad.push(`「${a.textContent.trim().slice(0, 16)}」 has no underline`); break; }
+        }
+        return bad;
+      });
+      for (const b of r) fails.push(`/${p} forced colors: ${b}`);
+    }
+    await fctx.close();
+  } else if (u.id === 'drift-gap') {
+    // Motion on: the opening drifts down as the page scrolls; it must not reach the first section.
+    for (const [w, h] of [[375, 812], [375, 667], [1280, 900]]) for (const p of ['', 'ja/']) {
+      const mctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'no-preference' });
+      const mp = await mctx.newPage();
+      await mp.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+      await mp.waitForTimeout(1500); // the opening's rise-in finishes first
+      const min = await mp.evaluate(async () => {
+        let least = Infinity;
+        for (let y = 0; y <= 900; y += 50) {
+          window.scrollTo(0, y);
+          // A scroll-driven animation updates after the scroll is processed; two frames are not always enough.
+          await new Promise((r) => setTimeout(r, 120));
+          const s = document.querySelector('.intro .sentence').getBoundingClientRect().bottom;
+          const g = document.querySelector('.gloss').getBoundingClientRect().top;
+          least = Math.min(least, g - s);
+        }
+        return least;
+      });
+      if (min < 0) fails.push(`/${p} ${w}x${h}: sentence reaches ${(-min).toFixed(0)}px into the first section`);
+      await mctx.close();
+    }
+  } else if (u.id === 'sentence-size-balance') {
     for (const w of [375, 1280]) {
       const size = async (p) => { await open(p, w); return page.evaluate(() => parseFloat(getComputedStyle(document.querySelector('p.sentence')).fontSize)); };
       const ratio = (await size('')) / (await size('ja/'));
