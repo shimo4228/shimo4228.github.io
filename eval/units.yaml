@@ -116,17 +116,19 @@
   why: Short lines read by phrase; running text fills the measure instead of going ragged.
   eval: {judge: machine, check: ja-keep-all-scope, env: "Chrome on macOS", expect: "no line in a short-line element breaks inside a BudouX phrase; running paragraphs end within 2 characters of the measure except their last line"}
   cause: ":lang(ja) :is(h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd) { word-break: keep-all }"
-  origin: R3 T4, live check 2
+  origin: R3 T4, live check 2, r6-typography-ja 4
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (the About lead joins the display roles)"
   status: frozen
 
 - id: underline-extent
-  field: Japanese typesetting
-  what: A link underline ends at the text — it does not run under a trailing 、 or the empty half of a bracket — and clears descenders.
-  why: An underline over blank space reads as a stray mark.
-  eval: {judge: hybrid, expect: "underline box ends within 1px of the last ink glyph; offset decided by the author"}
-  cause: "the 、 outside the link in build.mjs; halt on JA work links; text-underline-offset"
-  origin: R2 T8, Hiragino pass
-  status: open
+  field: English typesetting
+  what: The drawn line under a single-line label sits just below Charter's descenders.
+  why: The line is a background and cannot skip ink; at 0.15em it ran through the p, y and g of the labels.
+  eval: {judge: hybrid, check: underline-extent, env: "Chrome on macOS", expect: "0.22-0.30em under the baseline for work links, footer, entrances, about-next, writing-more; 375 and 1280"}
+  cause: "site.css --u-y: calc(0.5lh + 0.61em) on single-line labels"
+  origin: R2 T8, Hiragino pass, r4-typography-en 2, r5-typography-en 2, r6-typography-en 1
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (recommendation A, just under the descenders)"
+  status: frozen
 
 - id: ja-display-face-fallback
   field: Bilingual balance
@@ -546,4 +548,59 @@
   eval: {judge: machine, check: ja-title-phrases, env: "Chrome on macOS", expect: "0 lines opening with a particle after a closing bracket, 0 Claude / Code splits, 320-1280", instances: ".piece-title on /ja/writing/, .work-line on /ja/"}
   cause: "build.mjs txt(): U+2060 after a closing bracket before a particle; clauses(): Latin spaces before <wbr> tied"
   origin: r6-typography-ja 1, r6-typography-ja 3
+  status: frozen
+
+# Author calls decided 2026-10-20 (author: 「全部あなたの推奨でやっといて」)
+
+- id: parallax-floor
+  field: Accessibility
+  what: The opening dims as the page scrolls past it, but no further than 0.85.
+  why: At 0.2 the 4:1 sentence links fell to 1.4–2.2:1 while still on screen (WCAG 1.4.3).
+  eval: {judge: hybrid, check: parallax-floor, env: "Chrome, motion on", expect: ".intro opacity >= 0.84 one viewport down, 1280x800 and 375x812, / and /ja/"}
+  cause: "site.css drift and drift-sm keyframes: opacity 0.85"
+  relations:
+    - unit: focus-in-intro
+      how: co-arising — the same animation
+  origin: r4-accessibility 2, r5-accessibility 1, r6-accessibility 1
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (floor 0.85)"
+  status: frozen
+
+- id: ja-latin-space
+  field: Japanese typesetting
+  what: In Japanese body text the space between a Latin word and Japanese is a quarter em.
+  why: Hiragino's space is a third of an em, 2.7 times the autospace gap in the same list (JLReq 3.2.3).
+  eval: {judge: hybrid, check: ja-latin-space, env: "Chrome on macOS (Hiragino)", expect: "0.22-0.28em between a Latin word and the Japanese after it, work lines, intros, facts"}
+  cause: "site.css :lang(ja) body roles word-spacing: -0.083em"
+  origin: r4-typography-ja 3, r5-typography-ja 2, r6-typography-ja 6
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (JLReq quarter em)"
+  status: frozen
+
+- id: dark-moss-chroma
+  field: Layout
+  what: In the dark scheme the sentence's moss stays a quiet grey-green.
+  why: From keyDark #4f9a68 the dark link had twice the light moss's chroma and read as generic green.
+  eval: {judge: hybrid, check: dark-moss-chroma, env: "Chrome, dark", expect: "OKLCH chroma <= 0.065 at 4:1 on the ground"}
+  cause: "DESIGN.md colors.accent.keyDark #618a6e (Leonardo keeps the ratios)"
+  origin: r6-art 3
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (keyDark #618a6e)"
+  status: frozen
+
+- id: nav-current-mark
+  field: Layout
+  what: The current page in the nav keeps a resting line, so it reads stronger than a hovered link.
+  why: Colour alone marked it, and hover (colour and a drawn line) read as more current.
+  eval: {judge: hybrid, check: nav-current-mark, env: "Chrome", expect: "aria-current link carries a visible --rest line"}
+  cause: "site.css .site-nav [aria-current] --rest"
+  origin: r4-art 5
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて"
+  status: frozen
+
+- id: work-link-hover-ink
+  field: Layout
+  what: A work's outbound label deepens to ink on hover, like the footer's; moss stays with the commentary.
+  why: Rule 2 keeps moss for the quoted titles, in-page links and the landing mark.
+  eval: {judge: hybrid, check: work-link-hover-ink, env: "Chrome", expect: "hovered .work-links a in the text colour"}
+  cause: "site.css .work-links a:hover color"
+  origin: r5-art 4
+  decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて"
   status: frozen

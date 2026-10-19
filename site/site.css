@@ -224,7 +224,9 @@ a {
   color: var(--color-text);
 }
 
+/* The current page keeps a resting line, so it reads stronger than a hovered link (colour plus a line drawn in). */
 .site-nav [aria-current="page"] {
+  --rest: var(--color-line-strong);
   color: var(--color-text);
 }
 
@@ -664,8 +666,9 @@ a {
   text-underline-offset: 0.22em;
 }
 
+/* Moss belongs to the commentary (DESIGN Rule 2); an outbound label deepens to ink like the footer's. */
 .work-links a:hover {
-  color: var(--color-accent);
+  color: var(--color-text);
   text-decoration-color: currentColor;
 }
 
@@ -1050,9 +1053,10 @@ a {
   }
 }
 
+/* The dim stops at 0.85, where the 4:1 sentence links stay at 3:1 or more (WCAG 1.4.3 for large text). */
 @keyframes drift {
   to {
-    opacity: 0.2;
+    opacity: 0.85;
     translate: 0 14vh;
   }
 }
@@ -1060,7 +1064,7 @@ a {
 /* On phones 14vh is more than the gap under the sentence, so the drift stops short of the first section. */
 @keyframes drift-sm {
   to {
-    opacity: 0.2;
+    opacity: 0.85;
     translate: 0 min(14vh, calc(var(--space-2xl) - var(--space-s)));
   }
 }
@@ -1074,9 +1078,10 @@ a {
 /* ---------- Underlines draw in ---------- */
 /* On hover a line draws in from the left over the resting hairline (竜也, 2026-10-18, after hiraoku.dev/blog). The line
    is a background, so it can grow; names and titles that wrap carry it on inline spans (.u), cloned onto each line.
-   Single-line labels sit it a fifth of an em under the baseline (from the middle of their line box). */
+   Single-line labels sit it just under Charter's descenders, a quarter em under the baseline (from the middle of
+   their line box); the line is a background and cannot skip ink. */
 :is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a) {
-  --u-y: calc(0.5lh + 0.5em);
+  --u-y: calc(0.5lh + 0.61em);
 }
 
 .site-nav a,
@@ -1258,4 +1263,16 @@ main :is(p, dd, li) {
   .intro:focus-within {
     opacity: 1 !important;
   }
+}
+
+/* Japanese body text: the space between Latin and Japanese is a quarter em (JLReq 3.2.3), not Hiragino's third.
+   Display lines keep their own spacing. */
+:lang(ja) :is(.section-intro, .work-line, .work-links, .fact dd, .piece-title, .piece-where, .lost > p:not(.sentence), .site-foot) {
+  word-spacing: -0.083em;
+}
+
+/* The About lead is a display role: its phrases stay whole, like the sentence and the titles. */
+:lang(ja) .lead {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }

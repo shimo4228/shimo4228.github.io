@@ -59,6 +59,13 @@ mutate focus-in-intro site/site.css 's/  \.intro:focus-within \{\n    opacity: 1
 mutate focus-not-hidden site/site.css 's/\n  \.reveal \.pending:focus-within \{\n    transition: none;\n  \}//'
 mutate ja-title-phrases site/build.mjs 's/\n    \/\/ A closing bracket holds the particle[^\n]*\n    \.replace\([^\n]*\);/;/'
 mutate title-no-widow site/build.mjs 's/return n > 1 \|\| parts\.length > 1 \? \[[^\n]*: h;/return h;/'
+mutate underline-extent site/site.css 's/--u-y: calc\(0\.5lh \+ 0\.61em\);/--u-y: calc(0.5lh + 0.5em);/'
+mutate parallax-floor site/site.css 's/(@keyframes drift \{\n  to \{\n    opacity: )0\.85;/${1}0.2;/'
+mutate ja-latin-space site/site.css 's/(\.lost > p:not\(\.sentence\), \.site-foot\) \{\n)  word-spacing: -0\.083em;\n/$1/'
+mutate dark-moss-chroma DESIGN.md 's/keyDark: "#618a6e"/keyDark: "#4f9a68"/'
+mutate nav-current-mark site/site.css 's/(\.site-nav \[aria-current="page"\] \{\n)  --rest: var\(--color-line-strong\);\n/$1/'
+mutate work-link-hover-ink site/site.css 's/(\.work-links a:hover \{\n  )color: var\(--color-text\);/${1}color: var(--color-accent);/'
+mutate ja-keep-all-scope site/site.css 's/(:lang\(ja\) \.lead \{\n)  word-break: keep-all;\n/$1/'
 mutate sentence-size-balance site/site.css 's/(clamp\(1\.625rem, 0\.75rem \+ 4\.8vw, )3\.25rem/${1}3.75rem/'
 
 node site/build.mjs >/dev/null 2>&1

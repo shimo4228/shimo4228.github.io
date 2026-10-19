@@ -359,3 +359,24 @@ Round 6 notes: 9 adopted, so the session ends without a clean round. Interferenc
 round: JA work-line `pretty` left 「せる。」 alone (title-no-widow) → a tail tie → the tie overflowed at 200% text zoom
 (reflow-text-zoom) → ties became inline-blocks that wrap only when wider than the line. A bug in `clauses()` (a
 one-clause title returned untied) was found by ja-title-phrases. 41 frozen units, all green.
+
+## Author calls decided (2026-10-20)
+
+竜也: 「全部あなたの推奨でやっといて」. Each decision is a unit with `decided_by`; each mutation turns its unit red.
+
+| Call | Decision | Unit |
+|---|---|---|
+| label underline depth (r4–r6 typography-en) | just under Charter's descenders: `--u-y: calc(0.5lh + 0.61em)`, 0.22–0.30em | underline-extent (frozen) |
+| parallax dims sentence links below 3:1 (r4–r6 accessibility) | dim to 0.85, not 0.2; drift kept | parallax-floor |
+| Latin–Japanese space 0.33em (r4–r6 typography-ja) | a quarter em in body roles (JLReq 3.2.3) | ja-latin-space |
+| dark moss chroma (r6-art 3) | keyDark #618a6e: link chroma 0.059 (light 0.043), ratios kept by Leonardo | dark-moss-chroma |
+| nav hover stronger than current page (r4-art 5) | the current page keeps its resting line | nav-current-mark |
+| work-links hover in moss (r5-art 4) | ink, like the footer (Rule 2) | work-link-hover-ink |
+| About lead (JA) breaks inside words (r6-typography-ja 4) | joins the display roles: keep-all | ja-keep-all-scope |
+| DESIGN.md drift (r4–r6) | rules synced with the build: Rule 1 titles, Rule 2 moss roles, rule 9 (was a second 8) Japanese setting, opening dim 0.85, underline, `npm run units` | — |
+| Newsreader optical size (r5–r6 typography-en) | left as is: a variable font is a new dependency for a small gain | — |
+| JA running text justified (r5-typography-ja 3) | left ragged: pretty and the tail tie closed the large holes | — |
+| EN About lead measure (r5-typography-en 5) | left as is: a layout decision | — |
+| JSON-LD on About | left on / and /ja/ only: the Person is already there | — |
+| the Japanese sentence (`bioDraft: true`) | not decided: the author's own words | — |
+| icons (hybrid, open) | not decided: favicon.ico needs `images.mjs`, not run here | — |

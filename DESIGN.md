@@ -5,7 +5,9 @@ description: Personal site at shimo4228.github.io. The GitHub bio is the root te
 viewport: { min: 360, max: 1280 }
 colors:
   neutral: "#5d6a63"
-  accent: { key: "#3b5e46", keyDark: "#4f9a68" }
+  # keyDark is desaturated so the dark moss keeps the light moss's quiet grey-green (link chroma 0.059 vs 0.043; was
+  # 0.097 from #4f9a68). Leonardo keeps every ratio below.
+  accent: { key: "#3b5e46", keyDark: "#618a6e" }
   lightness: { light: 97, dark: 11 }
   # Contrast ratios against the page background. Text roles stay at or above WCAG AA; lines are decorative except accent-line.
   ratios:
@@ -62,11 +64,13 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 ## Rules
 
 1. **One web font, one weight, one job.** Newsreader 400 appears only in the root sentence, the quoted section
-   titles, the name, and the About page's opening paragraphs. Everything else is the system face. In Japanese the
+   titles, the name, the About page's opening paragraphs, and the writing and 404 page titles. Everything else is the system face. In Japanese the
    serif takes Hiragino Mincho where the system has it (Apple devices download nothing); elsewhere it takes
    Shippori Mincho, subset at build time to the few dozen characters those roles use.
 2. **Colour is a contrast ratio, not a hex value.** Colours come from the ratios above. The accent (moss) marks
-   only what belongs to the commentary: quoted titles, the dotted underlines of in-page links, the landing mark.
+   only what belongs to the commentary: quoted titles, the sentence's in-page links, the landing mark, and the 404
+   title that leads back to them. Outbound labels deepen to ink on hover. In the dark scheme the moss keeps the light
+   scheme's quiet chroma (keyDark is desaturated for it).
 3. **Two kinds of link.** The root sentence's links, which stay on the page, are moss with no underline until hover
    (竜也, 2026-10-18); links that leave are underlined solid.
 4. **Quotation marks hang.** The opening mark of a quoted title sits in the margin so the words, not the mark,
@@ -80,9 +84,12 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
    kanji and kana, and the Japanese is capped by width so its lines fall where they are meant to.
 8. **Lines turn over between phrases.** The root sentence breaks only where its meaning divides: English between
    the phrases of `phrasing` (every other space is tied), Japanese after the `keep` and `tail` groups.
-8. **Japanese is set, not translated into the English layout.** BudouX phrase breaks, `word-break: keep-all` on all
-   running text, `line-break: strict`, looser leading, 「」 hung a full em. Spaces between Latin and kana are
-   non-breaking; a break point never starts a line with a space. The sentence is one hanging line per sentence.
+9. **Japanese is set, not translated into the English layout.** BudouX phrase breaks; `word-break: keep-all` on the
+   short lines (headings, the sentence, names, labels, the About lead), while running paragraphs break wherever
+   `line-break: strict` allows so they fill the measure, their last phrases tied so no paragraph ends on two
+   characters. Looser leading. 「」 hang half an em under `palt`, so the words sit on the column edge. A Latin word and
+   Japanese are a quarter em apart in body text (JLReq); a break point never starts a line with a space, and a particle
+   stays with the closing bracket before it. The sentence is one hanging line per sentence.
 
 ## Components
 
@@ -102,9 +109,11 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
   hiraoku.dev/blog, "スクロールしたら現れてくる"). A few lines of inline script (IntersectionObserver) add the classes; it
   is the one script besides the beacon. Without it, or with reduced motion, nothing is hidden.
 - `opening`: the name and then each line of the sentence rise 0.5em into place once on load, 0.12s apart, under a second
-  in all. Scrolling past, the opening drifts down 14vh and dims to 0.2 over the first 85vh, so the sections slide over
+  in all. Scrolling past, the opening drifts down 14vh (less on phones, so it never reaches the first section) and dims to 0.85
+  over the first 85vh, where its links stay at 3:1, so the sections slide over
   it (scroll timeline; 竜也, 2026-10-18: 「クオリティ感を少しだけ」). Both off with reduced motion.
-- `underline`: on hover a link's line draws in from the left over its resting hairline (0.45s); article titles also
+- `underline`: on hover a link's line draws in from the left over its resting hairline (0.45s); single-line labels
+  draw it just under the descenders, and the current page in the nav keeps its resting line; article titles also
   turn moss (竜也, 2026-10-18, after hiraoku.dev/blog).
 - `between pages`: a cross-document view transition; header and footer stay, the page between them cross-fades
   (0.32s). Links ease into their hover colour and underline (0.2s). The sentence's in-page links scroll smoothly, and
@@ -121,4 +130,6 @@ the works under it are the gloss. Phrases in the sentence link to the part of th
 ## Checks
 
 `npm run eval` runs the four layers in `eval/` (broken things, discipline, measured details, fresh-eye review).
+`npm run units` runs the frozen detail units in `eval/units.yaml` (one check each; `eval/mutate.sh` proves each can
+fail). On macOS, `EVAL_CHANNEL=chrome` measures in the installed Chrome with Hiragino.
 Findings and decisions are kept in `eval/ledger.md`.

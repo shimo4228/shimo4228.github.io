@@ -213,10 +213,10 @@ const checks = {
 
   'ja-keep-all-scope': { pages: ['ja/', 'ja/about/', 'ja/writing/'], widths: [375], run: (page) => page.evaluate(() => {
     const bad = [];
-    const short = 'h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd, .piece-title';
+    const short = 'h1, h2, h3, dt, .sentence, .work-name, .entrance-group dd, .piece-title, .lead';
     for (const el of [...document.querySelectorAll(`main :lang(ja) :is(${short})`)].filter(__visible))
       if (getComputedStyle(el).wordBreak !== 'keep-all') bad.push(`short line 「${el.textContent.trim().slice(0, 10)}」 breaks inside phrases`);
-    for (const el of [...document.querySelectorAll('main :lang(ja) :is(.work-line, .section-intro, .lead)')].filter(__visible))
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(.work-line, .section-intro, .fact dd)')].filter(__visible))
       if (getComputedStyle(el).wordBreak === 'keep-all') bad.push(`running text 「${el.textContent.trim().slice(0, 10)}」 keeps whole phrases`);
     return bad;
   }) },
@@ -358,6 +358,47 @@ const checks = {
     return bad;
   }) },
 
+  'underline-extent': { pages: ['', 'about/', 'writing/'], widths: [375, 1280], run: (page) => page.evaluate(() => {
+    // The drawn line of a single-line label sits below Charter's descenders: 0.22–0.30em under the baseline.
+    const bad = [];
+    for (const a of [...document.querySelectorAll('.work-links a, .site-foot a, .entrance, .about-next a, .writing-more a')].filter(__visible).slice(0, 12)) {
+      const cs = getComputedStyle(a);
+      const posY = parseFloat(cs.backgroundPositionY.split(',')[0]);
+      const mark = document.createElement('span');
+      mark.style.cssText = 'display:inline-block;inline-size:0;block-size:0';
+      a.appendChild(mark);
+      const baseline = mark.getBoundingClientRect().bottom;
+      mark.remove();
+      const top = a.getBoundingClientRect().top + parseFloat(cs.borderTopWidth) + parseFloat(cs.paddingTop) + posY;
+      const depth = (top - baseline) / parseFloat(cs.fontSize);
+      if (!(depth >= 0.22 && depth <= 0.3)) bad.push(`「${a.textContent.trim().slice(0, 16)}」 line ${depth.toFixed(3)}em under the baseline`);
+    }
+    return bad;
+  }) },
+
+  'ja-latin-space': { pages: ['ja/', 'ja/about/'], widths: [1280], run: (page) => page.evaluate(() => {
+    // Between a Latin word and Japanese in body text, the gap is a quarter em (JLReq 3.2.3).
+    const bad = [];
+    for (const el of [...document.querySelectorAll('main :lang(ja) :is(.work-line, .section-intro, .fact dd)')].filter(__visible)) {
+      const size = parseFloat(getComputedStyle(el).fontSize);
+      for (const l of __linesOf(el)) {
+        const c = l.chars;
+        for (let i = 1; i < c.length - 1; i++) {
+          if (!/[  ]/.test(c[i].ch) || !/[A-Za-z0-9]/.test(c[i - 1].ch) || !/[぀-鿿]/.test(c[i + 1].ch)) continue;
+          const gap = (c[i + 1].left - (c[i].left)) / size;
+          if (gap < 0.22 || gap > 0.28) bad.push(`「${c[i - 1].ch} ${c[i + 1].ch}」 gap ${gap.toFixed(3)}em`);
+        }
+      }
+    }
+    return [...new Set(bad)].slice(0, 6);
+  }) },
+
+  'nav-current-mark': { pages: ['about/', 'writing/', 'ja/about/'], widths: [1280], run: (page) => page.evaluate(() => {
+    const cur = document.querySelector('.site-nav [aria-current="page"]');
+    const rest = getComputedStyle(cur).getPropertyValue('--rest').trim();
+    return rest && rest !== 'transparent' ? [] : ['the current page has no resting line'];
+  }) },
+
   'ja-no-space-at-line-start': { pages: ['ja/', 'ja/about/'], widths: WIDTHS, run: (page) => page.evaluate((sel) => {
     const bad = [];
     for (const el of [...document.querySelectorAll(sel)].filter(__visible)) {
@@ -388,7 +429,46 @@ const results = [];
 const frozen = units.filter((u) => u.status === 'frozen');
 for (const u of frozen) {
   const fails = [];
-  if (u.id === 'focus-in-intro') {
+  if (u.id === 'parallax-floor') {
+    // Motion on: past the end of the drift the opening still draws at 0.85 or more.
+    for (const [w, h] of [[1280, 800], [375, 812]]) for (const p of ['', 'ja/']) {
+      const mctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'no-preference' });
+      const mp = await mctx.newPage();
+      await mp.goto(`http://localhost:${port}/${p}`, { waitUntil: 'networkidle' });
+      await mp.waitForTimeout(1500);
+      const o = await mp.evaluate(async () => { window.scrollTo(0, innerHeight); await new Promise((r) => setTimeout(r, 200)); return parseFloat(getComputedStyle(document.querySelector('.intro')).opacity); });
+      if (o < 0.84) fails.push(`/${p} ${w}x${h}: the opening dims to ${o.toFixed(2)}`);
+      await mctx.close();
+    }
+  } else if (u.id === 'dark-moss-chroma') {
+    // Dark scheme: the sentence's moss stays a quiet grey-green (OKLCH chroma <= 0.065) at 4:1 on the ground.
+    const dctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: 'dark' });
+    const dp = await dctx.newPage();
+    await dp.goto(`http://localhost:${port}/`, { waitUntil: 'networkidle' });
+    const r = await dp.evaluate(() => {
+      const rgb = (s) => s.match(/\d+(\.\d+)?/g).slice(0, 3).map(Number);
+      const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; };
+      const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+      const link = rgb(getComputedStyle(document.querySelector('p.sentence a')).color);
+      const bg = rgb(getComputedStyle(document.body).backgroundColor);
+      const [r, g, b] = link.map(lin);
+      const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s2 = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+      const chroma = Math.hypot(1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s2, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s2);
+      const [hi, lo] = [lum(link), lum(bg)].sort((x, y) => y - x);
+      return { chroma, contrast: (hi + 0.05) / (lo + 0.05) };
+    });
+    if (r.chroma > 0.065) fails.push(`dark link chroma ${r.chroma.toFixed(3)}`);
+    if (r.contrast < 3.95) fails.push(`dark link contrast ${r.contrast.toFixed(2)}:1`);
+    await dctx.close();
+  } else if (u.id === 'work-link-hover-ink') {
+    await open('', 1280);
+    const a = page.locator('.work-links a').first();
+    await a.hover();
+    await page.waitForTimeout(500);
+    const same = await page.evaluate(() => getComputedStyle(document.querySelector('.work-links a:hover')).color === getComputedStyle(document.body).color);
+    if (!same) fails.push('a hovered work link is not in the text colour');
+    await page.mouse.move(0, 0);
+  } else if (u.id === 'focus-in-intro') {
     // Motion on: scrolled part-way past the opening, a sentence link that takes focus is drawn at full opacity.
     for (const [w, h] of [[1280, 800], [1280, 600], [375, 812]]) for (const p of ['', 'ja/']) {
       const mctx = await browser.newContext({ viewport: { width: w, height: h }, reducedMotion: 'no-preference' });
