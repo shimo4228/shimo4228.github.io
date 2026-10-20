@@ -59,20 +59,20 @@
     --color-line-strong: #4b5650;
     --color-muted: #9aa39e;
     --color-text: #e9eaea;
-    --color-accent-wash: #162b1d;
-    --color-accent-line: #3b734e;
-    --color-accent: #8dbe9d;
-    --color-link: #46895d;
+    --color-accent-wash: #1d2a21;
+    --color-accent-line: #4e6f58;
+    --color-accent: #a0b9a8;
+    --color-link: #5d846a;
   }
 }
-/* 89 characters from the display roles, subset from site/fonts/ShipporiMincho-Regular.ttf (SIL OFL 1.1, fonts/OFL.txt). */
+/* 49 characters from the display roles, subset from site/fonts/ShipporiMincho-Regular.ttf (SIL OFL 1.1, fonts/OFL.txt). */
 @font-face {
   font-family: "Shippori Mincho Display";
-  src: url("/fonts/shippori-mincho-display.a9b7aa73c4.woff2") format("woff2");
+  src: url("/fonts/shippori-mincho-display.c80081decf.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  unicode-range: U+3001, U+3002, U+300C, U+300D, U+300E, U+300F, U+3042, U+3044, U+3048, U+304C, U+304D, U+3051, U+3053, U+3055, U+3059, U+305A, U+305B, U+305D, U+305F, U+3061, U+3063, U+3064, U+3066, U+3067, U+3068, U+306B, U+306E, U+306F, U+3072, U+307E, U+3082, U+308A, U+308B, U+3092, U+3093, U+30A7, U+30A8, U+30AB, U+30B8, U+30B9, U+30C4, U+30C8, U+30CD, U+30CF, U+30DA, U+30DC, U+30E9, U+30EB, U+30ED, U+30F3, U+30FC, U+4E00, U+4E0A, U+4EBA, U+4EE3, U+4EFB, U+4F5C, U+5224, U+5247, U+52D5, U+5411, U+5C5E, U+5F0F, U+5F8B, U+5FC3, U+6027, U+60F3, U+610F, U+63A2, U+65AD, U+660E, U+6642, U+66F8, U+6CE8, U+6E21, U+7791, U+7D44, U+7E54, U+8003, U+8005, U+81EA, U+8457, U+898B, U+898F, U+8AAC, U+8CAC, U+95A2, U+FF08, U+FF09;
+  unicode-range: U+3001, U+3002, U+300C, U+300D, U+300E, U+300F, U+3042, U+3044, U+304C, U+3053, U+305B, U+305F, U+3064, U+3066, U+3067, U+306B, U+306E, U+307E, U+3082, U+308A, U+308B, U+3092, U+3093, U+30A7, U+30A8, U+30B8, U+30C8, U+30DA, U+30F3, U+30FC, U+4EBA, U+4EE3, U+4EFB, U+4F5C, U+5224, U+5FC3, U+6027, U+60F3, U+610F, U+63A2, U+65AD, U+6642, U+66F8, U+6CE8, U+7791, U+8005, U+8457, U+898B, U+8CAC;
 }
 
 /* The sentence, glossed. Rules and values: DESIGN.md. Tokens come first in the built file. */
@@ -184,6 +184,8 @@ a {
 
 .skip-link {
   position: absolute;
+  /* Above the header, which becomes its own stacking context when view transitions name it (motion on). */
+  z-index: 2;
   inset-inline-start: var(--space-s);
   inset-block-start: var(--space-s);
   padding: var(--space-2xs) var(--space-s);
@@ -284,6 +286,10 @@ a {
 
 /* Footer links leave the site, so they carry the solid underline like every other outbound link. */
 .site-foot a {
+  /* The target grows by padding, so the underline stays the length of the word (X). */
+  min-inline-size: 0;
+  padding-inline: 0.5rem;
+  margin-inline: -0.5rem;
   text-decoration-line: underline;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -295,7 +301,9 @@ a {
   color: var(--color-text);
 }
 
+/* The current page keeps a resting line, so it reads stronger than a hovered link (colour plus a line drawn in). */
 .site-nav [aria-current="page"] {
+  --rest: var(--color-line-strong);
   color: var(--color-text);
 }
 
@@ -374,7 +382,7 @@ a {
   word-spacing: -0.05em;
   /* About 12 characters across a 375px phone, so the first two sentences stay on one line each.
      The rem floor keeps it growing under page and text zoom (WCAG 1.4.4). */
-  font-size: max(min(var(--step-3), 7.1vw), 1.375rem);
+  font-size: max(min(var(--step-3), 7.1vw), 1.5rem);
   line-height: 1.5;
   max-inline-size: 23em;
 }
@@ -560,6 +568,11 @@ a {
   text-indent: -0.5em;
 }
 
+/* The display lines' 0.04em tracking would follow the hung 「 too and set the words that far inside the edge. */
+.section-title:lang(ja) > q::before {
+  letter-spacing: 0;
+}
+
 @media (min-width: 48rem) {
   /* The quoted phrase stays in view while its gloss scrolls past. */
   .gloss > .section-title {
@@ -621,6 +634,17 @@ a {
   inset-inline-start: calc(var(--space-s) * -1 - 0.5em);
 }
 
+/* The phone gutter is narrower than the bar's offset plus the hang, so the bar sits closer in. */
+@media (max-width: 47.99rem) {
+  .gloss:target > .section-title::before {
+    inset-inline-start: calc(var(--space-2xs) * -1 - 0.41em);
+  }
+
+  .gloss:target > .section-title:lang(ja)::before {
+    inset-inline-start: calc(var(--space-2xs) * -1 - 0.5em);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .work:target::before,
   .gloss:target > .section-title::before {
@@ -653,10 +677,9 @@ a {
 }
 
 .work-name a {
-  /* Padding grows the target to 24px without moving the text (the margin gives the space back). */
-  display: inline-block;
+  /* Inline, so a name that wraps keeps its first line as the heading's baseline (the margin note sits on it);
+     padding grows the target to 24px without moving the text. */
   padding-block: 0.15em;
-  margin-block: -0.15em;
   text-decoration-line: underline;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -689,6 +712,16 @@ a {
   max-inline-size: var(--measure);
 }
 
+/* An English line the build could not tie (its last two words are too long) is balanced instead, so it ends on more
+   than one word. Japanese running text fills the measure instead (balance would cut its words at arbitrary points). */
+.work-line:not(:has(.tie)):not(:lang(ja)) {
+  text-wrap: balance;
+}
+
+.work-line:lang(ja) {
+  text-wrap: pretty;
+}
+
 .work-links {
   --cluster-space: 0 var(--space-s);
   font-size: var(--step-n1);
@@ -710,8 +743,9 @@ a {
   text-underline-offset: 0.22em;
 }
 
+/* Moss belongs to the commentary (DESIGN Rule 2); an outbound label deepens to ink like the footer's. */
 .work-links a:hover {
-  color: var(--color-accent);
+  color: var(--color-text);
   text-decoration-color: currentColor;
 }
 
@@ -754,19 +788,6 @@ a {
 }
 
 /* ---------- About ---------- */
-.lead {
-  font-family: var(--font-display);
-  font-size: var(--step-2);
-  line-height: 1.35;
-  max-inline-size: 24em;
-}
-
-.lead:lang(ja) {
-  font-size: var(--step-1);
-  line-height: 1.75;
-  max-inline-size: 28em;
-}
-
 /* About: the name in the rail, as the sections quote their phrase. */
 .about > .section-title {
   /* On phones the name is a byline above the page title, smaller and muted; from 48rem it holds the rail. */
@@ -835,7 +856,12 @@ a {
 }
 
 .fact a {
-  /* Inline (not inline-block) keeps the first baseline for the rail; padding grows the target only. */
+  /* Inline (not inline-block) keeps the first baseline for the rail; padding grows the target only.
+     The label's words stay together (keep-all here, tied spaces from the build), so a label and its underline turn
+     over whole. A label longer than the line (ORCID under text zoom) breaks inside: Safari's keep-all also holds
+     digits and hyphens together. */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
   padding-block: 0.15em;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -927,6 +953,8 @@ a {
 
 .piece-title {
   grid-area: title;
+  /* balance, not pretty: Chrome drops pretty on lines whose .u span clones its box per line. */
+  text-wrap: balance;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
   text-underline-offset: 0.2em;
@@ -978,14 +1006,15 @@ a {
   color: var(--color-text);
 }
 
-/* ---------- 404 ---------- */
 /* Wide screens: the platform steps into the margin note, as a work's links do on the home page. */
 @media (min-width: 80rem) {
   /* The platform is a third grid column running into the margin, so it shares the row's baseline. The hairlines
      stay under the date and title only. */
   .piece,
   .piece:lang(ja) {
-    grid-template-columns: var(--rail) minmax(0, 1fr) var(--note);
+    /* The note track takes the extra step to the margin, so the title ends where its hairline does and the note
+       starts at the same x as a work's links on the home page. */
+    grid-template-columns: var(--rail) minmax(0, 1fr) calc(var(--note) + var(--space-xl) - var(--space-l));
     grid-template-areas: "date title where";
     margin-inline-end: calc(-1 * (var(--note) + var(--space-xl)));
     border: 0;
@@ -994,20 +1023,28 @@ a {
   }
 
   .piece:first-child {
+    border: 0;
     background:
       linear-gradient(var(--color-line), var(--color-line)) left top / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat,
       linear-gradient(var(--color-line), var(--color-line)) left bottom / calc(100% - var(--note) - var(--space-xl)) var(--line-thin) no-repeat;
   }
 
   .piece-where {
-    margin-inline-start: calc(var(--space-xl) - var(--space-l));
+    padding-inline-start: calc(var(--space-xl) - var(--space-l));
     white-space: normal;
   }
 }
 
+/* ---------- 404 ---------- */
 .lost {
   display: grid;
   gap: var(--space-s);
+}
+
+/* body resolves the font and leading variables in English on this page; the Japanese half takes its own. */
+.lost:lang(ja) {
+  font-family: var(--font-body);
+  line-height: var(--leading-body);
 }
 
 .lost-title {
@@ -1021,7 +1058,7 @@ a {
   border-block-start: var(--line-thin) solid var(--color-line);
 }
 
-/* ---------- Forced colours and print ---------- */
+/* ---------- Reveal ---------- */
 /* Reveal: each work, intro, quoted title and piece below the first screen fades up once as it comes into view (the
    script in the page head marks those as .pending, then .in; 竜也, 2026-10-18, after hiraoku.dev/blog). What is on
    screen at load is never hidden. Without the script, or with reduced motion, nothing is hidden. */
@@ -1034,9 +1071,15 @@ a {
       translate 0.8s cubic-bezier(0.2, 0.6, 0.2, 1);
   }
 
-  .reveal .pending.in {
+  /* Focus can land on an item still waiting at the bottom edge (inside the observer's margin); show it at once. */
+  .reveal .pending.in,
+  .reveal .pending:focus-within {
     opacity: 1;
     translate: 0 0;
+  }
+
+  .reveal .pending:focus-within {
+    transition: none;
   }
 }
 
@@ -1076,19 +1119,35 @@ a {
   }
 }
 
+/* The dim stops at 0.85, where the 4:1 sentence links stay at 3:1 or more (WCAG 1.4.3 for large text). */
 @keyframes drift {
   to {
-    opacity: 0.2;
+    opacity: 0.85;
     translate: 0 14vh;
+  }
+}
+
+/* On phones 14vh is more than the gap under the sentence, so the drift stops short of the first section. */
+@keyframes drift-sm {
+  to {
+    opacity: 0.85;
+    translate: 0 min(14vh, calc(var(--space-2xl) - var(--space-s)));
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .intro {
+    animation-name: drift-sm;
   }
 }
 
 /* ---------- Underlines draw in ---------- */
 /* On hover a line draws in from the left over the resting hairline (竜也, 2026-10-18, after hiraoku.dev/blog). The line
    is a background, so it can grow; names and titles that wrap carry it on inline spans (.u), cloned onto each line.
-   Single-line labels sit it a fifth of an em under the baseline (from the middle of their line box). */
+   Single-line labels sit it just under Charter's descenders, a quarter em under the baseline (from the middle of
+   their line box); the line is a background and cannot skip ink. */
 :is(.site-nav a, .site-foot a, .entrance, .work-links a, .about-next a, .writing-more a) {
-  --u-y: calc(0.5lh + 0.5em);
+  --u-y: calc(0.5lh + 0.61em);
 }
 
 .site-nav a,
@@ -1141,6 +1200,7 @@ a {
   color: var(--color-accent);
 }
 
+/* ---------- Forced colours and print ---------- */
 /* Where backgrounds are dropped (forced colours, print), links fall back to a plain underline. */
 @media (forced-colors: active), print {
   :is(.site-foot a, .entrance, .work-links a, .about-next a, .writing-more a, .fact a, .sentence a, .work-name .u, .piece-title .u) {
@@ -1150,6 +1210,12 @@ a {
 }
 
 @media (forced-colors: active) {
+  /* Colour alone marks the current page elsewhere; forced colours drop it, so the current page is underlined. */
+  .site-nav [aria-current="page"] {
+    text-decoration: underline 2px;
+    text-underline-offset: 0.3em;
+  }
+
   .work:target::before,
   .gloss:target > .section-title::before {
     background: Highlight;
@@ -1194,5 +1260,100 @@ a {
     content: " (" attr(href) ")";
     font-size: 0.8em;
     word-break: break-all;
+  }
+}
+
+/* Text-only zoom and text spacing (WCAG 1.4.4, 1.4.12): on phones the single-column tracks shrink below the
+   min-content of unbreakable Japanese headings and labels instead of widening the page. */
+@media (max-width: 47.99rem) {
+  :is(.gloss, .years, .year, .pieces, .lost, .about-body) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .piece {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .piece-where {
+    white-space: normal;
+  }
+}
+
+main :is(p, dd, li) {
+  overflow-wrap: break-word;
+}
+
+.sentence .keep {
+  max-inline-size: 100%;
+}
+
+/* On paper the sentence's links are underlined like every other link; their screen underline is transparent until hover. */
+@media print {
+  .sentence a {
+    text-decoration-color: currentColor;
+  }
+}
+
+/* An article title that opens with a quotation mark hangs it, as the section titles do, by the same indent in every
+   browser; Safari's own hanging-punctuation is off here, since it would also hang an opening bracket ("(3) …"). */
+.piece-title {
+  hanging-punctuation: none;
+}
+
+.piece-title.hang {
+  position: relative;
+}
+
+/* Out of the flow at the line start, then moved left by its own width: the first letter sits on the edge whatever the
+   mark's width or kerning in each browser. */
+.hang-mark {
+  position: absolute;
+  translate: -100% 0;
+}
+
+/* A tie in an article title or a Japanese paragraph turns over whole, and wraps inside only when it alone is wider than
+   the line (text zoom). Nothing follows a paragraph's tail tie, so no line starts with a space after it. */
+.piece-title .tie,
+:lang(ja) :is(p, dd, li) > .tie {
+  display: inline-block;
+  max-inline-size: 100%;
+  white-space: normal;
+}
+
+/* An article title's hover and focus belong to its words, not to the empty end of its grid cell. */
+.piece-title {
+  justify-self: start;
+}
+
+.piece-title:focus-visible {
+  outline: none;
+}
+
+.piece-title:focus-visible .u {
+  outline: 2px solid var(--color-text);
+  outline-offset: 3px;
+}
+
+/* The opening dims as the page scrolls past it; a link in it that takes keyboard focus is shown at full strength. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .intro:focus-within {
+    opacity: 1 !important;
+  }
+}
+
+/* Japanese body text: the space between Latin and Japanese is a quarter em (JLReq 3.2.3), not Hiragino's third.
+   Display lines keep their own spacing. */
+:lang(ja) :is(.section-intro, .work-line, .work-links, .fact dd, .piece-title, .piece-where, .lost > p:not(.sentence), .site-foot) {
+  word-spacing: -0.083em;
+}
+
+/* Japanese running text is justified (JLReq), so lines end on one edge. Below 30rem a line before a tied Latin name
+   would spread too far, so phones keep a ragged edge. */
+@media (min-width: 30rem) {
+  :lang(ja) :is(.section-intro, .work-line, .fact dd) {
+    text-align: justify;
+    /* auto spreads the slack between Japanese characters and spaces; inter-character would also letter-space Latin
+       words ("M 1  M a c"). */
+    text-justify: auto;
   }
 }
