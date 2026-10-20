@@ -781,8 +781,10 @@ a {
 .fact a {
   /* Inline (not inline-block) keeps the first baseline for the rail; padding grows the target only.
      The label's words stay together (keep-all here, tied spaces from the build), so a label and its underline turn
-     over whole; a label without spaces (ORCID) can still break at its hyphens under text zoom. */
+     over whole. A label longer than the line (ORCID under text zoom) breaks inside: Safari's keep-all also holds
+     digits and hyphens together. */
   word-break: keep-all;
+  overflow-wrap: anywhere;
   padding-block: 0.15em;
   text-decoration-thickness: var(--line-thin);
   text-decoration-color: var(--color-line-strong);
@@ -1215,11 +1217,21 @@ main :is(p, dd, li) {
   }
 }
 
-/* An article title that opens with a quotation mark hangs it, as the section titles do; Safari hangs it itself. */
-@supports not (hanging-punctuation: first) {
-  .piece-title.hang {
-    text-indent: -0.42em;
-  }
+/* An article title that opens with a quotation mark hangs it, as the section titles do, by the same indent in every
+   browser; Safari's own hanging-punctuation is off here, since it would also hang an opening bracket ("(3) …"). */
+.piece-title {
+  hanging-punctuation: none;
+}
+
+.piece-title.hang {
+  position: relative;
+}
+
+/* Out of the flow at the line start, then moved left by its own width: the first letter sits on the edge whatever the
+   mark's width or kerning in each browser. */
+.hang-mark {
+  position: absolute;
+  translate: -100% 0;
 }
 
 /* A tie in an article title or a Japanese paragraph turns over whole, and wraps inside only when it alone is wider than

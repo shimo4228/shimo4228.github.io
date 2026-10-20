@@ -407,7 +407,9 @@ const tieTitle = (h) =>
   h
     .replace(/Claude Code/g, '<span class="tie">Claude Code</span>')
     .replace(new RegExp(`(${WORD} —)`, 'g'), '<span class="tie">$1</span>')
-    .replace(new RegExp(`(?<![\\w’>])(\\d{1,3}|a|A|I) (${WORD})`, 'g'), '<span class="tie">$1 $2</span>');
+    .replace(new RegExp(`(?<![\\w’>])(\\d{1,3}|a|A|I) (${WORD})`, 'g'), '<span class="tie">$1 $2</span>')
+    // The last two words stay together, so no title ends on one word (Safari does not balance these titles).
+    .replace(new RegExp(`(${WORD}) (${WORD})$`), '<span class="tie">$1 $2</span>');
 
 function writing(c) {
   const w = c.writing;
@@ -419,7 +421,9 @@ function writing(c) {
     const title = typographic(e.title);
     // A title that opens with a quotation mark hangs it, as the section titles do.
     const hang = lang !== 'ja' && /^[“‘]/.test(title) ? ' hang' : '';
-    return `<li class="piece"><a class="piece-title${hang}" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(title, lang), lang) : tieTitle(esc(title)))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
+    // The hung mark is its own span, set exactly its own width into the margin.
+    const english = (h) => (hang ? h.replace(/^([“‘])/, '<span class="hang-mark">$1</span>') : h);
+    return `<li class="piece"><a class="piece-title${hang}" href="${esc(e.url)}">${underlined(lang === 'ja' ? clauses(txt(title, lang), lang) : english(tieTitle(esc(title))))}</a><time class="piece-date" datetime="${i.date}">${shortDate(i.date, lang)}</time><span class="piece-where">${txt(where(e, lang), lang)}</span></li>`;
   };
   const groups = years
     .map(

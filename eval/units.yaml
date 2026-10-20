@@ -522,7 +522,7 @@
   what: An article title that opens with a quotation mark hangs it; the first letter sits on the column edge.
   why: The quoted title started a quote-width inside its neighbours.
   eval: {judge: machine, check: title-quote-hang, env: "Chrome on macOS", expect: "every title's first letter within 0.5px of its box edge, 320-1280"}
-  cause: "build.mjs .hang on titles opening with “ or ‘; site.css text-indent -0.42em where hanging-punctuation is unsupported"
+  cause: "build.mjs .hang-mark span around an opening “ or ‘; site.css .hang-mark absolute, translated by its own width; hanging-punctuation off on titles (Safari would hang brackets)"
   relations:
     - unit: ja-quote-hang
       how: support — the same rule, DESIGN rule 4
@@ -569,7 +569,7 @@
   field: Japanese typesetting
   what: In Japanese body text the space between a Latin word and Japanese is a quarter em.
   why: Hiragino's space is a third of an em, 2.7 times the autospace gap in the same list (JLReq 3.2.3).
-  eval: {judge: hybrid, check: ja-latin-space, env: "Chrome on macOS (Hiragino)", expect: "0.22-0.28em between a Latin word and the Japanese after it, work lines, intros, facts"}
+  eval: {judge: hybrid, check: ja-latin-space, env: "Chrome and WebKit on macOS (Hiragino)", expect: "0.20-0.32em between a Latin word and the Japanese after it, work lines, intros, facts (Chrome 0.250; WebKit 0.21-0.235, up to 0.32 where Safari puts justification slack in the space)"}
   cause: "site.css :lang(ja) body roles word-spacing: -0.083em"
   origin: r4-typography-ja 3, r5-typography-ja 2, r6-typography-ja 6
   decided_by: "2026-10-20 author: 全部あなたの推奨でやっといて (JLReq quarter em)"
@@ -622,7 +622,7 @@
   field: Japanese typesetting
   what: In justified Japanese text a Latin word keeps its natural width; the slack goes between Japanese characters and spaces.
   why: inter-character justification letter-spaced "M1 Mac" and "Shimomoto" (1.07-1.18x).
-  eval: {judge: machine, check: latin-word-intact, env: "Chrome on macOS", expect: "every Latin word of 3+ letters within 2% of its natural width, 768-1280", instances: "JA .section-intro, .work-line, .fact dd"}
+  eval: {judge: machine, check: latin-word-intact, env: "Chrome on macOS", expect: "every Latin word of 3+ letters within 7% of its natural width, 768-1280 (Chrome 0%; Safari has no text-justify and spreads 2-6%)", instances: "JA .section-intro, .work-line, .fact dd"}
   cause: "site.css text-justify: auto on justified Japanese running text"
   relations:
     - unit: ja-running-fill

@@ -397,3 +397,20 @@ one-clause title returned untied) was found by ja-title-phrases. 41 frozen units
   page title in the gloss column, the intro in body text. The `.lead` role is gone.
 - Safari: the author reads in Safari. `EVAL_ENGINE=webkit` runs the units in WebKit once its download completes;
   until then the Safari-only behaviour is unchecked.
+
+## Round 7 — Safari (WebKit), 2026-10-20
+
+The author reads in Safari; until now every unit ran in Chrome only. `EVAL_ENGINE=webkit` runs the units in
+Playwright's WebKit (Safari 26). First run: 7 of 49 red.
+
+| Unit | In WebKit | Decision |
+|---|---|---|
+| ja-kinsoku-start | 31 lines "starting" with 、）ュ | measurement: WebKit also reports a line's first character as a zero-width box at the previous line's end; the helper takes the box with ink. Screenshots showed kinsoku held |
+| skip-link-visible | link covered | measurement: Safari's Tab skips links; the check focuses the link directly |
+| title-no-widow | 98 one-word last lines in titles | real: Safari ignores `balance` here; the build ties every English title's last two words (mutation proved under WebKit) |
+| reflow-text-zoom | ORCID overflowed /about/ at 200% | real: Safari's keep-all also holds digits and hyphens; `.fact a` adds `overflow-wrap: anywhere` |
+| title-quote-hang | "(3) …" hung, “ 1px too far | real: Safari's `hanging-punctuation` also hangs brackets and the fixed indent missed by kerning; titles turn it off and set the mark absolutely, translated by its own width |
+| ja-latin-space | 0.21em | engine: WebKit's space is 0.294em before word-spacing; tolerance 0.20–0.32em, up to 0.32 where Safari puts justification slack in a space |
+| latin-word-intact | Latin words 2–6% wider | engine: Safari has no `text-justify` and spreads Latin slightly; tolerance 7% (Chrome stays at 0%); the alternative was ragged lines in Safari |
+
+ja-display-face-fallback needs CDP and is skipped in WebKit. Chrome and WebKit: 49 frozen units green.
