@@ -16,6 +16,7 @@ const dist = join(root, 'dist');
 const ORIGIN = 'https://shimo4228.github.io';
 const ORCID = 'https://orcid.org/0009-0002-6168-4162';
 const HUB = 'https://shimo4228.github.io/shimo4228/';
+const INDEXNOW_KEY = '565d70d4e0464749a4c2984b43cfed7e';
 const BEACON = process.env.CF_BEACON_TOKEN ?? '2776a8f67e47403f8604a10e2dce848a';
 
 const design = readDesign(join(root, 'DESIGN.md'));
@@ -622,4 +623,7 @@ out('.nojekyll', '');
 // Google Search Console ownership file for the https://shimo4228.github.io/ property (2026-10-18). Keep it:
 // deleting it un-verifies the property. Google's file content is this exact line.
 out('googleb056734478b4d8a5.html', 'google-site-verification: googleb056734478b4d8a5.html');
+// IndexNow key (the same key as the hub's file at /shimo4228/). A key file covers only the URLs under its own
+// directory, so the root copy is what lets the deploy workflow announce the site's pages to Bing and Yandex.
+out(`${INDEXNOW_KEY}.txt`, INDEXNOW_KEY);
 console.log(`built dist/ (Japanese display face: ${jaChars.length} characters, ${(jaFont.length / 1024).toFixed(1)} KB)`);
