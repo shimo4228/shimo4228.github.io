@@ -63,3 +63,22 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v5
+
+  # Tells IndexNow engines (Bing, Yandex) that the pages changed, so a new piece on the writing page is picked up
+  # without waiting for a crawl. Only after a push or a new publication; the daily rebuild usually changes nothing.
+  # The key file is emitted by site/build.mjs. A failed ping never fails the run.
+  indexnow:
+    needs: deploy
+    if: github.event_name == 'push' || github.event_name == 'repository_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping IndexNow with the sitemap's URLs
+        continue-on-error: true
+        run: |
+          key=565d70d4e0464749a4c2984b43cfed7e
+          urls=$(curl -fsS https://shimo4228.github.io/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's/<[^>]*>//g' | jq -R . | jq -sc .)
+          jq -n --arg key "$key" --argjson urls "$urls" \
+            '{host: "shimo4228.github.io", key: $key, keyLocation: "https://shimo4228.github.io/\($key).txt", urlList: $urls}' \
+            | curl -sS -o /dev/null -w 'IndexNow: HTTP %{http_code}\n' -X POST https://api.indexnow.org/indexnow \
+                -H 'Content-Type: application/json; charset=utf-8' --data @-
