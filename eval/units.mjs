@@ -379,7 +379,7 @@ const checks = {
   }) },
 
   'ja-latin-space': { pages: ['ja/', 'ja/about/'], widths: [1280], run: (page) => page.evaluate(() => {
-    // Between a Latin word and Japanese in body text, the gap is a quarter em (JLReq 3.2.3).
+    // Between a Latin word and Japanese in body text, the gap is a quarter em (JLReq 3.2.6).
     const bad = [];
     for (const el of [...document.querySelectorAll('main :lang(ja) :is(.work-line, .section-intro, .fact dd)')].filter(__visible)) {
       const size = parseFloat(getComputedStyle(el).fontSize);

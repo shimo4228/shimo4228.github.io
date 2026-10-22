@@ -1264,7 +1264,7 @@ main :is(p, dd, li) {
   }
 }
 
-/* Japanese body text: the space between Latin and Japanese is a quarter em (JLReq 3.2.3), not Hiragino's third.
+/* Japanese body text: the space between Latin and Japanese is a quarter em (JLReq 3.2.6), not Hiragino's third.
    Display lines keep their own spacing. */
 :lang(ja) :is(.section-intro, .work-line, .work-links, .fact dd, .piece-title, .piece-where, .lost > p:not(.sentence), .site-foot) {
   word-spacing: -0.083em;

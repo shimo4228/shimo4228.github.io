@@ -414,3 +414,10 @@ Playwright's WebKit (Safari 26). First run: 7 of 49 red.
 | latin-word-intact | Latin words 2–6% wider | engine: Safari has no `text-justify` and spreads Latin slightly; tolerance 7% (Chrome stays at 0%); the alternative was ragged lines in Safari |
 
 ja-display-face-fallback needs CDP and is skipped in WebKit. Chrome and WebKit: 49 frozen units green.
+
+## Corrections (2026-10-22)
+
+| id | what | decision | why |
+|---|---|---|---|
+| jlreq-section | the quarter-em Latin–Japanese space was cited as JLReq 3.2.3 (Author calls decided, units.yaml ja-latin-space, units.mjs, site.css) | corrected to 3.2.6 in units.yaml, units.mjs and site.css; this ledger's line and reviews/r5-typography-ja.md stay as recorded | 3.2.3 is Mixed Text Composition in Vertical Writing Mode; 3.2.6 is Handling of Western Text in Japanese Text using Proportional Western Fonts (w3.org/TR/jlreq, 2026-10-22). Found by a reviewer of the Zenn article on this loop |
+| charter-nbsp-comment | build.mjs said Charter has no no-break space glyph | comment corrected | Charter.ttc has U+00A0 at 1139 units, twice the space's 569 (fontTools, 2026-10-22); matches r5-typography-en 1 and units.yaml |

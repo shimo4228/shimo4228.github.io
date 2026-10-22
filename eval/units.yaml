@@ -568,7 +568,7 @@
 - id: ja-latin-space
   field: Japanese typesetting
   what: In Japanese body text the space between a Latin word and Japanese is a quarter em.
-  why: Hiragino's space is a third of an em, 2.7 times the autospace gap in the same list (JLReq 3.2.3).
+  why: Hiragino's space is a third of an em, 2.7 times the autospace gap in the same list (JLReq 3.2.6).
   eval: {judge: hybrid, check: ja-latin-space, env: "Chrome and WebKit on macOS (Hiragino)", expect: "0.20-0.32em between a Latin word and the Japanese after it, work lines, intros, facts (Chrome 0.250; WebKit 0.21-0.235, up to 0.32 where Safari puts justification slack in the space)"}
   cause: "site.css :lang(ja) body roles word-spacing: -0.083em"
   origin: r4-typography-ja 3, r5-typography-ja 2, r6-typography-ja 6

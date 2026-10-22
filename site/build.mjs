@@ -102,7 +102,7 @@ function prose(s, lang) {
   const w = esc(s).split(' ');
   let n = 1;
   while (n < Math.min(4, w.length) && w.slice(-n).join('').length < 8) n++;
-  // A nowrap span, not &nbsp;: Charter has no no-break space glyph, so &nbsp; falls back to a wider one.
+  // A nowrap span, not &nbsp;: Charter draws its no-break space (U+00A0) twice as wide as a space (1139 vs 569 units).
   return n > 1 ? [...w.slice(0, -n), `<span class="tie">${w.slice(-n).join(' ')}</span>`].join(' ') : w.join(' ');
 }
 
