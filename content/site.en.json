@@ -98,6 +98,23 @@
         "place": "writing"
       },
       {
+        "label": "New pieces as they come out",
+        "items": [
+          {
+            "name": "Substack",
+            "what": "essays by email",
+            "href": "https://shimo4228.substack.com/subscribe"
+          },
+          {
+            "name": "Atom",
+            "what": "feed of this list",
+            "href": "https://shimo4228.github.io/feed.xml",
+            "type": "application/atom+xml"
+          }
+        ],
+        "place": "writing"
+      },
+      {
         "label": "Code and records",
         "items": [
           {
@@ -394,6 +411,7 @@
     "intro": "Articles on Dev.to and essays on Substack, newest first. The Japanese originals, on Zenn and note, are on the Japanese page.",
     "other": "The Japanese originals",
     "full": "The full index, with papers, on GitHub",
-    "fullHref": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+    "fullHref": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md",
+    "feedTitle": "Writing by Tatsuya Shimomoto"
   }
 }

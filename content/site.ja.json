@@ -99,6 +99,18 @@
         "place": "writing"
       },
       {
+        "label": "新しい記事を受け取る",
+        "items": [
+          {
+            "name": "Atom",
+            "what": "この一覧のフィード",
+            "href": "https://shimo4228.github.io/ja/feed.xml",
+            "type": "application/atom+xml"
+          }
+        ],
+        "place": "writing"
+      },
+      {
         "label": "コードと記録",
         "items": [
           {
@@ -395,6 +407,7 @@
     "intro": "Zenn の技術記事と note のエッセイを、新しい順に並べています。",
     "other": "英語版の一覧",
     "full": "論文も含めた一覧（GitHub）",
-    "fullHref": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md"
+    "fullHref": "https://github.com/shimo4228/zenn-content/blob/main/docs/PUBLICATIONS.md",
+    "feedTitle": "Tatsuya Shimomoto が書いたもの"
   }
 }

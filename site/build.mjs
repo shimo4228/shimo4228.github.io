@@ -187,6 +187,7 @@ function head(c, page, { title, description, path, jsonLd }) {
 <link rel="alternate" hreflang="${lang}" href="${ORIGIN}${path}">
 <link rel="alternate" hreflang="${other(lang)}" href="${ORIGIN}${alt}">
 <link rel="alternate" hreflang="x-default" href="${ORIGIN}${paths.en[page]}">
+<link rel="alternate" type="application/atom+xml" title="${esc(c.writing.feedTitle)}" href="${ORIGIN}${paths[lang].home}feed.xml">
 <meta property="og:type" content="${page === 'home' ? 'profile' : 'website'}">
 <meta property="og:site_name" content="${esc(c.name)}">
 <meta property="og:title" content="${esc(title)}">
@@ -274,7 +275,7 @@ function entrances(c) {
       ${g.items
         .map(
           (i) =>
-            `<dd><a href="${esc(i.href)}" class="entrance" rel="me"${hreflangAttr(i.hreflang)}>${esc(i.name)}</a>${i.what ? `<span class="entrance-what">${txt(i.what, c.lang)}</span>` : ''}</dd>`,
+            `<dd><a href="${esc(i.href)}" class="entrance"${i.type ? ` type="${i.type}"` : ' rel="me"'}${hreflangAttr(i.hreflang)}>${esc(i.name)}</a>${i.what ? `<span class="entrance-what">${txt(i.what, c.lang)}</span>` : ''}</dd>`,
         )
         .join('\n      ')}
     </div>`,
@@ -581,6 +582,42 @@ ${urlEntry('writing')}
 </urlset>
 `,
 );
+// Atom feeds of the writing list, one per language (/feed.xml, /ja/feed.xml), so a reader can follow every new piece
+// on every platform in one place. Entries link out to the piece; the summary says where it was published.
+const xml = (s) => esc(s).replace(/'/g, '&apos;');
+const iso = (pa) => `${pa.replace(' ', 'T')}:00+09:00`;
+for (const lang of ['en', 'ja']) {
+  const c = content[lang];
+  const items = published.filter((i) => i[lang]).slice(0, 50);
+  const self = `${ORIGIN}${paths[lang].home}feed.xml`;
+  const entries = items
+    .map((i) => {
+      const e = i[lang];
+      return `  <entry>
+    <title>${xml(e.title)}</title>
+    <link rel="alternate" href="${xml(e.url)}"/>
+    <id>${xml(e.url)}</id>
+    <published>${iso(i.published_at)}</published>
+    <updated>${iso(i.published_at)}</updated>
+    <summary>${xml(where(e, lang))}</summary>
+  </entry>`;
+    })
+    .join('\n');
+  out(
+    `${paths[lang].home.slice(1)}feed.xml`,
+    `<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="${lang}">
+  <title>${xml(c.writing.feedTitle)}</title>
+  <link rel="self" href="${self}"/>
+  <link rel="alternate" type="text/html" href="${ORIGIN}${paths[lang].writing}"/>
+  <id>${self}</id>
+  <updated>${items.length ? iso(items[0].published_at) : new Date().toISOString()}</updated>
+  <author><name>${xml(c.name)}</name><uri>${ORIGIN}/</uri></author>
+${entries}
+</feed>
+`,
+  );
+}
 out('.nojekyll', '');
 // Google Search Console ownership file for the https://shimo4228.github.io/ property (2026-10-18). Keep it:
 // deleting it un-verifies the property. Google's file content is this exact line.
