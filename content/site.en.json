@@ -52,7 +52,6 @@
       "text": " in the age of AI."
     }
   ],
-  "company": "Unaffiliated by design",
   "entrances": {
     "draft": true,
     "label": "Read and follow",
@@ -341,15 +340,11 @@
   "about": {
     "title": "About",
     "paragraphs": [
-      "I’m Tatsuya Shimomoto (shimo4228). I build AI agents solo, with no lab and no affiliation; one of them runs on a local LLM on an M1 Mac.",
+      "I’m Tatsuya Shimomoto (shimo4228). I build AI agents solo; one of them runs on a local LLM on an M1 Mac.",
       "If you build agent harnesses, think about accountability for autonomous agents, or care about authorship in the AI age, something here is for you."
     ],
     "paragraphsSource": "hub README.md introduction, verbatim; the clause about the five lines is cut",
     "facts": [
-      {
-        "label": "Affiliation",
-        "value": "Unaffiliated by design"
-      },
       {
         "label": "ORCID",
         "value": "0009-0002-6168-4162",

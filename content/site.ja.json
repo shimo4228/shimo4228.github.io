@@ -337,16 +337,11 @@
     "title": "この人について",
     "titleDraft": true,
     "paragraphs": [
-      "こんにちは、Tatsuya Shimomoto（shimo4228）です。ラボにも組織にも属さず、AI エージェントを一人で作っています。そのひとつは M1 Mac 上のローカル LLM で動きます。",
+      "こんにちは、Tatsuya Shimomoto（shimo4228）です。AI エージェントを一人で作っています。そのひとつは M1 Mac 上のローカル LLM で動きます。",
       "エージェントのハーネス（エージェントに渡す規則とツール一式）を作っている人、自律エージェントの説明責任を考えている人、AI 時代の著者性に関心がある人に向けています。"
     ],
     "paragraphsSource": "hub README.ja.md の導入をそのまま。5 本の線に触れる節だけ削った",
     "facts": [
-      {
-        "label": "所属",
-        "value": "Unaffiliated by design",
-        "lang": "en"
-      },
       {
         "label": "ORCID",
         "value": "0009-0002-6168-4162",
