@@ -31,7 +31,6 @@ The site is an entrance to the author's platforms, not a second copy of them.
 | String | Source | Status |
 |---|---|---|
 | Bio | GitHub profile `bio` | canonical, verbatim |
-| "Unaffiliated by design" | GitHub profile `company` | verbatim |
 | Japanese one-liner (`/ja/`) | personal-branding `docs/facts.md` one-liner | confirmed |
 | Project one-liners | hub `README.md` "At a glance" and "Start here" | verbatim |
 | Essay line | the Substack subtitle of the essay | verbatim |
